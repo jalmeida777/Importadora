@@ -1,0 +1,306 @@
+﻿
+#sb-site, .sb-site-container {
+	padding: 14px;
+}
+
+.sb-slidebar
+{
+    color: #fff;
+}
+
+html.sb-active #sb-site, .sb-toggle-left, .sb-toggle-right, .sb-open-left, .sb-open-right, .sb-close {
+	cursor: pointer;
+
+}
+
+/* Fixed position examples */
+#sb-site.top-padding {
+	padding-top: 50px;
+}
+
+#fixed-top {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	height: 50px;
+	background-color: red;
+	z-index: 4;
+}
+
+#fixed-top span.sb-toggle-left {
+	float: left;
+	color: white;
+	padding: 10px;
+}
+
+#fixed-top span.sb-toggle-right {
+	float: right;
+	color: white;
+	padding: 10px;
+}
+
+h1
+{
+    font-family: Segoe UI;
+font-weight: lighter;
+    }
+    
+.tools
+{
+    font-size: 20px;
+    padding-left: 15px;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    }
+    
+    .tituloMenu
+{
+    font-size: 20px;
+    padding-top: 10px;
+    padding-bottom: 5px;
+    margin-left: 37px;
+}
+.IconoTituloMenu
+{
+    float:left;
+    padding-left: 15px;
+    padding-top: 16px;
+    padding-bottom: 5px;
+    }
+    
+.calculadora
+{
+    margin-top: 5px;
+    padding-left: 20px;
+    cursor: pointer;
+    font-family: 'Segoe UI';
+    font-size: 12px;
+}
+    
+     #draggable
+{
+    width: 150px;
+    height: 150px;
+    padding: 0.5em;
+}
+             
+           
+
+
+
+.inputs
+{
+	width: 200px;
+	padding: 4px 5px 4px 5px;
+	font-family: "HelveticaNeue-Light" , "Helvetica Neue Light" , "Helvetica Neue" , Helvetica, Arial, "Lucida Grande" , sans-serif;
+	font-weight: 400;
+	font-size: 12px;
+	color: #333333;
+	background: #FFF;
+	border: 1px solid #999999;
+	border-radius: 3px;
+	background: #fcfcfc url('../images/search-icon.png') no-repeat 190px 3px;
+}
+
+.inputsProducto
+{
+	width: 150px;
+	padding: 4px 5px 4px 5px;
+	font-family: "HelveticaNeue-Light" , "Helvetica Neue Light" , "Helvetica Neue" , Helvetica, Arial, "Lucida Grande" , sans-serif;
+	font-weight: 400;
+	font-size: 12px;
+	color: #333333;
+	background: #FFF;
+	border: 1px solid #999999;
+	border-radius: 3px;
+	background: #fcfcfc url('../images/search-icon.png') no-repeat 140px 3px;
+}
+
+.inputsFecha
+{
+    width: 90px;
+    padding: 4px 5px 4px 5px;
+    font-family: "HelveticaNeue-Light" , "Helvetica Neue Light" , "Helvetica Neue" , Helvetica, Arial, "Lucida Grande" , sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: #333333;
+    background: #FFF;
+    border: 1px solid #999999;
+    border-radius: 3px;
+    background: #fcfcfc url('../images/calendar.png') no-repeat 80px 3px;
+}
+
+
+.inputNormal
+{
+    padding: 4px 5px 4px 5px;
+    font-family: "HelveticaNeue-Light" , "Helvetica Neue Light" , "Helvetica Neue" , Helvetica, Arial, "Lucida Grande" , sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: #333333;
+    background: #FFF;
+    border: 1px solid #999999;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+.inputBloqueado
+{
+    padding: 4px 5px 4px 5px;
+    font-family: "HelveticaNeue-Light" , "Helvetica Neue Light" , "Helvetica Neue" , Helvetica, Arial, "Lucida Grande" , sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    color: #333333;
+    background: #DBB7FF;
+    border: 1px solid #CC33FF;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+
+.inputNormalMoneda
+{
+    padding: 4px 5px 4px 5px;
+    font-family: "HelveticaNeue-Light" , "Helvetica Neue Light" , "Helvetica Neue" , Helvetica, Arial, "Lucida Grande" , sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: #333333;
+    background: #FFF;
+    border: 1px solid #999999;
+    border-radius: 3px;
+    text-align: right;
+}
+
+.divGrupo
+{
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border: 1px solid #000000;
+    background-color: #F2F2F2;
+}
+
+.divBusqueda
+{
+    border-bottom: 1px solid #cacaca;
+    background-color: #ededed;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#fcfcfc), to(#dedede));
+    border-bottom-color: #cacaca;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+.divDocumento
+{
+    border: 1px solid #c8c8d3;
+    -moz-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    -webkit-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    background-color: #FFFFFF;
+}
+
+.combo
+{
+    border: 1px solid #1CC697;
+    padding: 4px 5px 4px 5px;
+    border-radius: 4px;
+    background-color: #1ED7A4;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-family: arial;
+    font-weight: bold;
+}
+
+.comboBusqueda
+{
+    border: 1px solid #BE1655;
+    padding: 4px 5px 4px 5px;
+    border-radius: 4px;
+    background-color: #E11A67;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-family: arial;
+    font-weight: bold;
+}
+    
+ul
+{
+    font-family: "Lucida Grande", Helvetica, Verdana, Arial, sans-serif;
+     color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;
+padding: 0px;
+    margin: 0px;
+}
+    
+    li
+    {
+        font-family: "Lucida Grande", Helvetica, Verdana, Arial, sans-serif; font-size: 12px; color: #333;
+        list-style: none;
+     margin-left: 8px;
+        }
+        
+        a
+{
+    font-family: "Lucida Grande" , Helvetica, Verdana, Arial, sans-serif;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    text-overflow: ellipsis;
+    margin-top: 1px;
+    margin-left: 0px;
+    text-decoration: none;
+}
+            
+            h3{      font-weight: bold;
+  
+  color: #7C7BAD;
+  font-size: 13px;
+  }
+  
+  h1
+{
+    font-family: 'Segoe UI Light';
+    font-size: 24px;
+    text-align: left;
+    padding-left: 20px;
+}
+  
+  html,body
+  {
+      font-family: "Lucida Grande", Helvetica, Verdana, Arial, sans-serif;
+  color: #4c4c4c;
+  font-size: 13px;
+      height: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    bottom: 0px;
+  }
+      .label
+{
+    padding-left: 7px;
+    text-align: left;
+}
+          
+       
+.toolbar
+{
+    border-bottom: 1px solid #cacaca;
+  padding-left: 2px;
+  background-color: #ededed;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fcfcfc), to(#dedede));
+  background-image: -webkit-linear-gradient(top, #fcfcfc, #dedede);
+  background-image: linear-gradient(to bottom, #fcfcfc, #dedede);
+    }
+    
+    .figure{
+    width:50px;
+    height:40px;
+     -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -khtml-border-radius: 50%;  
+    border-radius: 50%;
+    overflow:hidden;
+}
