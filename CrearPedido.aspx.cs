@@ -839,6 +839,7 @@ public partial class CrearPedido : System.Web.UI.Page
                 dt = (DataTable)Session["Detalle"];
                 string n_IdProductoTabla = "";
                 bool encontrado = false;
+                int filaEncontrada = 0;
 
                 for (int i = 0; i < dt.Rows.Count; i++)
                 {
@@ -846,6 +847,7 @@ public partial class CrearPedido : System.Web.UI.Page
                     if (n_IdProducto.Trim() == n_IdProductoTabla.Trim())
                     {
                         encontrado = true;
+                        filaEncontrada = i;
                         break;
                     }
                 }
@@ -865,19 +867,22 @@ public partial class CrearPedido : System.Web.UI.Page
                     dr["Stock"] = Stock;
 
                     dt.Rows.Add(dr);
-                    Session["Detalle"] = dt;
-                    gv.DataSource = dt;
-                    gv.DataBind();
-                    CalcularGrilla();
-                    panelProductos.Visible = false;
-                    tblGeneral.Visible = true;
-                    toolbar.Visible = true;
-                }
-                else
-                {
 
-                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Producto Repetido' });</script>", false);
                 }
+                else if (encontrado == true)
+                {
+                    int cantidad = int.Parse(dt.Rows[filaEncontrada]["i_Cantidad"].ToString());
+                    cantidad = cantidad + 1;
+                    dt.Rows[filaEncontrada]["i_Cantidad"] = cantidad;
+                }
+
+                Session["Detalle"] = dt;
+                gv.DataSource = dt;
+                gv.DataBind();
+                CalcularGrilla();
+                panelProductos.Visible = false;
+                tblGeneral.Visible = true;
+                toolbar.Visible = true;
             }
         }
         else 

@@ -44,17 +44,24 @@ public partial class Plantilla : System.Web.UI.MasterPage
                 {
                     string i_IdMenu = dt.Rows[i]["i_IdMenu"].ToString();
                     string v_DescripcionMenu = dt.Rows[i]["v_Nombre"].ToString();
+                    string v_RutaMenu = dt.Rows[i]["v_Url"].ToString();
 
                     litMenu.Text = litMenu.Text + "<li>";
-                    litMenu.Text = litMenu.Text + "<span>" + v_DescripcionMenu + "</span>";
+                    
 
                     DataTable dtSubMenu = new DataTable();
                     SqlDataAdapter daSubMenu = new SqlDataAdapter("Play_Menus_Menu_Hijos " + i_IdRol + "," + i_IdMenu, conexion);
                     daSubMenu.Fill(dtSubMenu);
                     if (dtSubMenu.Rows.Count > 0)
                     {
+                        litMenu.Text = litMenu.Text + "<span>" + v_DescripcionMenu + "</span>";
                         litMenu.Text = litMenu.Text + "<ul>";
                     }
+                    else
+                    {
+                        litMenu.Text = litMenu.Text + "<a href='" + v_RutaMenu + "'>" + v_DescripcionMenu + "</a>";
+                    }
+
                     for (int x = 0; x < dtSubMenu.Rows.Count; x++)
                     {
                         string i_IdSubMenu = dtSubMenu.Rows[x]["i_IdMenu"].ToString();

@@ -421,7 +421,7 @@
                         </td>
                         <td align="right" width="100">
                             <asp:TextBox ID="txtDescuento" runat="server" AutoPostBack="True" 
-                                CssClass="inputNormalMoneda" ontextchanged="txtDescuento_TextChanged" 
+                                CssClass="inputNormalMoneda" ontextchanged="txtDescuento_TextChanged" onkeypress="return ValidaNumeros(event);"
                                 Width="60px">0.00</asp:TextBox>
                         </td>
                     </tr>
