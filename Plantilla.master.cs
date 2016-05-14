@@ -45,6 +45,7 @@ public partial class Plantilla : System.Web.UI.MasterPage
                     string i_IdMenu = dt.Rows[i]["i_IdMenu"].ToString();
                     string v_DescripcionMenu = dt.Rows[i]["v_Nombre"].ToString();
                     string v_RutaMenu = dt.Rows[i]["v_Url"].ToString();
+                    string imagen = dt.Rows[i]["v_RutaImagen"].ToString();
 
                     litMenu.Text = litMenu.Text + "<li>";
                     
@@ -54,12 +55,12 @@ public partial class Plantilla : System.Web.UI.MasterPage
                     daSubMenu.Fill(dtSubMenu);
                     if (dtSubMenu.Rows.Count > 0)
                     {
-                        litMenu.Text = litMenu.Text + "<span>" + v_DescripcionMenu + "</span>";
+                        litMenu.Text = litMenu.Text + "<span><i class='" + imagen + "'></i>&nbsp;&nbsp;&nbsp;" + v_DescripcionMenu + "</span>";
                         litMenu.Text = litMenu.Text + "<ul>";
                     }
                     else
                     {
-                        litMenu.Text = litMenu.Text + "<a href='" + v_RutaMenu + "'><i class='fa fa-home fa-lg'></i>&nbsp;&nbsp;&nbsp;" + v_DescripcionMenu + "</a>";
+                        litMenu.Text = litMenu.Text + "<a href='" + v_RutaMenu + "'><i class='" + imagen + "'></i>&nbsp;&nbsp;&nbsp;" + v_DescripcionMenu + "</a>";
                     }
 
                     for (int x = 0; x < dtSubMenu.Rows.Count; x++)
