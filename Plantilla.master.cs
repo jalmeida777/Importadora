@@ -59,7 +59,7 @@ public partial class Plantilla : System.Web.UI.MasterPage
                     }
                     else
                     {
-                        litMenu.Text = litMenu.Text + "<a href='" + v_RutaMenu + "'>" + v_DescripcionMenu + "</a>";
+                        litMenu.Text = litMenu.Text + "<a href='" + v_RutaMenu + "'><i class='fa fa-home fa-lg'></i>&nbsp;&nbsp;&nbsp;" + v_DescripcionMenu + "</a>";
                     }
 
                     for (int x = 0; x < dtSubMenu.Rows.Count; x++)
