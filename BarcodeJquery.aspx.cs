@@ -11,4 +11,10 @@ public partial class BarcodeJquery : System.Web.UI.Page
     {
 
     }
+
+    protected void btnSalir_Click(object sender, EventArgs e)
+    {
+        string n_IdProducto = Request.QueryString["n_IdProducto"];
+        Response.Redirect("CrearProducto.aspx?n_IdProducto=" + n_IdProducto);
+    }
 }

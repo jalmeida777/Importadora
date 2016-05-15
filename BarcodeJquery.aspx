@@ -1,17 +1,6 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="BarcodeJquery.aspx.cs" Inherits="BarcodeJquery" %>
+﻿<%@ Page Title="Generar Código de Barras" Language="C#" MasterPageFile="~/Plantilla.master" AutoEventWireup="true" CodeFile="BarcodeJquery.aspx.cs" Inherits="BarcodeJquery" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title></title>
-    <style type="text/css">
-        .style1
-        {
-            width: 100%;
-        }
-    </style>
-</head>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
 <script src="js/jquery.js" type="text/javascript"></script>
 <script type="text/javascript" src="js/jquery-barcode.js"></script>  
 <script type="text/javascript">
@@ -28,7 +17,7 @@
 
         var table = $('<table></table>');
         for (i = 0; i < cantidad; i++) {
-            var row = $('<tr><td class=barcode_needed></td></tr>');
+            var row = $('<tr><td class=barcode_needed></td><td class=barcode_needed></td></tr>');
             table.append(row);
         }
         $('#here_table').append(table);
@@ -43,50 +32,75 @@
 </script>
 
  <script type="text/javascript">
-     function Popup() {
-         var mywindow = window.open('', 'Ticket info', 'height=400,width=600');
+
+     function PrintElem(elem) {
+         Popup($(elem).html());
+     }
+
+     function Popup(data) {
+         var mywindow = window.open('', 'my div', 'height=400,width=600');
          mywindow.document.write('<html><head><title>my div</title>');
-         mywindow.document.write('<style type="text/css"> *{margin: 0; padding: 0;} body{padding: 3px; padding-left:20px;font:6px bold Arial;}</style>');
-         mywindow.document.write('<script src="js/jquery-1.3.2.min.js"><' + '/script>');
-         mywindow.document.write('<script src="js/jquery-barcode.js"><' + '/script>');
-         mywindow.document.write('</head><body>');
-         mywindow.document.write('<div id="demo"></div>');
-         mywindow.document.write('<script type="text/javascript">$("#demo").barcode("1234567890128", "code128");<' + '/script>');
-         mywindow.document.write('<script type="text/javascript">window.print();<' + '/script>');
+         mywindow.document.write('</head><body >');
+         mywindow.document.write(data);
          mywindow.document.write('</body></html>');
+
+         mywindow.document.close(); // necessary for IE >= 10
+         mywindow.focus(); // necessary for IE >= 10
+
+         mywindow.print();
+         mywindow.close();
+
          return true;
      }
-    </script>
-<body>
-    
-    
-    <form id="form1" runat="server">
-    <table bgcolor="#99CCFF" class="style1">
-        <tr>
-            <td>
-                <asp:Label ID="Label1" runat="server" Font-Bold="True" Font-Names="Verdana" 
-                    Font-Size="20pt" ForeColor="#333333" Text="Generar Código de Barras"></asp:Label>
-            </td>
-            <td>
-                &nbsp;</td>
-        </tr>
-        <tr>
-            <td>
-    
-    
-    <input id="txtCantidad" type="text" value="1" />
-    <input type="button" onclick="generateBarcode();" value="Ver"/>
-    <input type="button" value="Imprimir" onclick="Popup();" /></td>
 
 
-            <td>
-                &nbsp;</td>
-        </tr>
-    </table>
-        <div id="here_table">
+ </script>
+
+ <style>
+.fa-3x
+{
+    color: #1fa67a;
+}
+
+</style>
+
+</asp:Content>
     
-</div>
-    </form>
-     
-</body>
-</html>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+
+        <div class="divBusqueda">
+
+            <table width="100%" cellpadding="3" cellspacing="3">
+                <tr>
+                    <td style="width:25px; padding-left:20px">
+                        <i class="fa fa-barcode fa-3x" aria-hidden="true"></i>
+                    </td>
+                    <td align="left">
+                        <h1 class="label">Generar Código de Barras</h1>
+                    </td>
+                </tr>
+                </table>
+            </div>
+                <div class="toolbar">
+            <table width="100%"><tr>
+                <td width="140">
+                
+    
+    <input id="txtCantidad" type="text" value="1" /></td>
+                <td width="85">
+                
+    <input type="button" onclick="generateBarcode();" value="Ver" style="width: 80px"/></td>
+                <td width="85">
+                  
+    <input type="button" value="Imprimir" onclick="PrintElem('#here_table')" style="width: 80px" /></td>
+                <td>
+                   
+                <asp:Button ID="btnSalir" runat="server" onclick="btnSalir_Click" 
+                    Text="Salir" Width="80px" />
+                </td>
+                </tr></table>
+            </div>
+
+
+        <div id="here_table"></div>
+</asp:Content>

@@ -16,8 +16,14 @@
 
     <script src="js/jquery.growl.js" type="text/javascript"></script>
 <link href="css/jquery.growl.css" rel="stylesheet" type="text/css" />
+<style>
+.fa-3x
+{
+    color: #1fa67a;
+}
 
-    <style>
+</style>
+    <style type="text/css">
         .AutoExtender
         {
             font-family: Verdana, Helvetica, sans-serif;
@@ -96,9 +102,11 @@
             <div class="divBusqueda">
             <table width="100%">
                 <tr>
+                    <td style="width:25px; padding-left:20px">
+                        <i class="fa fa-puzzle-piece fa-3x"></i>
+                    </td>
                     <td>
-                        <h1 class="label">
-                            Producto</h1>
+                        <h1 class="label">Producto</h1>
                     </td>
                 </tr>
                 </table>

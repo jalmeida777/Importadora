@@ -13,7 +13,13 @@
 <%@ Register assembly="DevExpress.Web.v11.2, Version=11.2.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" namespace="DevExpress.Web.ASPxPanel" tagprefix="dx" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+<style>
+.fa-3x
+{
+    color: #1fa67a;
+}
 
+</style>
 <style type="text/css">
         .InfoTable td
         {
@@ -42,25 +48,11 @@
 
             <table width="100%" cellpadding="3" cellspacing="3">
                 <tr>
-                    <td>
-                        <h1 class="label">
-                            Administración de Productos</h1>
+                    <td style="width:25px; padding-left:20px">
+                        <i class="fa fa-puzzle-piece fa-3x"></i>
                     </td>
-                </tr>
-                <tr>
                     <td>
-                        <table cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td>
-                                    <asp:CheckBox ID="chkEstado" runat="server" Checked="True" 
-                                        Text="Ver Habilitados" />
-                                </td>
-                                <td align="right" width="70">
-                                    &nbsp;</td>
-                                <td align="right" width="70">
-                                    &nbsp;</td>
-                            </tr>
-                        </table>
+                        <h1 class="label">Administración de Productos</h1>
                     </td>
                 </tr>
             </table>
@@ -78,13 +70,16 @@
                         onclick="btnNuevo_Click" />
                   
                 </td>
-                <td>
+                <td width="65">
                    
                     <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
                         onclick="btnSalir_Click" />
                    
+                </td>
+                <td>
+                    <asp:CheckBox ID="chkEstado" runat="server" Checked="True" 
+                        Text="Ver Habilitados" />
                     <asp:CheckBox ID="chkEditar" runat="server" Visible="False" />
-                   
                 </td>
                 </tr></table>
             </div>

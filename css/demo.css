@@ -199,10 +199,10 @@ font-weight: lighter;
 
 .combo
 {
-    border: 1px solid #1CC697;
+    border: 1px solid #1fa67a;
     padding: 4px 5px 4px 5px;
-    border-radius: 4px;
-    background-color: #1ED7A4;
+    border-radius: 2px;
+    background-color: #1fa67a;
     color: #FFFFFF;
     font-size: 12px;
     font-family: arial;

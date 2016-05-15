@@ -634,8 +634,6 @@ public partial class CrearProducto : System.Web.UI.Page
         TabContainer1.Enabled = false;
     }
 
-
-
     protected void callbackPanel_Callback(object sender, DevExpress.Web.ASPxClasses.CallbackEventArgsBase e)
     {
         if (Request.QueryString["n_IdProducto"] != null)
@@ -661,7 +659,7 @@ public partial class CrearProducto : System.Web.UI.Page
             daCodigo.Fill(dtCodigo);
             string v_CodigoInterno = dtCodigo.Rows[0]["v_CodigoInterno"].ToString();
 
-            Response.Redirect("BarcodeJquery.aspx?v_CodigoInterno=" + v_CodigoInterno);
+            Response.Redirect("BarcodeJquery.aspx?v_CodigoInterno=" + v_CodigoInterno + "&n_IdProducto=" + n_IdProducto);
         }
     }
 }
