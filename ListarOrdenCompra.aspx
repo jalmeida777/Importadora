@@ -11,7 +11,7 @@
         <div class="divBusqueda">
             <table width="100%">
                 <tr>
-                    <td colspan="12">
+                    <td colspan="8">
                         <h1 class="label">
                             Ordenes de Compra</h1>
                     </td>
@@ -39,29 +39,12 @@
                             Enabled="True" Format="dd/MM/yyyy" TargetControlID="txtFechaFinal">
                         </cc1:CalendarExtender>
                     </td>
-                    <td width="70" class="label">
-                        
-                        <asp:Label ID="Label3" runat="server" Font-Bold="False" Text="Sucursal:"></asp:Label>
-                        
+                    <td width="65" class="label">
+                        <asp:Label ID="Label3" runat="server" Text="Estado:"></asp:Label>
                     </td>
-                    <td width="210" class="label">
-                        <asp:DropDownList ID="ddlAlmacen" runat="server" 
-                            Width="200px" CssClass="combo">
+                    <td align="left">
+                        <asp:DropDownList ID="ddlEstado" runat="server" CssClass="combo" Width="150px">
                         </asp:DropDownList>
-                    </td>
-                    <td class="label" width="70">
-                        <asp:Label ID="Label4" runat="server" Font-Bold="False" Text="Producto:"></asp:Label>
-                    </td>
-                    <td width="200">
-                        <asp:TextBox ID="txtProducto" runat="server" 
-                            CssClass="inputNormal" 
-                            placeholder="Producto" Width="180px"></asp:TextBox>
-                    </td>
-                    <td width="110">
-                        <asp:CheckBox ID="chkHabilitado" runat="server" 
-                            Checked="True" Font-Bold="False" Text="Habilitados" />
-                    </td>
-                    <td align="right">
                         </td>
                     <td align="right" width="70">
                         &nbsp;</td>
@@ -110,9 +93,6 @@
                         <asp:BoundField DataField="d_FechaEmision" HeaderText="Fecha">
                         <ItemStyle Width="120px" />
                         </asp:BoundField>
-                        <asp:BoundField DataField="v_Descripcion" HeaderText="Sucursal Destino">
-                        <ItemStyle Width="100px" />
-                        </asp:BoundField>
                         <asp:BoundField DataField="v_Nombre" HeaderText="Proveedor">
                         <ItemStyle Width="120px" />
                         </asp:BoundField>
@@ -132,6 +112,9 @@
                         <asp:BoundField HeaderText="Total" DataField="f_Total" 
                             DataFormatString="{0:n2}">
                         <ItemStyle HorizontalAlign="Right" Width="100px" />
+                        </asp:BoundField>
+                        <asp:BoundField DataField="v_DescripcionEstado" HeaderText="Estado">
+                        <ItemStyle Width="100px" HorizontalAlign="Center" />
                         </asp:BoundField>
                     </Columns>
                     <FooterStyle CssClass="footer" />

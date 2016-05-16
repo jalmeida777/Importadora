@@ -9,7 +9,7 @@
             <div class="divBusqueda">
                 <table width="100%">
                     <tr>
-                        <td colspan="13">
+                        <td colspan="11">
                             <h1 class="label">
                                 Notas de Salida</h1>
                         </td>
@@ -42,14 +42,6 @@
                             <asp:DropDownList ID="ddlAlmacen" runat="server" 
                                 CssClass="combo" Width="150px">
                             </asp:DropDownList>
-                        </td>
-                        <td width="70">
-                            <asp:Label ID="Label4" runat="server" Text="Producto:"></asp:Label>
-                        </td>
-                        <td width="200">
-                            <asp:TextBox ID="txtProducto" runat="server" 
-                                CssClass="inputNormal" 
-                                placeholder="Producto" Width="180px"></asp:TextBox>
                         </td>
                         <td width="155">
                             <asp:CheckBox ID="chkHabilitado" runat="server" Checked="True" 

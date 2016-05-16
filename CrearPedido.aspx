@@ -295,17 +295,11 @@
         <tr>
             <td>
                 &nbsp;</td>
-            <td>
+            <td colspan="4">
                 <asp:LinkButton ID="lnkAgregarProducto" runat="server" Font-Bold="True" 
                                     ForeColor="#7C7BAD" onclick="lnkAgregarProducto_Click" 
                      ClientIDMode="Static" Enabled="False">Agregar Producto</asp:LinkButton>
             </td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
             <td>
                 &nbsp;</td>
         </tr>

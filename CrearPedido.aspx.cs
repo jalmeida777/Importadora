@@ -609,6 +609,8 @@ public partial class CrearPedido : System.Web.UI.Page
         panelProductos.Visible = true;
         tblGeneral.Visible = false;
         toolbar.Visible = false;
+        txtBuscar.Text = "";
+        txtBuscar.Focus();
     }
 
     void CalcularGrilla()

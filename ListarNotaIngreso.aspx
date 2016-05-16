@@ -11,7 +11,7 @@
         <div class="divBusqueda">
             <table width="100%">
                 <tr>
-                    <td colspan="12">
+                    <td colspan="10">
                         <h1 class="label">
                             Notas de Ingreso</h1>
                     </td>
@@ -45,13 +45,6 @@
                     <td width="175">
                         <asp:DropDownList ID="ddlAlmacen" runat="server" CssClass="combo" Width="170px">
                         </asp:DropDownList>
-                    </td>
-                    <td width="70">
-                        <asp:Label ID="Label4" runat="server" Font-Bold="False" Text="Producto:"></asp:Label>
-                    </td>
-                    <td width="200">
-                        <asp:TextBox ID="txtProducto" runat="server" 
-                            CssClass="inputNormal" Width="180px" placeholder="Producto"></asp:TextBox>
                     </td>
                     <td width="110">
                         <asp:CheckBox ID="chkHabilitado" runat="server" 

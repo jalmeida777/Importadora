@@ -143,14 +143,12 @@
                 &nbsp;</td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933" 
                 width="120">
-                <asp:Label ID="Label3" runat="server" Text="Sucursal:" ForeColor="#4C4C4C"></asp:Label>
+                <asp:Label ID="Label6" runat="server" Text="Proveedor:"></asp:Label>
             </td>
             <td style="padding-left: 5px">
-                <asp:DropDownList ID="ddlAlmacen" runat="server" Width="150px" CssClass="combo">
+                <asp:DropDownList ID="ddlProveedor" runat="server" CssClass="combo" 
+                    Width="200px">
                 </asp:DropDownList>
-
-                <asp:Label runat="server" Text="*" Font-Bold="True" Font-Size="10pt" 
-                    ForeColor="#18AC85" ID="Label16"></asp:Label>
 
             </td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933" 
@@ -166,9 +164,6 @@
                         TargetControlID="txtFechaInicial" Format="dd/MM/yyyy">
                         </cc1:CalendarExtender>
 
-                <asp:Label runat="server" Text="*" Font-Bold="True" Font-Size="10pt" 
-                            ForeColor="#18AC85" ID="Label19"></asp:Label>
-
                     </td>
             <td style="padding-left: 5px">
                         &nbsp;</td>
@@ -177,15 +172,10 @@
             <td>
                 &nbsp;</td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
-                <asp:Label ID="Label6" runat="server" Text="Proveedor:"></asp:Label>
+                <asp:Label ID="Label7" runat="server" Text="Moneda:"></asp:Label>
             </td>
             <td style="padding-left: 5px">
-                <asp:DropDownList ID="ddlProveedor" runat="server" CssClass="combo" 
-                    Width="200px">
-                </asp:DropDownList>
-
-                <asp:Label runat="server" Text="*" Font-Bold="True" Font-Size="10pt" 
-                    ForeColor="#18AC85" ID="Label17"></asp:Label>
+                <asp:Label ID="Label23" runat="server" Font-Bold="True" Text="Soles"></asp:Label>
 
             </td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
@@ -195,28 +185,6 @@
                 <asp:TextBox ID="txtReferencia" runat="server" CssClass="inputNormal" 
                     MaxLength="20"></asp:TextBox>
             </td>
-            <td style="padding-left: 5px">
-                &nbsp;</td>
-        </tr>
-        <tr>
-            <td>
-                &nbsp;</td>
-            <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
-                <asp:Label ID="Label7" runat="server" Text="Moneda:"></asp:Label>
-            </td>
-            <td style="padding-left: 5px">
-                <asp:DropDownList ID="ddlMoneda" runat="server" CssClass="combo" Width="100px" 
-                    AutoPostBack="True" onselectedindexchanged="ddlMoneda_SelectedIndexChanged">
-                </asp:DropDownList>
-
-                <asp:Label runat="server" Text="*" Font-Bold="True" Font-Size="10pt" 
-                    ForeColor="#18AC85" ID="Label18"></asp:Label>
-
-            </td>
-            <td>
-                &nbsp;</td>
-            <td style="padding-left: 5px">
-                &nbsp;</td>
             <td style="padding-left: 5px">
                 &nbsp;</td>
         </tr>
@@ -266,46 +234,17 @@
                             <ItemStyle Width="50px" />
                         </asp:TemplateField>
                         <asp:BoundField DataField="Producto" HeaderText="Producto" />
-                        <asp:TemplateField HeaderText="Costo Total">
-                            <ItemTemplate>
-                                <asp:TextBox ID="txtCosto" runat="server" CssClass="inputNormalMoneda" 
-                                    onkeypress="return ValidaNumeros(event);" Width="45px" AutoPostBack="True" 
-                                    ontextchanged="txtCosto_TextChanged" 
-                                    Text='<%# String.Format("{0:n2}", Eval("CostoTotal") ) %>'></asp:TextBox>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:TextBox ID="TextBox3" runat="server"></asp:TextBox>
-                            </EditItemTemplate>
-                            <ItemStyle Width="50px" />
-                        </asp:TemplateField>
-                        <asp:BoundField HeaderText="Costo Cambio Día S/." DataField="CostoCambio" 
-                            DataFormatString="{0:n2}" >
-                        <ItemStyle Width="50px" HorizontalAlign="Right" />
-                        </asp:BoundField>
-                        <asp:BoundField HeaderText="Costo Cambio Play S/." DataField="CostoCambioPlay" 
-                            DataFormatString="{0:n2}" >
-                        <ItemStyle Width="50px" HorizontalAlign="Right" />
-                        </asp:BoundField>
+
                         <asp:BoundField HeaderText="Costo Unidad S/." DataField="CostoUnitario" 
                             DataFormatString="{0:n2}" >
-                        <ItemStyle Width="50px" HorizontalAlign="Right" />
+                        <ItemStyle Width="100px" HorizontalAlign="Right" />
                         </asp:BoundField>
-                        <asp:TemplateField HeaderText="Utilidad %">
-                            <ItemTemplate>
-                                <asp:TextBox ID="txtUtilidad" runat="server" CssClass="inputNormalMoneda" 
-                                    MaxLength="3" Width="45px" onkeypress="return ValidaEntero(event);" 
-                                    AutoPostBack="True" ontextchanged="txtUtilidad_TextChanged" 
-                                    Text='<%# Bind("Utilidad") %>'></asp:TextBox>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:TextBox ID="TextBox4" runat="server"></asp:TextBox>
-                            </EditItemTemplate>
-                            <ItemStyle Width="50px" />
-                        </asp:TemplateField>
-                        <asp:BoundField HeaderText="P.V.P. S/." DataField="Precio" 
-                            DataFormatString="{0:n2}" >
-                        <ItemStyle Width="50px" HorizontalAlign="Right" />
+
+                        <asp:BoundField HeaderText="Costo Total S/." DataField="CostoTotal" 
+                            DataFormatString="{0:n2}">
+                        <ItemStyle Width="100px" HorizontalAlign="Right" />
                         </asp:BoundField>
+
                         <asp:TemplateField>
                             <ItemTemplate>
                                 <asp:ImageButton ID="ibQuitar" runat="server" CommandName="delete" 
@@ -313,8 +252,9 @@
                             </ItemTemplate>
                             <ItemStyle HorizontalAlign="Center" Width="20px" />
                         </asp:TemplateField>
+
                     </Columns>
-                    <FooterStyle CssClass="footer" />
+                    <FooterStyle CssClass="footer" Font-Bold="True" ForeColor="Black" />
                 </asp:GridView>
                 
                 <cc1:RoundedCornersExtender ID="panelProductos_RoundedCornersExtender" 

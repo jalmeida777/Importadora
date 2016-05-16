@@ -32,9 +32,8 @@ public partial class ListarNotaIngreso : System.Web.UI.Page
             string Estado = "1";
             if (chkHabilitado.Checked){Estado = "1";}else{Estado = "0";}
             string Almacen = ddlAlmacen.SelectedItem.Text;
-            string Producto = txtProducto.Text.Trim();
 
-            SqlDataAdapter da = new SqlDataAdapter("Play_NotaIngreso_Listar '" + FechaInicial + "','" + FechaFinal + "','" + Almacen + "','" + Producto + "'," + Estado, conexion);
+            SqlDataAdapter da = new SqlDataAdapter("Play_NotaIngreso_Listar '" + FechaInicial + "','" + FechaFinal + "','" + Almacen + "'," + Estado, conexion);
             DataTable dt = new DataTable();
             da.Fill(dt);
             gvNotaIngreso.DataSource = dt;

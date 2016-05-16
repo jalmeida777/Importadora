@@ -82,7 +82,24 @@
                         onclick="btnSalir_Click" />
                   
                 </td>
+                <td width="65">
+                    &nbsp;</td>
+                <td width="155">
+                    <asp:Button ID="btnOrdenCompra" runat="server" onclick="btnOrdenCompra_Click" 
+                        Text="Orden de Compra" Width="150px" />
+                </td>
+                <td width="155">
+                    <asp:Button ID="btnNotaIngreso" runat="server" onclick="btnNotaIngreso_Click" 
+                        Text="Nota de Ingreso" Width="150px" />
+                </td>
+                <td width="155">
+                    <asp:Button ID="btnNotaSalida" runat="server" onclick="btnNotaSalida_Click" 
+                        Text="Nota de Salida" Width="150px" />
+                </td>
                 <td>
+                   
+                    <asp:Button ID="btnTraslado" runat="server" onclick="btnTraslado_Click" 
+                        Text="Traslado Entre Almacenes" />
                    
                 </td>
                 </tr></table>
