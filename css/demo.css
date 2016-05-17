@@ -309,3 +309,34 @@ padding: 0px;
 {
     color: #ccc;
     }
+    
+    .precio
+{
+    padding: 1px 3px 4px 3px;
+    background-color: #7F82AC;
+    height: 15px;
+    right: 8px;
+    top: 8px;
+    color: #FFFFFF;
+    float: right;
+    position: absolute;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    vertical-align: middle;
+}
+        
+    .stock
+{
+    padding: 1px 3px 4px 3px;
+    background-color: #FF9966;
+    height: 15px;
+    right: 8px;
+    top: 31px;
+    color: #FFFFFF;
+    float: right;
+    position: absolute;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}

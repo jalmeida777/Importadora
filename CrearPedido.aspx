@@ -27,6 +27,10 @@
              __doPostBack(hdnValueID, "");
          }
 
+         function radio() {
+
+             document.getElementById("txtBuscar").focus();
+         }
 
  
  </script>
@@ -229,8 +233,7 @@
             </td>
             <td style="padding-left: 5px">
                 <asp:DropDownList ID="ddlFormaPago" runat="server" CssClass="combo" 
-                    Width="220px" AutoPostBack="True" 
-                    onselectedindexchanged="ddlFormaPago_SelectedIndexChanged">
+                    Width="200px">
                 </asp:DropDownList>
 
             </td>
@@ -251,14 +254,13 @@
             <td>
                 &nbsp;</td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
-                <asp:Label ID="Label40" runat="server" Text="Banco"></asp:Label>
-            </td>
+                                        <asp:Label ID="Label50" runat="server" Text="Vendedor"></asp:Label>
+                                    </td>
             <td style="padding-left: 5px">
-                <asp:DropDownList ID="ddlBanco" runat="server" CssClass="combo" Enabled="False" 
-                    Width="150px">
-                </asp:DropDownList>
-
-            </td>
+                                        <asp:DropDownList ID="ddlVendedor" runat="server" CssClass="combo" 
+                                            Width="200px">
+                                        </asp:DropDownList>
+                                    </td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
                 <asp:Label ID="Label42" runat="server" Text="Sucursal"></asp:Label>
             </td>
@@ -379,20 +381,7 @@
                 <table border="0" cellpadding="5" cellspacing="0" width="100%">
                     <tr>
                         <td align="left">
-                            <table width="100%">
-                                <tr>
-                                    <td align="left" 
-                                        style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933" 
-                                        width="120">
-                                        <asp:Label ID="Label50" runat="server" Text="Vendedor:"></asp:Label>
-                                    </td>
-                                    <td align="left" style="padding-left: 5px">
-                                        <asp:DropDownList ID="ddlVendedor" runat="server" CssClass="combo" 
-                                            Width="200px">
-                                        </asp:DropDownList>
-                                    </td>
-                                </tr>
-                            </table>
+                                        <asp:Label ID="Label53" runat="server" Text="Observaciones"></asp:Label>
                         </td>
                         <td align="right" width="100">
                             <asp:Label ID="Label20" runat="server" Text="SubTotal:"></asp:Label>
@@ -400,28 +389,32 @@
                         <td align="right" width="20">
                             <asp:Label ID="lblSigno1" runat="server" Text="S/."></asp:Label>
                         </td>
-                        <td align="right" width="100">
+                        <td align="right" width="90">
                             <asp:Label ID="lblSubTotal" runat="server"></asp:Label>
                         </td>
+                        <td align="right" width="25">
+                            &nbsp;</td>
                     </tr>
                     <tr>
-                        <td align="left">
-                            &nbsp;</td>
+                        <td align="left" rowspan="4" valign="top">
+                <asp:TextBox ID="txtObservacion" runat="server" Height="80px" 
+                    TextMode="MultiLine" Width="380px" placeholder="Comentarios"></asp:TextBox>
+                        </td>
                         <td align="right" width="100">
                             <asp:Label ID="Label52" runat="server" Text="Descuento:"></asp:Label>
                         </td>
                         <td align="right" width="20">
                             <asp:Label ID="lblSigno6" runat="server" Text="S/."></asp:Label>
                         </td>
-                        <td align="right" width="100">
+                        <td align="right" width="90">
                             <asp:TextBox ID="txtDescuento" runat="server" AutoPostBack="True" 
                                 CssClass="inputNormalMoneda" ontextchanged="txtDescuento_TextChanged" onkeypress="return ValidaNumeros(event);"
                                 Width="60px">0.00</asp:TextBox>
                         </td>
+                        <td align="right" width="25">
+                            &nbsp;</td>
                     </tr>
                     <tr>
-                        <td>
-                            &nbsp;</td>
                         <td align="right" 
                             style="border-top-style: solid; border-top-width: 1px; border-top-color: #999999">
                             <asp:Label ID="Label22" runat="server" Font-Bold="True" Font-Size="12pt" 
@@ -437,10 +430,10 @@
                             style="border-top-style: solid; border-top-width: 1px; border-top-color: #999999">
                             <asp:Label ID="lblTotal" runat="server" Font-Bold="True" Font-Size="12pt"></asp:Label>
                         </td>
+                        <td align="right">
+                            &nbsp;</td>
                     </tr>
                     <tr>
-                        <td>
-                            &nbsp;</td>
                         <td align="right" 
                             style="border-top-style: solid; border-top-width: 1px; border-top-color: #999999">
                             <asp:Label ID="Label25" runat="server" Text="Pagó con:"></asp:Label>
@@ -460,10 +453,11 @@
                                 CssClass="inputNormalMoneda" Width="60px" 
                                 onkeypress="return ValidaNumeros(event);" ontextchanged="txtPago_TextChanged"></asp:TextBox>
                         </td>
+                        <td align="right">
+
+                            &nbsp;</td>
                     </tr>
                     <tr>
-                        <td>
-                            &nbsp;</td>
                         <td align="right">
                             <asp:Label ID="Label26" runat="server" Text="Vuelto:"></asp:Label>
                         </td>
@@ -474,6 +468,8 @@
                         <td align="right">
                             <asp:Label ID="lblVuelto" runat="server"></asp:Label>
                         </td>
+                        <td align="right">
+                            &nbsp;</td>
                     </tr>
                 </table>
             </td>
@@ -483,23 +479,8 @@
         <tr>
             <td>
                 &nbsp;</td>
-            <td colspan="4">
-                <asp:TextBox ID="txtObservacion" runat="server" Height="80px" 
-                    TextMode="MultiLine" Width="380px" placeholder="Comentarios"></asp:TextBox>
-            </td>
-            <td>
-                &nbsp;</td>
-        </tr>
-        <tr>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
+            <td colspan="4" 
+                style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #CCCCCC;">
                 &nbsp;</td>
             <td>
                 &nbsp;</td>
@@ -871,7 +852,8 @@
                                 <table class="style1">
                                     <tr>
                                         <td align="right">
-                                            <asp:RadioButtonList ID="rblTipo" runat="server" RepeatDirection="Horizontal">
+                                            <asp:RadioButtonList ID="rblTipo" runat="server" RepeatDirection="Horizontal" 
+                                                onchange="radio()" ClientIDMode="Static">
                                                 <asp:ListItem Selected="True" Value="C">Código</asp:ListItem>
                                                 <asp:ListItem Value="P">Nombre</asp:ListItem>
                                             </asp:RadioButtonList>
@@ -879,7 +861,7 @@
                                         <td align="right" width="170">
                                             <asp:TextBox ID="txtBuscar" runat="server" AutoPostBack="True" 
                                                 CssClass="inputsProducto" ontextchanged="txtBuscar_TextChanged" 
-                                                placeholder="Buscar Productos" Width="150px"></asp:TextBox>
+                                                placeholder="Buscar Productos" Width="150px" ClientIDMode="Static"></asp:TextBox>
                                         </td>
                                     </tr>
                                 </table>
@@ -929,14 +911,11 @@
                                                         <table style="position: relative">
                                                             <tr>
                                                                 <td height="100">
-                                                                    <div align="right" 
-                                                                        style="padding: 2px 3px 1px 3px; background-color: #7F82AC; height: 15px; right: 8px; top: 8px; color: #FFFFFF; float: right; position: absolute;">
+                                                                    <div class="precio">
                                                                         <asp:Label ID="lblPrecio" runat="server" Font-Bold="True" Font-Size="8pt" 
                                                                             ForeColor="White" Text='<%# String.Format("{0:C}", Eval("f_Precio") ) %>'></asp:Label>
                                                                     </div>
-                                                                    <div align="right" 
-                                                                        
-                                                                        style="padding: 2px 3px 1px 3px; background-color: #FF9966; height: 15px; right: 8px; top: 29px; color: #FFFFFF; float: right; position: absolute;">
+                                                                    <div class="stock">
                                                                         <asp:Label ID="lblStock" runat="server" Font-Bold="True" Font-Size="8pt" 
                                                                             ForeColor="White" Text='<%# Eval("f_StockContable") %>'></asp:Label>
                                                                     </div>

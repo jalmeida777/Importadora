@@ -42,10 +42,8 @@ public partial class CrearPedido : System.Web.UI.Page
                 txtCliente.Text = dtPedido.Rows[0]["v_Nombre"].ToString();
                 txtFechaInicial.Text = DateTime.Parse(dtPedido.Rows[0]["d_FechaEmision"].ToString()).ToShortDateString();
                 ddlFormaPago.SelectedValue = dtPedido.Rows[0]["n_IdFormaPago"].ToString();
-                ddlFormaPago_SelectedIndexChanged(null, null);
                 ddlMoneda.SelectedValue = dtPedido.Rows[0]["n_IdMoneda"].ToString();
                 ddlMoneda_SelectedIndexChanged(null, null);
-                ddlBanco.SelectedValue = dtPedido.Rows[0]["n_IdBanco"].ToString();
                 ddlTienda.SelectedValue = dtPedido.Rows[0]["n_IdAlmacen"].ToString();
                 lblSubTotal.Text = decimal.Parse(dtPedido.Rows[0]["f_SubTotal"].ToString()).ToString("N2");
                 lblTotal.Text = decimal.Parse(dtPedido.Rows[0]["f_Total"].ToString()).ToString("N2");
@@ -186,8 +184,20 @@ public partial class CrearPedido : System.Web.UI.Page
         DataTable dt = new DataTable();
         SqlDataAdapter da = new SqlDataAdapter("Play_Producto_Listar_Imagenes_Venta '" + Familia + "','" + SubFamilia + "','" + Busqueda + "'," + IdAlmacen + ",'" + tipo + "'", conexion);
         da.Fill(dt);
-        gvProductos.DataSource = dt;
-        gvProductos.DataBind();
+        if (tipo == "P")
+        {
+            gvProductos.DataSource = dt;
+            gvProductos.DataBind();
+        }
+        else if(tipo == "C" && dt.Rows.Count == 1)
+        {
+            string n_IdProducto = dt.Rows[0]["n_IdProducto"].ToString();
+            string Descripcion  = dt.Rows[0]["v_Descripcion"].ToString();
+            string Precio = dt.Rows[0]["f_Precio"].ToString();
+            string Codigo = dt.Rows[0]["v_CodigoInterno"].ToString();
+            string stock = dt.Rows[0]["f_StockContable"].ToString();
+            agregarProducto(n_IdProducto, Descripcion, Precio, Codigo, stock);
+        }
     }
 
     void ListarSucursal() 
@@ -322,15 +332,6 @@ public partial class CrearPedido : System.Web.UI.Page
 
                     cmdPedido.Parameters.AddWithValue("@n_IdFormaPago", ddlFormaPago.SelectedValue);
 
-                    if (ddlBanco.Items.Count > 0)
-                    {
-                        cmdPedido.Parameters.AddWithValue("@n_IdBanco", ddlBanco.SelectedValue);
-                    }
-                    else
-                    {
-                        cmdPedido.Parameters.AddWithValue("@n_IdBanco", DBNull.Value);
-                    }
-
                     cmdPedido.Parameters.AddWithValue("@f_SubTotal", lblSubTotal.Text);
                     cmdPedido.Parameters.AddWithValue("@f_Impuesto", 0);
                     cmdPedido.Parameters.AddWithValue("@f_Total", lblTotal.Text);
@@ -379,15 +380,6 @@ public partial class CrearPedido : System.Web.UI.Page
                     }
 
                     cmd.Parameters.AddWithValue("@n_IdFormaPago", ddlFormaPago.SelectedValue);
-
-                    if (ddlBanco.Items.Count > 0)
-                    {
-                        cmd.Parameters.AddWithValue("@n_IdBanco", ddlBanco.SelectedValue);
-                    }
-                    else
-                    {
-                        cmd.Parameters.AddWithValue("@n_IdBanco", DBNull.Value);
-                    }
 
                     cmd.Parameters.AddWithValue("@n_IdMoneda", ddlMoneda.SelectedValue);
 
@@ -577,7 +569,6 @@ public partial class CrearPedido : System.Web.UI.Page
         txtCliente.Enabled = false;
         txtFechaInicial.Enabled = false;
         ddlFormaPago.Enabled = false;
-        ddlBanco.Enabled = false;
         btnCliente.Enabled = false;
         ddlMoneda.Enabled = false;
         ddlTienda.Enabled = false;
@@ -818,6 +809,60 @@ public partial class CrearPedido : System.Web.UI.Page
         string SubFamilia = MenuSubFamilia.SelectedItem.Text;
         string Busqueda = txtBuscar.Text.Trim();
         ListarProductos(Familia, SubFamilia, Busqueda, ddlTienda.SelectedValue, rblTipo.SelectedItem.Value);
+    }
+
+    void agregarProducto(string n_IdProducto, string Descripcion, string Precio, string Codigo, string Stock) 
+    {
+
+        //Validar que el producto exista
+        DataTable dt = new DataTable();
+        dt = (DataTable)Session["Detalle"];
+        string n_IdProductoTabla = "";
+        bool encontrado = false;
+        int filaEncontrada = 0;
+
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            n_IdProductoTabla = dt.Rows[i]["n_IdProducto"].ToString();
+            if (n_IdProducto.Trim() == n_IdProductoTabla.Trim())
+            {
+                encontrado = true;
+                filaEncontrada = i;
+                break;
+            }
+        }
+
+        if (encontrado == false)
+        {
+
+            DataRow dr;
+            dr = dt.NewRow();
+
+            dr["i_Cantidad"] = "1";
+            dr["Producto"] = Descripcion;
+            dr["f_PrecioUnitario"] = Precio;
+            dr["f_PrecioTotal"] = Precio;
+            dr["n_IdProducto"] = n_IdProducto;
+            dr["Codigo"] = Codigo;
+            dr["Stock"] = Stock;
+
+            dt.Rows.Add(dr);
+
+        }
+        else if (encontrado == true)
+        {
+            int cantidad = int.Parse(dt.Rows[filaEncontrada]["i_Cantidad"].ToString());
+            cantidad = cantidad + 1;
+            dt.Rows[filaEncontrada]["i_Cantidad"] = cantidad;
+        }
+
+        Session["Detalle"] = dt;
+        gv.DataSource = dt;
+        gv.DataBind();
+        CalcularGrilla();
+        panelProductos.Visible = false;
+        tblGeneral.Visible = true;
+        toolbar.Visible = true;
     }
 
     protected void gvProductos_ItemCommand(object source, DataListCommandEventArgs e)
@@ -1156,33 +1201,6 @@ public partial class CrearPedido : System.Web.UI.Page
         tblCliente.Visible = true;
         tblGeneral.Visible = false;
         toolbar.Visible = false;
-    }
-
-    protected void ddlFormaPago_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        if (ddlFormaPago.SelectedIndex > 0) //Tarjeta
-        {
-            ddlBanco.Enabled = true;
-            ListarBancos();
-        }
-        else 
-        {
-            ddlBanco.Enabled = false;
-            ddlBanco.SelectedIndex = 0;
-        }
-
-    }
-
-    void ListarBancos() 
-    {
-        SqlDataAdapter da = new SqlDataAdapter("Play_Banco_Listar", conexion);
-        DataTable dt = new DataTable();
-        da.Fill(dt);
-        ddlBanco.DataSource = dt;
-        ddlBanco.DataTextField = "v_Descripcion";
-        ddlBanco.DataValueField = "n_IdBanco";
-        ddlBanco.DataBind();
-        ddlBanco.SelectedIndex = 0;
     }
 
     void ListarDistrito()
