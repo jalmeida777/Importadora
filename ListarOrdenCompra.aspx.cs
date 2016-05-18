@@ -52,7 +52,7 @@ public partial class ListarOrdenCompra : System.Web.UI.Page
                 Estado = ddlEstado.SelectedItem.Text;
             }
 
-            SqlDataAdapter da = new SqlDataAdapter("Play_OrdenCompra_Listar '" + FechaInicial + "','" + FechaFinal + "'," + Estado, conexion);
+            SqlDataAdapter da = new SqlDataAdapter("Play_OrdenCompra_Listar '" + FechaInicial + "','" + FechaFinal + "','" + Estado + "'", conexion);
             DataTable dt = new DataTable();
             da.Fill(dt);
             gvOrdenCompra.DataSource = dt;

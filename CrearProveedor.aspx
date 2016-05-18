@@ -66,33 +66,23 @@
             <td>
                 &nbsp;</td>
             <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
+                <asp:Label ID="Label1" runat="server" Text="Código:" Visible="False"></asp:Label>
+                <asp:Label ID="lblCodigo" runat="server" Visible="False"></asp:Label>
+            </td>
             <td width="20">
                 &nbsp;</td>
         </tr>
         <tr>
             <td height="10" width="20">
                 &nbsp;</td>
-            <td width="120">
+            <td width="100">
                 <asp:Label ID="Label17" runat="server" Text="Ruc:"></asp:Label>
             </td>
             <td>
                 <asp:TextBox ID="txtRuc" runat="server" CssClass="inputNormal" MaxLength="11" 
                     Width="90px"></asp:TextBox>
-            </td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                <asp:Label ID="Label1" runat="server" Text="Código:" Visible="False"></asp:Label>
-                <asp:Label ID="lblCodigo" runat="server" Visible="False"></asp:Label>
+                <asp:Label ID="Label22" runat="server" Font-Bold="True" ForeColor="#18AC85" 
+                        Text="*"></asp:Label>
             </td>
             <td width="20">
                 &nbsp;</td>
@@ -109,12 +99,6 @@
                 <asp:Label ID="Label16" runat="server" Font-Bold="True" ForeColor="#18AC85" 
                         Text="*"></asp:Label>
             </td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
             <td width="20">
                 &nbsp;</td>
         </tr>
@@ -128,12 +112,6 @@
                 <asp:TextBox ID="txtTelefono" runat="server" CssClass="inputNormal" 
                     MaxLength="50"></asp:TextBox>
             </td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
             <td width="20">
                 &nbsp;</td>
         </tr>
@@ -147,12 +125,6 @@
                 <asp:TextBox ID="txtDireccion" runat="server" CssClass="inputNormal" 
                     MaxLength="100" Width="300px"></asp:TextBox>
             </td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
             <td width="20">
                 &nbsp;</td>
         </tr>
@@ -166,12 +138,6 @@
                 <asp:TextBox ID="txtContacto" runat="server" CssClass="inputNormal" 
                     MaxLength="50" Width="300px"></asp:TextBox>
             </td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
             <td width="20">
                 &nbsp;</td>
         </tr>
@@ -185,12 +151,6 @@
                 <asp:TextBox ID="txtEmail" runat="server" CssClass="inputNormal" MaxLength="50" 
                     Width="300px"></asp:TextBox>
             </td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
             <td width="20">
                 &nbsp;</td>
         </tr>
@@ -203,23 +163,11 @@
             <td>
                 <asp:CheckBox ID="chkEstado" runat="server" Checked="True" Text="Habilitado" />
             </td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
             <td width="20">
                 &nbsp;</td>
         </tr>
         <tr>
             <td height="10" width="20">
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
                 &nbsp;</td>
             <td>
                 &nbsp;</td>

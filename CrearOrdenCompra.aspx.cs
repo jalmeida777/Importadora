@@ -18,73 +18,9 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         {
             if (Session["Detalle"] != null) { Session.Remove("Detalle"); }
             txtFechaInicial.Text = DateTime.Now.ToShortDateString();
-            ListarProveedor();
-            ListarCategoria();
             InicializarGrilla();
-            ListarProductos("","","");
+            tblProveedor.Visible = false;
         }
-    }
-
-
-    public void ListarProveedor()
-    {
-        DataTable dt = new System.Data.DataTable();
-        SqlDataAdapter da = new SqlDataAdapter("Play_Proveedor_Combo", conexion);
-        da.Fill(dt);
-        ddlProveedor.DataSource = dt;
-        ddlProveedor.DataTextField = "v_Nombre";
-        ddlProveedor.DataValueField = "n_IdProveedor";
-        ddlProveedor.DataBind();
-        ddlProveedor.Items.Insert(0, "SELECCIONAR");
-        ddlProveedor.SelectedIndex = 0;
-    }
-
-    void ListarCategoria()
-    {
-        DataTable dt = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter("Play_Categoria_Combo", conexion);
-        da.Fill(dt);
-
-        MenuItem mnuNewMenuItem;
-        string v_Descripcion;
-        string n_IdCategoria;
-        for (int i = 0; i < dt.Rows.Count; i++)
-        {
-            v_Descripcion = dt.Rows[i]["v_Descripcion"].ToString();
-            n_IdCategoria = dt.Rows[i]["n_IdCategoria"].ToString();
-            mnuNewMenuItem = new MenuItem(v_Descripcion, n_IdCategoria);
-            MenuFamilia.Items.Add(mnuNewMenuItem);
-        }
-
-    }
-
-    void ListarSubCategorias()
-    {
-        MenuSubFamilia.Items.Clear();
-        string n_IdCategoria = MenuFamilia.SelectedItem.Value;
-        DataTable dt = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter("Play_SubCategoria_Combo " + n_IdCategoria, conexion);
-        da.Fill(dt);
-
-        MenuItem mnuNewMenuItem;
-        string v_Descripcion;
-        string n_IdSubCategoria;
-        for (int i = 0; i < dt.Rows.Count; i++)
-        {
-            v_Descripcion = dt.Rows[i]["v_Descripcion"].ToString();
-            n_IdSubCategoria = dt.Rows[i]["n_IdSubCategoria"].ToString();
-            mnuNewMenuItem = new MenuItem(v_Descripcion, n_IdSubCategoria);
-            MenuSubFamilia.Items.Add(mnuNewMenuItem);
-        }
-    }
-
-    void ListarProductos(string Familia, string SubFamilia, string Busqueda)
-    {
-        DataTable dt = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter("Play_Producto_Listar_Imagenes '" + Familia + "','" + SubFamilia + "','" + Busqueda + "'", conexion);
-        da.Fill(dt);
-        gvProductos.DataSource = dt;
-        gvProductos.DataBind();
     }
 
     void InicializarGrilla()
@@ -107,20 +43,8 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         Response.Redirect("ListarOrdenCompra.aspx");
     }
 
-    protected void lnkAgregarProducto_Click(object sender, EventArgs e)
-    {
-        panelProductos.Visible = true;
-        tblGeneral.Visible = false;
-    }
-
     protected void btnGuardar_Click(object sender, ImageClickEventArgs e)
     {
-        if (ddlProveedor.SelectedIndex == 0) 
-        {
-            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Debe seleccionar un proveedor' });</script>", false);
-            ddlProveedor.Focus();
-            return;
-        }
 
         if (Session["dtUsuario"] != null)
         {
@@ -142,7 +66,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                 cmd.Transaction = tran;
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "Play_OrdenCompra_Registrar";
-                cmd.Parameters.AddWithValue("@n_IdProveedor", ddlProveedor.SelectedValue);
+                cmd.Parameters.AddWithValue("@n_IdProveedor", "");
                 cmd.Parameters.AddWithValue("@n_IdMoneda", 1);
                 cmd.Parameters.AddWithValue("@d_FechaEmision", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
                 cmd.Parameters.AddWithValue("@v_Referencia", txtReferencia.Text.Trim().ToUpper());
@@ -204,6 +128,9 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
                 tran.Commit();
                 BloquearOrdenCompra();
+                lblUsuarioRegistro.Text = dtUsuario.Rows[0]["v_Usuario"].ToString();
+                lblFechaRegistro.Text = DateTime.Now.ToString();
+                ibUsuarioRegistro.ImageUrl = dtUsuario.Rows[0]["v_RutaFoto"].ToString();
                 ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Orden de Compra Registrada Satisfactoriamente' });</script>", false);
             }
             catch (Exception ex)
@@ -242,89 +169,6 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         catch (Exception)
         {
             
-        }
-    }
-
-    protected void MenuFamilia_MenuItemClick(object sender, MenuEventArgs e)
-    {
-        ListarSubCategorias();
-        string Familia = MenuFamilia.SelectedItem.Text;
-        string Busqueda = txtBuscar.Text.Trim();
-        ListarProductos(Familia, "", Busqueda);
-    }
-
-    protected void ibTodos_Click(object sender, ImageClickEventArgs e)
-    {
-        ListarProductos("", "", "");
-    }
-
-    protected void MenuSubFamilia_MenuItemClick(object sender, MenuEventArgs e)
-    {
-        string Familia = MenuFamilia.SelectedItem.Text;
-        string SubFamilia = MenuSubFamilia.SelectedItem.Text;
-        string Busqueda = txtBuscar.Text.Trim();
-        ListarProductos(Familia, SubFamilia, Busqueda);
-    }
-
-    protected void txtBuscar_TextChanged(object sender, EventArgs e)
-    {
-        string Busqueda = txtBuscar.Text.Trim();
-        ListarProductos("", "", Busqueda);
-        txtBuscar.Focus();
-    }
-
-    protected void gvProductos_ItemCommand(object source, DataListCommandEventArgs e)
-    {
-        if (e.CommandName == "AgregarProducto")
-        {
-            string n_IdProducto = gvProductos.DataKeys[e.Item.ItemIndex].ToString();
-            Label lblDescripcion = (Label)gvProductos.Items[e.Item.ItemIndex].FindControl("lblDescripcion");
-            string Descripcion = lblDescripcion.Text;
-            Label lblPrecio = (Label)gvProductos.Items[e.Item.ItemIndex].FindControl("lblPrecio2");
-            double Precio = double.Parse(lblPrecio.Text);
-
-            //Validar que el producto exista
-            DataTable dt = new DataTable();
-            dt = (DataTable)Session["Detalle"];
-            string n_IdProductoTabla = "";
-            bool encontrado = false;
-
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                n_IdProductoTabla = dt.Rows[i]["n_IdProducto"].ToString();
-                if (n_IdProducto.Trim() == n_IdProductoTabla.Trim()) 
-                {
-                    encontrado = true;
-                    break;
-                }
-            }
-
-            if (encontrado == false)
-            {
-
-                DataRow dr;
-                dr = dt.NewRow();
-
-                dr["Cantidad"] = "1";
-                dr["Producto"] = Descripcion;
-                dr["CostoUnitario"] = Precio;
-                dr["CostoTotal"] = Precio;
-                dr["n_IdProducto"] = n_IdProducto;
-
-                dt.Rows.Add(dr);
-                Session["Detalle"] = dt;
-                gv.DataSource = dt;
-                gv.DataBind();
-                CalcularGrilla();
-                panelProductos.Visible = false;
-                tblGeneral.Visible = true;
-            }
-            else 
-            {
-
-                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Producto Repetido' });</script>", false);
-            }
-
         }
     }
 
@@ -407,19 +251,199 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
     void BloquearOrdenCompra() 
     {
-        ddlProveedor.Enabled = false;
         txtFechaInicial.Enabled = false;
         txtReferencia.Enabled = false;
-        lnkAgregarProducto.Enabled = false;
         gv.Enabled = false;
         txtObservacion.Enabled = false;
         btnGuardar.Enabled = false;
     }
 
-    protected void ibCerrarProductos_Click(object sender, ImageClickEventArgs e)
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> BuscarProveedores(string prefixText, int count)
     {
-        panelProductos.Visible = false;
-        tblGeneral.Visible = true;
+        using (SqlConnection conn = new SqlConnection())
+        {
+            conn.ConnectionString = ConfigurationManager.ConnectionStrings["conexion"].ConnectionString;
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.CommandText = "select v_Nombre,n_IdProveedor from Proveedor where v_Nombre+isnull(v_Ruc,'') like '%' + @SearchText + '%' order by v_Nombre";
+                cmd.Parameters.AddWithValue("@SearchText", prefixText);
+                cmd.Connection = conn;
+                conn.Open();
+                List<string> productos = new List<string>();
+                using (SqlDataReader sdr = cmd.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        productos.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(sdr["v_Nombre"].ToString(), Convert.ToString(sdr["n_IdProveedor"].ToString())));
+                    }
+                }
+                conn.Close();
+                //if (productos.Count == 0)
+                //{
+                productos.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem("Crear '" + prefixText + "'", "*"));
+                productos.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem("Crear y Editar ... '" + prefixText + "'", "%"));
+                //}
+
+
+                return productos;
+            }
+        }
     }
 
+    protected void hdnValue_ValueChanged(object sender, EventArgs e)
+    {
+        string selectedWidgetID = ((HiddenField)sender).Value;
+
+        if (selectedWidgetID == "*")
+        {
+            string n_IdProveedor = "";
+            int longitud = (txtProveedor.Text.Length - 8);
+            string proveedor = txtProveedor.Text.Substring(7, longitud);
+            //Crear el cliente
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = conexion;
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "Play_Proveedor_RegistrarRapido";
+            cmd.Parameters.AddWithValue("@v_Nombre", proveedor.ToUpper());
+            conexion.Open();
+            n_IdProveedor = cmd.ExecuteScalar().ToString();
+            conexion.Close();
+            cmd.Dispose();
+
+            hdnValue.Value = n_IdProveedor;
+
+            txtProveedor.Text = proveedor;
+            btnProveedor.Visible = true;
+        }
+        else if (selectedWidgetID == "%")
+        {
+            string n_IdProveedor = "";
+            //Crear y Editar
+            int longitud = (txtProveedor.Text.Length - 21);
+            string cliente = txtProveedor.Text.Substring(20, longitud);
+
+            //Crear el cliente
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = conexion;
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "Play_Proveedor_RegistrarRapido";
+            cmd.Parameters.AddWithValue("@v_Nombre", cliente.ToUpper());
+            conexion.Open();
+            n_IdProveedor = cmd.ExecuteScalar().ToString();
+            conexion.Close();
+            cmd.Dispose();
+
+            hdnValue.Value = n_IdProveedor;
+
+            tblProveedor.Visible = true;
+            tblGeneral.Visible = false;
+            toolbar.Visible = false;
+            txtNombre.Text = cliente;
+            txtProveedor.Text = cliente;
+            btnProveedor.Visible = true;
+        }
+        else
+        {
+            //Cliente seleccionado ya existe
+            btnProveedor.Visible = true;
+        }
+    }
+    protected void btnGuardarProveedor_Click(object sender, ImageClickEventArgs e)
+    {
+        if (txtNombre.Text == "")
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Debe ingresar el nombre' });</script>", false);
+            txtNombre.Focus();
+            return;
+        }
+
+        try
+        {
+            if (lblCodigo.Text.Trim() != "")
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = conexion;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "Play_Proveedor_Actualizar";
+                cmd.Parameters.AddWithValue("@n_IdProveedor", lblCodigo.Text);
+                cmd.Parameters.AddWithValue("@v_Ruc", txtRuc.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@v_Nombre", txtNombre.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@v_Telefono", txtTelefono.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@v_Direccion", txtDireccion.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@v_Contacto", txtContacto.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@v_Email", txtEmail.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@b_Estado", chkEstado.Checked);
+                conexion.Open();
+                cmd.ExecuteNonQuery();
+                conexion.Close();
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Proveedor actualizado.' });</script>", false);
+                tblProveedor.Visible = false;
+                tblGeneral.Visible = true;
+                toolbar.Visible = true;
+            }
+            else
+            {
+                string n_IdProveedor = "";
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = conexion;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "Play_Proveedor_Registrar";
+                cmd.Parameters.AddWithValue("@v_Ruc", txtRuc.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@v_Nombre", txtNombre.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@v_Telefono", txtTelefono.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@v_Direccion", txtDireccion.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@v_Contacto", txtContacto.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@v_Email", txtEmail.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@b_Estado", chkEstado.Checked);
+                conexion.Open();
+                n_IdProveedor = cmd.ExecuteScalar().ToString();
+                conexion.Close();
+                lblCodigo.Text = n_IdProveedor;
+                tblProveedor.Visible = false;
+                tblGeneral.Visible = true;
+                toolbar.Visible = true;
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Proveedor registrado.' });</script>", false);
+            }
+            txtProveedor.Text = txtNombre.Text.Trim();
+        }
+        catch (Exception ex)
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.error({ message: '" + ex.Message + "' });</script>", false);
+        }
+    }
+
+    protected void btnProveedor_Click(object sender, ImageClickEventArgs e)
+    {
+        if (hdnValue.Value.Trim() == "")
+        {
+
+        }
+        else
+        {
+            int n_IdProveedor = int.Parse(hdnValue.Value);
+            DataTable dt = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter("Play_Proveedor_Seleccionar " + n_IdProveedor.ToString(), conexion);
+            da.Fill(dt);
+            lblCodigo.Text = n_IdProveedor.ToString();
+            txtRuc.Text = dt.Rows[0]["v_Ruc"].ToString();
+            txtNombre.Text = dt.Rows[0]["v_Nombre"].ToString();
+            txtTelefono.Text = dt.Rows[0]["v_Telefono"].ToString();
+            txtDireccion.Text = dt.Rows[0]["v_Direccion"].ToString();
+            txtContacto.Text = dt.Rows[0]["v_Contacto"].ToString();
+            txtEmail.Text = dt.Rows[0]["v_Email"].ToString();
+            chkEstado.Checked = bool.Parse(dt.Rows[0]["b_Estado"].ToString());
+        }
+        tblProveedor.Visible = true;
+        tblGeneral.Visible = false;
+        toolbar.Visible = false;
+    }
+
+    protected void btnSalirProveedor_Click(object sender, ImageClickEventArgs e)
+    {
+        toolbar.Visible = true;
+        tblGeneral.Visible = true;
+        tblProveedor.Visible = false;
+    }
 }

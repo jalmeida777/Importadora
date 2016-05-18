@@ -38,6 +38,10 @@
        {
         width: 150px !important;   
        }
+            .style1
+            {
+                width: 100%;
+            }
  </style>
 
      <script type="text/javascript">
@@ -54,12 +58,19 @@
                  return false;
          }
 
+         function OnClienteSeleccionado(source, eventArgs) {
+             var hdnValueID = "<%= hdnValue.ClientID %>";
+
+             document.getElementById(hdnValueID).value = eventArgs.get_value();
+             __doPostBack(hdnValueID, "");
+         }
+
  </script>
 
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
-                <div class="toolbar">
+                <div class="toolbar" id="toolbar" runat="server">
             <table width="100%"><tr><td width="65">
                 
                 <asp:ImageButton ID="btnGuardar" runat="server" ImageUrl="~/images/Guardar.jpg" 
@@ -108,7 +119,10 @@
             <td>
                 &nbsp;</td>
             <td>
-                &nbsp;</td>
+
+<asp:hiddenfield id="hdnValue" onvaluechanged="hdnValue_ValueChanged" runat="server"/>
+
+                </td>
             <td width="20">
                 &nbsp;</td>
         </tr>
@@ -146,9 +160,19 @@
                 <asp:Label ID="Label6" runat="server" Text="Proveedor:"></asp:Label>
             </td>
             <td style="padding-left: 5px">
-                <asp:DropDownList ID="ddlProveedor" runat="server" CssClass="combo" 
-                    Width="200px">
-                </asp:DropDownList>
+                <asp:TextBox ID="txtProveedor" runat="server" CssClass="inputNormal" 
+                    Width="200px" AutoPostBack="True"></asp:TextBox>
+                &nbsp;<cc1:AutoCompleteExtender ID="txtProveedor_AutoCompleteExtender" runat="server" 
+                    CompletionInterval="100" CompletionListCssClass="AutoExtender" 
+                    CompletionListHighlightedItemCssClass="AutoExtenderHighlight" 
+                    CompletionListItemCssClass="AutoExtenderList" DelimiterCharacters="" 
+                    Enabled="True" MinimumPrefixLength="2" 
+                    ServiceMethod="BuscarProveedores" ServicePath="" TargetControlID="txtProveedor" 
+                    onclientitemselected="OnClienteSeleccionado" 
+                    ShowOnlyCurrentWordInCompletionListItem="True">
+                </cc1:AutoCompleteExtender>
+                <asp:ImageButton ID="btnProveedor" runat="server" ImageUrl="~/images/proveedor.gif" 
+                    ToolTip="Editar Proveedor" Visible="False" onclick="btnProveedor_Click" />
 
             </td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933" 
@@ -200,26 +224,9 @@
         <tr>
             <td>
                 &nbsp;</td>
-            <td>
-                <asp:LinkButton ID="lnkAgregarProducto" runat="server" Font-Bold="True" 
-                                    ForeColor="#7C7BAD" onclick="lnkAgregarProducto_Click">Agregar Producto</asp:LinkButton>
-            </td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-        </tr>
-        <tr>
-            <td>
-                &nbsp;</td>
             <td colspan="4">
                 <asp:GridView ID="gv" runat="server" AutoGenerateColumns="False" 
-                    CssClass="grid" onrowdeleting="gv_RowDeleting" DataKeyNames="n_IdProducto" 
-                    ShowFooter="True">
+                    CssClass="grid" onrowdeleting="gv_RowDeleting" DataKeyNames="n_IdProducto">
                     <Columns>
                         <asp:TemplateField HeaderText="Cantidad">
                             <ItemTemplate>
@@ -257,10 +264,6 @@
                     <FooterStyle CssClass="footer" Font-Bold="True" ForeColor="Black" />
                 </asp:GridView>
                 
-                <cc1:RoundedCornersExtender ID="panelProductos_RoundedCornersExtender" 
-                    runat="server" Color="LightGray" Enabled="True" Radius="10" 
-                    TargetControlID="panelProductos" BorderColor="120, 120, 120">
-                </cc1:RoundedCornersExtender>
             </td>
             <td>
                 &nbsp;</td>
@@ -271,8 +274,10 @@
             <td colspan="4">
                 <table border="0" cellpadding="5" cellspacing="0" width="100%">
                     <tr>
-                        <td>
-                            &nbsp;</td>
+                        <td rowspan="3" valign="top">
+                <asp:TextBox ID="txtObservacion" runat="server" Height="80px" 
+                    TextMode="MultiLine" Width="380px" placeholder="Comentarios"></asp:TextBox>
+                        </td>
                         <td align="right" width="100">
                             <asp:Label ID="Label20" runat="server" Text="SubTotal:"></asp:Label>
                         </td>
@@ -284,8 +289,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                            &nbsp;</td>
                         <td align="right">
                             <asp:Label ID="Label21" runat="server" Text="I.G.V.:"></asp:Label>
                         </td>
@@ -297,8 +300,6 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>
-                            &nbsp;</td>
                         <td align="right" 
                             style="border-top-style: solid; border-top-width: 1px; border-top-color: #999999">
                             <asp:Label ID="Label22" runat="server" Font-Bold="True" Font-Size="12pt" 
@@ -323,14 +324,34 @@
         <tr>
             <td>
                 &nbsp;</td>
-            <td colspan="2">
-                <asp:TextBox ID="txtObservacion" runat="server" Height="80px" 
-                    TextMode="MultiLine" Width="380px" placeholder="Comentarios"></asp:TextBox>
+            <td colspan="4" 
+                style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #CCCCCC;">
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                &nbsp;</td>
+            <td colspan="4">
+                <table width="300">
+                    <tr>
+                        <td rowspan="2" width="60">
+                            <asp:ImageButton ID="ibUsuarioRegistro" runat="server" Height="50px" 
+                                ImageUrl="~/images/face.jpg" Width="50px" />
+                        </td>
+                        <td>
+                            Creado por:
+                            <asp:Label ID="lblUsuarioRegistro" runat="server" Font-Bold="True"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblFechaRegistro" runat="server"></asp:Label>
+                        </td>
+                    </tr>
+                </table>
             </td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
             <td>
                 &nbsp;</td>
         </tr>
@@ -362,114 +383,181 @@
                 &nbsp;</td>
         </tr>
     </table>
-<asp:Panel ID="panelProductos" runat="server" Height="100%" Width="100%" 
-                    Visible="False" BackColor="LightGray">
-                    <table width="100%" bgcolor="#E2E2E2" border="0" cellpadding="0" 
-                        cellspacing="0">
-                        <tr bgcolor="LightGray" 
-                            style="border-bottom-style: solid; border-bottom-width: 2px; border-bottom-color: #C7C7C7">
-                            <td>
-                                <table class="style1">
-                                    <tr>
-                                        <td width="30" style="padding-left: 5px">
-                                            <asp:ImageButton ID="ibTodos" runat="server" Height="30px" Width="30px" 
-                                                ImageUrl="~/images/home.png" onclick="ibTodos_Click" />
-                                        </td>
-                                        <td>
-                                            <asp:Menu ID="MenuFamilia" runat="server" Orientation="Horizontal" 
-                                                onmenuitemclick="MenuFamilia_MenuItemClick" RenderingMode="Table" 
-                                                Font-Size="9pt">
-                                                <DynamicHoverStyle Font-Underline="True" />
-                                                <StaticHoverStyle Font-Underline="True" />
-                                                <StaticMenuItemStyle ItemSpacing="5px" />
-                                                <StaticMenuStyle HorizontalPadding="5px" />
-                                                <StaticSelectedStyle BackColor="#6EC89B" Font-Bold="True" ForeColor="White" 
-                                                    Height="15px" HorizontalPadding="5px" ItemSpacing="4px" VerticalPadding="7px" />
-                                            </asp:Menu>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                            <td align="right">
-                                <asp:TextBox ID="txtBuscar" runat="server" CssClass="inputsProducto" 
-                                    Width="150px" placeholder="Buscar Productos" AutoPostBack="True" 
-                                    ontextchanged="txtBuscar_TextChanged"></asp:TextBox>
-                            </td>
-                            <td align="right" style="padding-right: 12px" width="22">
-                                <asp:ImageButton ID="ibCerrarProductos" runat="server" 
-                                    ImageUrl="~/images/close.png" onclick="ibCerrarProductos_Click" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" 
-                                
-                                style="border-bottom-style: solid; border-bottom-width: 3px; border-bottom-color: #6EC89B; padding-right: 7px; padding-left: 7px; border-top-style: solid; border-top-width: 1px; border-top-color: #C7C7C7;" 
-                                bgcolor="#E2E2E2" height="30">
-                                <asp:Menu ID="MenuSubFamilia" runat="server" Orientation="Horizontal" 
-                                    RenderingMode="Table" Font-Size="9pt" 
-                                    onmenuitemclick="MenuSubFamilia_MenuItemClick">
-                                    <StaticHoverStyle Font-Underline="True" />
-                                    <StaticMenuItemStyle ItemSpacing="5px" />
-                                    <StaticMenuStyle HorizontalPadding="5px" />
-                                    <StaticSelectedStyle BackColor="#6EC89B" Font-Bold="True" ForeColor="White" 
-                                        Height="15px" HorizontalPadding="5px" ItemSpacing="4px" VerticalPadding="7px" />
-                                </asp:Menu>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                <asp:Panel ID="Panel1" runat="server" Height="600px" ScrollBars="Vertical">
-                                    <table width="100%" 
-                                        style="background-image: url('images/form_sheetbg.png'); background-repeat: repeat; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #ddd;">
-                                        <tr>
-                                            <td width="20">
-                                                &nbsp;</td>
-                                            <td>
-                                                &nbsp;</td>
-                                            <td width="20">
-                                                &nbsp;</td>
-                                        </tr>
-                                        <tr>
-                                            <td width="20">
-                                                &nbsp;</td>
-                                            <td>
-                                                <asp:DataList ID="gvProductos" runat="server" 
-                                                    onitemcommand="gvProductos_ItemCommand" RepeatColumns="7" ShowFooter="False" 
-                                                    ShowHeader="False" Width="100%" DataKeyField="n_IdProducto">
-                                                    <ItemTemplate>
-                                                        <table style="position: relative">
-                                                            <tr>
-                                                                <td height="100">
-                                                                    <div align="right" 
-                                                                        style="padding: 2px 3px 1px 3px; background-color: #7F82AC; height: 15px; right: 8px; top: 8px; color: #FFFFFF; float: right; position: absolute;">
-                                                                        <asp:Label ID="lblPrecio" runat="server" Font-Bold="True" Font-Size="8pt" 
-                                                                            ForeColor="White" Text='<%# String.Format("{0:C}", Eval("f_Costo") ) %>'></asp:Label>
-                                                                    </div>
-                                                                    <asp:ImageButton ID="ibImagen" runat="server" BorderColor="#E2E2E2" 
-                                                                        BorderStyle="Solid" BorderWidth="1px" CommandName="AgregarProducto" 
-                                                                        Height="100px" ImageUrl='<%# Bind("v_RutaImagen") %>' Width="100px" />
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td height="35" valign="top">
-                                                                    <asp:Label ID="lblDescripcion" runat="server" Font-Size="8pt" 
-                                                                        Text='<%# Bind("v_Descripcion") %>' Width="100px"></asp:Label>
-                                                                    <asp:Label ID="lblPrecio2" runat="server" Text='<%# Bind("f_Costo") %>' 
-                                                                        Visible="False"></asp:Label>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
-                                                    </ItemTemplate>
-                                                </asp:DataList>
-                                            </td>
-                                            <td width="20">
-                                                &nbsp;</td>
-                                        </tr>
-                                    </table>
-                                </asp:Panel>
-                            </td>
-                        </tr>
-                    </table>
-                </asp:Panel>
+                         <table width="100%" id="tblProveedor" runat="server"
+        style="background-image: url('images/form_sheetbg.png'); background-repeat: repeat; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #ddd;">
+        <tr>
+            <td width="15%">
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td width="15%">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td width="15%">
+                &nbsp;</td>
+            <td>
+                <div class="divDocumento">
+                <table width="100%" cellspacing="5" >
+        <tr>
+            <td height="10" width="20">
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                <asp:Label ID="Label24" runat="server" Text="Código:" Visible="False"></asp:Label>
+                <asp:Label ID="lblCodigo" runat="server" Visible="False"></asp:Label>
+            </td>
+            <td width="20">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td height="10" width="20">
+                &nbsp;</td>
+            <td width="100" colspan="2">
+                <asp:Label ID="Label39" runat="server" Font-Bold="True" Font-Size="20pt" 
+                    Text="Proveedor" ForeColor="#4C4C4C"></asp:Label>
+            </td>
+            <td width="20">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td height="10" width="20">
+                &nbsp;</td>
+            <td width="100" 
+                style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                <asp:Label ID="Label17" runat="server" Text="Ruc:"></asp:Label>
+            </td>
+            <td style="padding-left: 5px">
+                <asp:TextBox ID="txtRuc" runat="server" CssClass="inputNormal" MaxLength="11" 
+                    Width="90px"></asp:TextBox>
+            </td>
+            <td width="20">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td height="10" width="20">
+                &nbsp;</td>
+            <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                <asp:Label ID="Label26" runat="server" Text="Nombre:"></asp:Label>
+            </td>
+            <td style="padding-left: 5px">
+                <asp:TextBox ID="txtNombre" runat="server" CssClass="inputNormal"
+                    Width="300px" style="text-transform:uppercase" MaxLength="100"></asp:TextBox>
+                <asp:Label ID="Label16" runat="server" Font-Bold="True" ForeColor="#18AC85" 
+                        Text="*"></asp:Label>
+            </td>
+            <td width="20">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td height="10" width="20">
+                &nbsp;</td>
+            <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                <asp:Label ID="Label18" runat="server" Text="Teléfono:"></asp:Label>
+            </td>
+            <td style="padding-left: 5px">
+                <asp:TextBox ID="txtTelefono" runat="server" CssClass="inputNormal" 
+                    MaxLength="50"></asp:TextBox>
+            </td>
+            <td width="20">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td height="10" width="20">
+                &nbsp;</td>
+            <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                <asp:Label ID="Label19" runat="server" Text="Dirección:"></asp:Label>
+            </td>
+            <td style="padding-left: 5px">
+                <asp:TextBox ID="txtDireccion" runat="server" CssClass="inputNormal" 
+                    MaxLength="100" Width="300px"></asp:TextBox>
+            </td>
+            <td width="20">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td height="10" width="20">
+                &nbsp;</td>
+            <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                <asp:Label ID="Label27" runat="server" Text="Contacto:"></asp:Label>
+            </td>
+            <td style="padding-left: 5px">
+                <asp:TextBox ID="txtContacto" runat="server" CssClass="inputNormal" 
+                    MaxLength="50" Width="300px"></asp:TextBox>
+            </td>
+            <td width="20">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td height="10" width="20">
+                &nbsp;</td>
+            <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                <asp:Label ID="Label28" runat="server" Text="Email:"></asp:Label>
+            </td>
+            <td style="padding-left: 5px">
+                <asp:TextBox ID="txtEmail" runat="server" CssClass="inputNormal" MaxLength="50" 
+                    Width="300px"></asp:TextBox>
+            </td>
+            <td width="20">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td height="10" width="20">
+                &nbsp;</td>
+            <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                <asp:Label ID="Label3" runat="server" Text="Estado:"></asp:Label>
+            </td>
+            <td style="padding-left: 5px">
+                <asp:CheckBox ID="chkEstado" runat="server" Checked="True" Text="Habilitado" />
+            </td>
+            <td width="20">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td height="10" width="20">
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td style="padding-left: 5px">
+                <table cellpadding="0" cellspacing="0" class="style1">
+                    <tr>
+                        <td width="65">
+                            <asp:ImageButton ID="btnGuardarProveedor" runat="server" 
+                                ImageUrl="~/images/Guardar.jpg" onclick="btnGuardarProveedor_Click" />
+                        </td>
+                        <td>
+                            <asp:ImageButton ID="btnSalirProveedor" runat="server" 
+                                ImageUrl="~/images/Salir.jpg" onclick="btnSalirProveedor_Click" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td width="20">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td height="10" width="20">
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td width="20">
+                &nbsp;</td>
+        </tr>
+        </table>
+        </div>
+            </td>
+            <td></td>
+            </tr>
+        <tr>
+            <td width="15%">
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>&nbsp;</td>
+            </tr>
+            </table>
 </asp:Content>
 
