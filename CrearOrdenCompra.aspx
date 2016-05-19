@@ -65,6 +65,20 @@
              __doPostBack(hdnValueID, "");
          }
 
+
+         function OnProductoSeleccionado(source, eventArgs) {
+
+             if (source) {
+                 // Get the HiddenField ID.
+                 var hiddenfieldID = source.get_id().replace("txtProducto_AutoCompleteExtender", "hfIdProducto");
+                 $get(hiddenfieldID).value = eventArgs.get_value();
+
+                 __doPostBack(hiddenfieldID, "");
+
+             }
+
+         }
+
  </script>
 
 </asp:Content>
@@ -156,8 +170,8 @@
             <td>
                 &nbsp;</td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933" 
-                width="120">
-                <asp:Label ID="Label6" runat="server" Text="Proveedor:"></asp:Label>
+                width="100">
+                <asp:Label ID="Label6" runat="server" Text="Proveedor"></asp:Label>
             </td>
             <td style="padding-left: 5px">
                 <asp:TextBox ID="txtProveedor" runat="server" CssClass="inputNormal" 
@@ -177,7 +191,7 @@
             </td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933" 
                 width="100">
-                <asp:Label ID="Label2" runat="server" Text="Fecha:" ForeColor="#4C4C4C"></asp:Label>
+                <asp:Label ID="Label2" runat="server" Text="Fecha" ForeColor="#4C4C4C"></asp:Label>
             </td>
             <td style="padding-left: 5px">
                         <asp:TextBox ID="txtFechaInicial" runat="server" CssClass="inputsFecha"
@@ -196,14 +210,14 @@
             <td>
                 &nbsp;</td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
-                <asp:Label ID="Label7" runat="server" Text="Moneda:"></asp:Label>
+                <asp:Label ID="Label7" runat="server" Text="Moneda"></asp:Label>
             </td>
             <td style="padding-left: 5px">
                 <asp:Label ID="Label23" runat="server" Font-Bold="True" Text="Soles"></asp:Label>
 
             </td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
-                <asp:Label ID="Label5" runat="server" Text="Referencia:" ForeColor="#4C4C4C"></asp:Label>
+                <asp:Label ID="Label5" runat="server" Text="Referencia" ForeColor="#4C4C4C"></asp:Label>
             </td>
             <td style="padding-left: 5px">
                 <asp:TextBox ID="txtReferencia" runat="server" CssClass="inputNormal" 
@@ -226,7 +240,8 @@
                 &nbsp;</td>
             <td colspan="4">
                 <asp:GridView ID="gv" runat="server" AutoGenerateColumns="False" 
-                    CssClass="grid" onrowdeleting="gv_RowDeleting" DataKeyNames="n_IdProducto">
+                    CssClass="grid" onrowdeleting="gv_RowDeleting" DataKeyNames="n_IdProducto" 
+                    onrowdatabound="gv_RowDataBound" ShowFooter="True">
                     <Columns>
                         <asp:TemplateField HeaderText="Cantidad">
                             <ItemTemplate>
@@ -240,15 +255,47 @@
                             </EditItemTemplate>
                             <ItemStyle Width="50px" />
                         </asp:TemplateField>
-                        <asp:BoundField DataField="Producto" HeaderText="Producto" />
-
-                        <asp:BoundField HeaderText="Costo Unidad S/." DataField="CostoUnitario" 
-                            DataFormatString="{0:n2}" >
-                        <ItemStyle Width="100px" HorizontalAlign="Right" />
-                        </asp:BoundField>
+                        <asp:TemplateField HeaderText="Producto">
+                            <ItemTemplate>
+                                <asp:TextBox ID="txtProducto" runat="server" AutoPostBack="True" 
+                                    CssClass="inputNormal" placeholder="Ingrese Producto" 
+                                    Text='<%# Bind("Producto") %>' Width="300px"></asp:TextBox>
+                                <asp:HiddenField ID="hfIdProducto" runat="server" 
+                                    onvaluechanged="hfIdProducto_ValueChanged" 
+                                    Value='<%# Bind("n_IdProducto") %>' />
+                                <cc1:AutoCompleteExtender ID="txtProducto_AutoCompleteExtender" runat="server" 
+                                    CompletionInterval="100" CompletionListCssClass="AutoExtender" 
+                                    CompletionListHighlightedItemCssClass="AutoExtenderHighlight" 
+                                    CompletionListItemCssClass="AutoExtenderList" DelimiterCharacters="" 
+                                    Enabled="True" MinimumPrefixLength="2" 
+                                    onclientitemselected="OnProductoSeleccionado" ServiceMethod="BuscarProductos" 
+                                    ServicePath="" ShowOnlyCurrentWordInCompletionListItem="True" 
+                                    TargetControlID="txtProducto">
+                                </cc1:AutoCompleteExtender>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="TextBox2" runat="server" Text='<%# Bind("Producto") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                            <FooterTemplate>
+                                <asp:LinkButton ID="lnkAgregarProducto" runat="server" Font-Bold="True" 
+                                    ForeColor="#7C7BAD" onclick="lnkAgregarProducto_Click">Agregar Producto</asp:LinkButton>
+                            </FooterTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Costo Unidad S/.">
+                            <ItemTemplate>
+                                <asp:TextBox ID="txtCostoUnidad" runat="server" AutoPostBack="True" 
+                                    CssClass="inputNormalMoneda" ontextchanged="txtCostoUnidad_TextChanged" 
+                                    Text='<%# Bind("CostoUnitario", "{0:n2}") %>' Width="80px"></asp:TextBox>
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="TextBox3" runat="server" Text='<%# Bind("CostoUnitario") %>'></asp:TextBox>
+                            </EditItemTemplate>
+                            <ItemStyle HorizontalAlign="Right" Width="100px" />
+                        </asp:TemplateField>
 
                         <asp:BoundField HeaderText="Costo Total S/." DataField="CostoTotal" 
                             DataFormatString="{0:n2}">
+                        <FooterStyle HorizontalAlign="Right" />
                         <ItemStyle Width="100px" HorizontalAlign="Right" />
                         </asp:BoundField>
 
@@ -261,7 +308,7 @@
                         </asp:TemplateField>
 
                     </Columns>
-                    <FooterStyle CssClass="footer" Font-Bold="True" ForeColor="Black" />
+                    <FooterStyle Font-Bold="True" ForeColor="Black" BackColor="#F3F3F3" />
                 </asp:GridView>
                 
             </td>
@@ -405,9 +452,7 @@
             <td>
                 &nbsp;</td>
             <td>
-                <asp:Label ID="Label24" runat="server" Text="Código:" Visible="False"></asp:Label>
-                <asp:Label ID="lblCodigo" runat="server" Visible="False"></asp:Label>
-            </td>
+                &nbsp;</td>
             <td width="20">
                 &nbsp;</td>
         </tr>

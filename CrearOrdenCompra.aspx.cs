@@ -32,6 +32,15 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         dt.Columns.Add("CostoTotal", typeof(Double));
         dt.Columns.Add("n_IdProducto");
 
+        DataRow dr;
+        dr = dt.NewRow();
+        dr["n_IdProducto"] = 0;
+        dr["Producto"] = "";
+        dr["Cantidad"] = "0";
+        dr["CostoUnitario"] = "0";
+        dr["CostoTotal"] = "0";
+        dt.Rows.Add(dr);
+
         Session["Detalle"] = dt;
         gv.DataSource = dt;
         gv.DataBind();
@@ -292,6 +301,34 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         }
     }
 
+    [System.Web.Script.Services.ScriptMethod()]
+    [System.Web.Services.WebMethod]
+    public static List<string> BuscarProductos(string prefixText, int count)
+    {
+        using (SqlConnection conn = new SqlConnection())
+        {
+            conn.ConnectionString = ConfigurationManager
+                .ConnectionStrings["conexion"].ConnectionString;
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.CommandText = "select v_Descripcion,n_IdProducto from Producto where v_CodigoInterno+v_Descripcion like '%' + @SearchText + '%' and b_Estado = 1 order by v_Descripcion";
+                cmd.Parameters.AddWithValue("@SearchText", prefixText);
+                cmd.Connection = conn;
+                conn.Open();
+                List<string> productos = new List<string>();
+                using (SqlDataReader sdr = cmd.ExecuteReader())
+                {
+                    while (sdr.Read())
+                    {
+                        productos.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem(sdr["v_Descripcion"].ToString(), Convert.ToString(sdr["n_IdProducto"].ToString())));
+                    }
+                }
+                conn.Close();
+                return productos;
+            }
+        }
+    }
+
     protected void hdnValue_ValueChanged(object sender, EventArgs e)
     {
         string selectedWidgetID = ((HiddenField)sender).Value;
@@ -350,6 +387,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
             btnProveedor.Visible = true;
         }
     }
+
     protected void btnGuardarProveedor_Click(object sender, ImageClickEventArgs e)
     {
         if (txtNombre.Text == "")
@@ -361,13 +399,13 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
         try
         {
-            if (lblCodigo.Text.Trim() != "")
+            if (hdnValue.Value != "")
             {
                 SqlCommand cmd = new SqlCommand();
                 cmd.Connection = conexion;
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "Play_Proveedor_Actualizar";
-                cmd.Parameters.AddWithValue("@n_IdProveedor", lblCodigo.Text);
+                cmd.Parameters.AddWithValue("@n_IdProveedor", hdnValue.Value);
                 cmd.Parameters.AddWithValue("@v_Ruc", txtRuc.Text.Trim().ToUpper());
                 cmd.Parameters.AddWithValue("@v_Nombre", txtNombre.Text.Trim().ToUpper());
                 cmd.Parameters.AddWithValue("@v_Telefono", txtTelefono.Text.Trim().ToUpper());
@@ -400,7 +438,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                 conexion.Open();
                 n_IdProveedor = cmd.ExecuteScalar().ToString();
                 conexion.Close();
-                lblCodigo.Text = n_IdProveedor;
+                hdnValue.Value = n_IdProveedor;
                 tblProveedor.Visible = false;
                 tblGeneral.Visible = true;
                 toolbar.Visible = true;
@@ -426,7 +464,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
             DataTable dt = new DataTable();
             SqlDataAdapter da = new SqlDataAdapter("Play_Proveedor_Seleccionar " + n_IdProveedor.ToString(), conexion);
             da.Fill(dt);
-            lblCodigo.Text = n_IdProveedor.ToString();
+            hdnValue.Value = n_IdProveedor.ToString();
             txtRuc.Text = dt.Rows[0]["v_Ruc"].ToString();
             txtNombre.Text = dt.Rows[0]["v_Nombre"].ToString();
             txtTelefono.Text = dt.Rows[0]["v_Telefono"].ToString();
@@ -445,5 +483,72 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         toolbar.Visible = true;
         tblGeneral.Visible = true;
         tblProveedor.Visible = false;
+    }
+
+    protected void lnkAgregarProducto_Click(object sender, EventArgs e)
+    {
+        TextBox tPro = new TextBox();
+        TextBox tCan = new TextBox();
+        HiddenField hf = new HiddenField();
+
+        DataTable dt = new DataTable();
+        dt = (DataTable)Session["Detalle"];
+
+        //Pasar de la grilla a la tabla
+        for (int i = 0; i < gv.Rows.Count; i++)
+        {
+            hf = (HiddenField)gv.Rows[i].FindControl("hfIdProducto");
+            tPro = (TextBox)gv.Rows[i].Cells[1].FindControl("txtProducto");
+            tCan = (TextBox)gv.Rows[i].Cells[0].FindControl("txtCantidad");
+            dt.Rows[i]["n_IdProducto"] = hf.Value;
+            dt.Rows[i]["Producto"] = tPro.Text.Trim();
+            dt.Rows[i]["Cantidad"] = tCan.Text.Trim();
+        }
+
+        //Mostrar los datos y fila nueva
+        DataRow dr;
+        dr = dt.NewRow();
+        dr["n_IdProducto"] = 0;
+        dr["Producto"] = "";
+        dr["Cantidad"] = "0";
+        dr["CostoUnitario"] = "0";
+        dr["CostoTotal"] = "0";
+        dt.Rows.Add(dr);
+
+        Session["Detalle"] = dt;
+
+        gv.DataSource = dt;
+        gv.DataBind();
+    }
+
+    protected void hfIdProducto_ValueChanged(object sender, EventArgs e)
+    {
+        string selectedWidgetID = ((HiddenField)sender).Value;
+        TextBox txtProducto = (TextBox)((HiddenField)sender).Parent.FindControl("txtProducto");
+
+        //Producto seleccionado ya existe
+        txtProducto.BackColor = System.Drawing.Color.FromName("#DBB7FF");
+        txtProducto.Enabled = false;
+        ((HiddenField)sender).Value = selectedWidgetID;
+    }
+
+    protected void gv_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            HiddenField IdProducto = (HiddenField)e.Row.FindControl("hfIdProducto");
+            TextBox txtProducto = (TextBox)e.Row.FindControl("txtProducto");
+
+            if (int.Parse(IdProducto.Value) > 0)
+            {
+                txtProducto.BackColor = System.Drawing.Color.FromName("#DBB7FF");
+                txtProducto.Enabled = false;
+            }
+        }
+    }
+
+    protected void txtCostoUnidad_TextChanged(object sender, EventArgs e)
+    {
+
     }
 }
