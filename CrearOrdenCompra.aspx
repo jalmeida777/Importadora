@@ -109,15 +109,15 @@
  <table width="100%" runat="server" id="tblGeneral"
         style="background-image: url('images/form_sheetbg.png'); background-repeat: repeat; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #ddd;">
         <tr>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
             <td>
                 &nbsp;</td>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
         </tr>
         <tr>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
             <td>
                 <div class="divDocumento">
@@ -243,23 +243,12 @@
                     CssClass="grid" onrowdeleting="gv_RowDeleting" DataKeyNames="n_IdProducto" 
                     onrowdatabound="gv_RowDataBound" ShowFooter="True">
                     <Columns>
-                        <asp:TemplateField HeaderText="Cantidad">
-                            <ItemTemplate>
-                                <asp:TextBox ID="txtCantidad" runat="server" CssClass="inputNormalMoneda" 
-                                    MaxLength="5" Width="45px" onkeypress="return ValidaEntero(event);" 
-                                    AutoPostBack="True" ontextchanged="txtCantidad_TextChanged" 
-                                    Text='<%# Bind("Cantidad") %>'></asp:TextBox>
-                            </ItemTemplate>
-                            <EditItemTemplate>
-                                <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
-                            </EditItemTemplate>
-                            <ItemStyle Width="50px" />
-                        </asp:TemplateField>
                         <asp:TemplateField HeaderText="Producto">
                             <ItemTemplate>
-                                <asp:TextBox ID="txtProducto" runat="server" AutoPostBack="True" 
-                                    CssClass="inputNormal" placeholder="Ingrese Producto" 
-                                    Text='<%# Bind("Producto") %>' Width="300px"></asp:TextBox>
+                                <asp:TextBox ID="txtProducto" runat="server" CssClass="inputNormal" Width="300px" 
+                                    AutoPostBack="True" 
+                                    Text='<%# Bind("Producto") %>' 
+                                    placeholder="CODIGO DE BARRAS O DESCRIPCION"></asp:TextBox>
                                 <asp:HiddenField ID="hfIdProducto" runat="server" 
                                     onvaluechanged="hfIdProducto_ValueChanged" 
                                     Value='<%# Bind("n_IdProducto") %>' />
@@ -280,6 +269,21 @@
                                 <asp:LinkButton ID="lnkAgregarProducto" runat="server" Font-Bold="True" 
                                     ForeColor="#7C7BAD" onclick="lnkAgregarProducto_Click">Agregar Producto</asp:LinkButton>
                             </FooterTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="Cantidad">
+                            <ItemTemplate>
+<asp:TextBox ID="txtCantidad" runat="server" AutoPostBack="True" 
+                                    CssClass="inputNormalMoneda" 
+                                    Text='<%# Bind("Cantidad") %>' Width="45px" MaxLength="5" 
+                                    onkeypress="return ValidaEntero(event);" 
+                                    ontextchanged="txtCantidad_TextChanged"></asp:TextBox>
+
+                                
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
+                            </EditItemTemplate>
+                            <ItemStyle Width="50px" />
                         </asp:TemplateField>
                         <asp:TemplateField HeaderText="Costo Unidad S/.">
                             <ItemTemplate>
@@ -418,15 +422,15 @@
         </tr>
     </table>
 </div></td>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
         </tr>
         <tr>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
             <td>
                 &nbsp;</td>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
         </tr>
     </table>

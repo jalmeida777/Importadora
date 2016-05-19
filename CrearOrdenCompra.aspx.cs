@@ -75,7 +75,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                 cmd.Transaction = tran;
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandText = "Play_OrdenCompra_Registrar";
-                cmd.Parameters.AddWithValue("@n_IdProveedor", "");
+                cmd.Parameters.AddWithValue("@n_IdProveedor", hdnValue.Value);
                 cmd.Parameters.AddWithValue("@n_IdMoneda", 1);
                 cmd.Parameters.AddWithValue("@d_FechaEmision", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
                 cmd.Parameters.AddWithValue("@v_Referencia", txtReferencia.Text.Trim().ToUpper());
@@ -208,6 +208,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         for (int i = 0; i < gv.Rows.Count; i++)
         {
             TextBox txtCantidad = (TextBox)gv.Rows[i].FindControl("txtCantidad");
+            TextBox txtCostoUnidad = (TextBox)gv.Rows[i].FindControl("txtCostoUnidad");
 
             if (txtCantidad.Text.Trim() == "")
             {
@@ -219,6 +220,16 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                 Cantidad = double.Parse(txtCantidad.Text.Trim());
             }
 
+            if (txtCostoUnidad.Text.Trim() == "")
+            {
+                CostoUnitario = 1;
+                txtCostoUnidad.Text = "1";
+            }
+            else 
+            {
+                CostoUnitario = double.Parse(txtCostoUnidad.Text.Trim());
+            }
+
             if (Cantidad <= 0) 
             {
                 Cantidad = 1;
@@ -226,13 +237,12 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
             dt.Rows[i]["Cantidad"] = Cantidad;
             dt.Rows[i]["Producto"] = dt.Rows[i]["Producto"].ToString();
+            dt.Rows[i]["CostoUnitario"] = CostoUnitario;
 
-            CostoUnitario = double.Parse(dt.Rows[i]["CostoUnitario"].ToString());
             CostoTotal = Cantidad * CostoUnitario;
 
             TotalColumna1 = TotalColumna1 + CostoTotal;
 
-            dt.Rows[i]["CostoUnitario"] = CostoUnitario;
             dt.Rows[i]["CostoTotal"] = CostoTotal;
 
             dt.Rows[i]["n_IdProducto"] = dt.Rows[i]["n_IdProducto"].ToString();
@@ -489,6 +499,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
     {
         TextBox tPro = new TextBox();
         TextBox tCan = new TextBox();
+        TextBox txtCostoUnidad = new TextBox();
         HiddenField hf = new HiddenField();
 
         DataTable dt = new DataTable();
@@ -498,11 +509,14 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         for (int i = 0; i < gv.Rows.Count; i++)
         {
             hf = (HiddenField)gv.Rows[i].FindControl("hfIdProducto");
-            tPro = (TextBox)gv.Rows[i].Cells[1].FindControl("txtProducto");
-            tCan = (TextBox)gv.Rows[i].Cells[0].FindControl("txtCantidad");
+            tPro = (TextBox)gv.Rows[i].Cells[0].FindControl("txtProducto");
+            tCan = (TextBox)gv.Rows[i].Cells[1].FindControl("txtCantidad");
+            txtCostoUnidad = (TextBox)gv.Rows[i].Cells[2].FindControl("txtCostoUnidad");
+
             dt.Rows[i]["n_IdProducto"] = hf.Value;
             dt.Rows[i]["Producto"] = tPro.Text.Trim();
             dt.Rows[i]["Cantidad"] = tCan.Text.Trim();
+            dt.Rows[i]["CostoUnitario"] = txtCostoUnidad.Text.Trim();
         }
 
         //Mostrar los datos y fila nueva
@@ -523,13 +537,44 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
     protected void hfIdProducto_ValueChanged(object sender, EventArgs e)
     {
-        string selectedWidgetID = ((HiddenField)sender).Value;
+        string IdProducto = ((HiddenField)sender).Value;
         TextBox txtProducto = (TextBox)((HiddenField)sender).Parent.FindControl("txtProducto");
+        TextBox txtCostoUnidad = (TextBox)((HiddenField)sender).Parent.FindControl("txtCostoUnidad");
+        DataTable dtCosto = new DataTable();
+        SqlDataAdapter daCosto = new SqlDataAdapter("select f_Costo from Producto where n_IdProducto = " + IdProducto, conexion);
+        daCosto.Fill(dtCosto);
+        txtCostoUnidad.Text = dtCosto.Rows[0]["f_Costo"].ToString();
+
+        TextBox tPro = new TextBox();
+        TextBox tCan = new TextBox();
+        TextBox tCu = new TextBox();
+        HiddenField hf = new HiddenField();
+
+        DataTable dt = new DataTable();
+        dt = (DataTable)Session["Detalle"];
+
+        //Pasar de la grilla a la tabla
+        for (int i = 0; i < gv.Rows.Count; i++)
+        {
+            hf = (HiddenField)gv.Rows[i].FindControl("hfIdProducto");
+            tPro = (TextBox)gv.Rows[i].Cells[0].FindControl("txtProducto");
+            tCan = (TextBox)gv.Rows[i].Cells[1].FindControl("txtCantidad");
+            tCu = (TextBox)gv.Rows[i].Cells[2].FindControl("txtCostoUnidad");
+
+            dt.Rows[i]["n_IdProducto"] = hf.Value;
+            dt.Rows[i]["Producto"] = tPro.Text.Trim();
+            dt.Rows[i]["Cantidad"] = tCan.Text.Trim();
+            dt.Rows[i]["CostoUnitario"] = tCu.Text.Trim();
+        }
+        Session["Detalle"] = dt;
+
+        gv.DataSource = dt;
+        gv.DataBind();
 
         //Producto seleccionado ya existe
-        txtProducto.BackColor = System.Drawing.Color.FromName("#DBB7FF");
+        txtProducto.Font.Bold = true;
         txtProducto.Enabled = false;
-        ((HiddenField)sender).Value = selectedWidgetID;
+        ((HiddenField)sender).Value = IdProducto;
     }
 
     protected void gv_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -541,7 +586,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
             if (int.Parse(IdProducto.Value) > 0)
             {
-                txtProducto.BackColor = System.Drawing.Color.FromName("#DBB7FF");
+                txtProducto.Font.Bold = true;
                 txtProducto.Enabled = false;
             }
         }
@@ -549,6 +594,6 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
     protected void txtCostoUnidad_TextChanged(object sender, EventArgs e)
     {
-
+        CalcularGrilla();
     }
 }
