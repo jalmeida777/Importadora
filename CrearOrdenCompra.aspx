@@ -229,6 +229,39 @@
         <tr>
             <td>
                 &nbsp;</td>
+            <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
+                <asp:Label ID="Label41" runat="server" Text="Adjunto"></asp:Label>
+            </td>
+            <td style="padding-left: 5px">
+                <table cellpadding="0" cellspacing="0" class="style1">
+                    <tr>
+                        <td width="135">
+                            <asp:FileUpload ID="fu1" runat="server" Width="135px" />
+                        </td>
+                        <td width="30">
+                            <asp:ImageButton ID="btnSubirArchivo" runat="server" 
+                                ImageUrl="~/images/upload.png" onclick="btnSubirArchivo_Click" />
+                        </td>
+                        <td>
+                            <asp:LinkButton ID="lbAdjunto" runat="server" Font-Underline="True" 
+                                ForeColor="Blue"></asp:LinkButton>
+                        </td>
+                    </tr>
+                </table>
+
+            </td>
+            <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
+                <asp:Label ID="Label40" runat="server" Text="Estado"></asp:Label>
+            </td>
+            <td style="padding-left: 5px">
+                <asp:Label ID="lblEstado" runat="server" Text="PENDIENTE"></asp:Label>
+            </td>
+            <td style="padding-left: 5px">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                &nbsp;</td>
             <td colspan="4" 
                 style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #CCCCCC;">
                 &nbsp;</td>

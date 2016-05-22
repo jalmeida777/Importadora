@@ -79,5 +79,17 @@ public partial class ListarOrdenCompra : System.Web.UI.Page
         Response.Redirect("Principal.aspx");
     }
 
+    protected void gvOrdenCompra_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            int i_IdOrdenCompra = int.Parse(gvOrdenCompra.DataKeys[e.Row.RowIndex].Value.ToString());
+            LinkButton LinkButton1 = e.Row.FindControl("LinkButton1") as LinkButton;
 
+            if (LinkButton1 != null) 
+            {
+                LinkButton1.PostBackUrl = "CrearOrdenCompra.aspx?i_IdOrdenCompra=" + i_IdOrdenCompra;
+            }
+        }
+    }
 }

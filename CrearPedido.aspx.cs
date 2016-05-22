@@ -16,6 +16,7 @@ public partial class CrearPedido : System.Web.UI.Page
     {
         if (Page.IsPostBack == false)
         {
+            if (Session["Detalle"] != null) { Session.Remove("Detalle"); }
             txtFechaInicial.Text = DateTime.Now.ToShortDateString();
             txtfecump.Text = DateTime.Now.ToShortDateString();
             ListarFormaPago();

@@ -77,7 +77,8 @@
             <asp:Panel ID="Panel1" runat="server" Height="600px" ScrollBars="Vertical" 
                 Width="100%">
                 <asp:GridView ID="gvOrdenCompra" runat="server" AutoGenerateColumns="False" 
-                    CssClass="grid" DataKeyNames="i_IdOrdenCompra">
+                    CssClass="grid" DataKeyNames="i_IdOrdenCompra" 
+                    onrowdatabound="gvOrdenCompra_RowDataBound">
                     <Columns>
                         <asp:TemplateField HeaderText="N° Orden de Compra">
                             <EditItemTemplate>
@@ -104,14 +105,14 @@
                         </asp:BoundField>
                         <asp:BoundField HeaderText="SubTotal" DataField="f_SubTotal" 
                             DataFormatString="{0:n2}">
-                        <ItemStyle HorizontalAlign="Right" Width="100px" />
+                        <ItemStyle HorizontalAlign="Right" Width="70px" />
                         </asp:BoundField>
                         <asp:BoundField HeaderText="IGV" DataField="f_IGV" DataFormatString="{0:n2}">
-                        <ItemStyle HorizontalAlign="Right" Width="100px" />
+                        <ItemStyle HorizontalAlign="Right" Width="70px" />
                         </asp:BoundField>
                         <asp:BoundField HeaderText="Total" DataField="f_Total" 
                             DataFormatString="{0:n2}">
-                        <ItemStyle HorizontalAlign="Right" Width="100px" />
+                        <ItemStyle HorizontalAlign="Right" Width="70px" />
                         </asp:BoundField>
                         <asp:BoundField DataField="v_DescripcionEstado" HeaderText="Estado">
                         <ItemStyle Width="100px" HorizontalAlign="Center" />

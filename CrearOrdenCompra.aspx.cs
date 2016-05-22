@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
+using System.IO;
 
 public partial class CrearOrdenCompra : System.Web.UI.Page
 {
@@ -20,6 +21,49 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
             txtFechaInicial.Text = DateTime.Now.ToShortDateString();
             InicializarGrilla();
             tblProveedor.Visible = false;
+
+            if (Request.QueryString["i_IdOrdenCompra"] != null)
+            {
+                string i_IdOrdenCompra = Request.QueryString["i_IdOrdenCompra"].ToString();
+                //Cabecera de la Orden de Compra
+                SqlDataAdapter da = new SqlDataAdapter("Play_OrdenCompra_Seleccionar " + i_IdOrdenCompra, conexion);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                lblNumero.Text = dt.Rows[0]["v_NumeroOrdenCompra"].ToString();
+                hdnValue.Value = dt.Rows[0]["n_IdProveedor"].ToString();
+                txtProveedor.Text = dt.Rows[0]["NombreProveedor"].ToString();
+                txtFechaInicial.Text = DateTime.Parse(dt.Rows[0]["d_FechaEmision"].ToString()).ToShortDateString();
+                txtReferencia.Text = dt.Rows[0]["v_Referencia"].ToString();
+                txtObservacion.Text = dt.Rows[0]["t_Observacion"].ToString();
+                lblSubTotal.Text = decimal.Parse(dt.Rows[0]["f_SubTotal"].ToString()).ToString("N2");
+                lblIgv.Text = decimal.Parse(dt.Rows[0]["f_IGV"].ToString()).ToString("N2");
+                lblTotal.Text = decimal.Parse(dt.Rows[0]["f_Total"].ToString()).ToString("N2");
+                lblUsuarioRegistro.Text = dt.Rows[0]["Usuario"].ToString();
+                lblFechaRegistro.Text = dt.Rows[0]["d_FechaEmision"].ToString();
+                if (dt.Rows[0]["v_RutaFoto"].ToString().Trim() != "")
+                {
+                    ibUsuarioRegistro.ImageUrl = dt.Rows[0]["v_RutaFoto"].ToString();
+                }
+                else
+                {
+                    ibUsuarioRegistro.ImageUrl = "~/images/face.jpg";
+                }
+                lblEstado.Text = dt.Rows[0]["v_DescripcionEstado"].ToString();
+                
+
+                //Detalle de la Orden de Compra
+                SqlDataAdapter daDetOC = new SqlDataAdapter("Play_OrdenCompraDetalle_Seleccionar " + i_IdOrdenCompra, conexion);
+                DataTable dtDetOC = new DataTable();
+                daDetOC.Fill(dtDetOC);
+                Session["Detalle"] = dtDetOC;
+                gv.DataSource = dtDetOC;
+                gv.DataBind();
+                LinkButton lb = (LinkButton)gv.FooterRow.FindControl("lnkAgregarProducto");
+                lb.Visible = false;
+                gv.Columns[4].Visible = false;
+                gv.Enabled = false;
+                btnProveedor.Visible = true;
+            }
         }
     }
 
@@ -595,5 +639,22 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
     protected void txtCostoUnidad_TextChanged(object sender, EventArgs e)
     {
         CalcularGrilla();
+    }
+
+    protected void btnSubirArchivo_Click(object sender, ImageClickEventArgs e)
+    {
+        string filename = Path.GetFileName(fu1.FileName);
+        string fullpath = Server.MapPath("~/OrdenCompra/") + filename;
+
+        if (File.Exists(fullpath))
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'El nombre del archivo ya existe!' });</script>", false);
+        }
+        else
+        {
+            fu1.SaveAs(fullpath);
+            lbAdjunto.Text = filename;
+            lbAdjunto.OnClientClick = "window.open('OrdenCompra/" + filename + "')";
+        }
     }
 }
