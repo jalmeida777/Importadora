@@ -272,7 +272,7 @@ insert into Proveedor(n_IdProveedor,v_Nombre,b_Estado) values(@x,@v_Nombre,1)
 select @x  
 go
 
-alter procedure Play_OrdenCompra_Seleccionar
+create procedure Play_OrdenCompra_Seleccionar
 @i_IdOrdenCompra int
 as
 select oc.n_IdProveedor,n_IdMoneda,d_FechaEmision,v_NumeroOrdenCompra,v_Referencia,
@@ -284,7 +284,7 @@ inner join OrdenCompraEstado oce on oce.i_IdOrdenCompraEstado = oc.i_IdOrdenComp
 where oc.i_IdOrdenCompra = @i_IdOrdenCompra
 go
 
-alter procedure Play_OrdenCompraDetalle_Seleccionar
+create procedure Play_OrdenCompraDetalle_Seleccionar
 @i_IdOrdenCompra int
 as
 select i_IdOrdenCompra,i_Cantidad as 'Cantidad',ocd.n_IdProducto,
@@ -293,3 +293,79 @@ pro.v_Descripcion as 'Producto'
 from OrdenCompraDetalle ocd inner join Producto pro on ocd.n_IdProducto = pro.n_IdProducto
 where i_IdOrdenCompra = @i_IdOrdenCompra
 go
+
+
+sp_helptext play_pedido_listar
+  
+alter procedure Play_Pedido_Listar --'20150720','20150720',1                  
+@FechaInicio char(8),                      
+@FechaFin char(8),                    
+@b_Estado bit,            
+@n_IdAlmacen numeric(10,0)  
+as                    
+select pd.n_IdPedido,  
+pd.v_NumeroPedido,  
+pd.d_FechaEmision,  
+cl.v_Nombre,                    
+pd.f_Total,   
+usu.v_Nombre as 'Vendedor',  
+usu2.v_Nombre as 'Usuario',  
+fp.v_FormaPago,
+f_SubTotal,
+f_Descuento
+from  dbo.Pedido pd         
+left join dbo.Cliente cl on cl.n_IdCliente = pd.n_IdCliente              
+left join Usuario usu on usu.n_IdUsuario = pd.n_IdUsuarioVendedor      
+inner join Usuario usu2 on usu2.n_IdUsuario = pd.n_IdUsuarioRegistra  
+inner join FormaPago fp on fp.n_IdFormaPago =pd.n_IdFormaPago  
+where convert(char(8),d_FechaEmision,112) between @FechaInicio and @FechaFin                      
+and pd.b_EstadoPedido = @b_Estado            
+and pd.n_IdAlmacen = @n_IdAlmacen 
+go
+
+sp_helptext play_pedido_seleccionar
+
+alter procedure Play_Pedido_Seleccionar              
+@n_IdPedido numeric(10,0)              
+as              
+select               
+ped.n_IdPedido,              
+ped.n_IdAlmacen,              
+ped.n_IdTipoDocumento,              
+ped.n_IdCliente,              
+ped.n_IdFormaPago,              
+ped.n_IdMoneda,              
+ped.d_FechaEmision,              
+ped.v_NumeroPedido,              
+ped.v_NumeroComprobante,              
+ped.f_TC,              
+ped.f_SubTotal,              
+ped.f_Impuesto,              
+ped.f_Total,              
+ped.f_Pago,              
+ped.f_Vuelto,              
+ped.t_Obs,              
+ped.n_IdUsuarioRegistra,              
+ped.d_FechaRegistra,              
+ped.n_IdUsuarioModifica,              
+ped.d_FechaModifica,              
+ped.n_IdUsuarioAnula,              
+ped.d_FechaAnula,              
+ped.b_EstadoPedido,              
+ped.b_EstadoComprobante,              
+cli.v_Nombre,            
+ped.v_NroAutorizacion,                
+ped.n_IdUsuarioVendedor,      
+usu.v_Usuario as 'UsuarioRegistra',      
+usu.v_RutaFoto as 'UsuarioFotoRegistra',      
+cli.i_Puntos,    
+alm.v_Descripcion as 'Tienda',  
+usu2.v_Nombre as 'Vendedor',  
+cli.v_DocumentoIdentidad,
+ped.f_Descuento  
+from Pedido ped           
+left join cliente cli on ped.n_IdCliente = cli.n_IdCliente      
+left join usuario usu on ped.n_IdUsuarioRegistra = usu.n_IdUsuario       
+inner join Almacen alm on ped.n_IdAlmacen = alm.n_IdAlmacen  
+left join usuario usu2 on ped.n_IdUsuarioVendedor = usu2.n_IdUsuario  
+where n_IdPedido = @n_IdPedido 
