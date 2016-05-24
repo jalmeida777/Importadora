@@ -281,7 +281,7 @@
                                 </td>
                                 <td colspan="3">
                                     <asp:TextBox ID="txtCodigoInterno" runat="server" CssClass="inputNormal" 
-                                        MaxLength="20" onkeypress="return ValidaEntero(event);" Width="150px"></asp:TextBox>
+                                        MaxLength="20" Width="150px"></asp:TextBox>
                                     <asp:Label ID="Label23" runat="server" Font-Bold="True" Font-Size="10pt" 
                                         ForeColor="#18AC85" Text="*"></asp:Label>
                                 </td>

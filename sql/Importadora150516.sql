@@ -41,7 +41,8 @@ alter procedure Play_OrdenCompra_Registrar
 @f_SubTotal float,  
 @f_IGV float,  
 @f_Total float,  
-@n_IdUsuarioCreacion numeric(10,0)  
+@n_IdUsuarioCreacion numeric(10,0),
+@v_RutaArchivo varchar(1000)
 as  
 declare @v_NumeroOrdenCompra as varchar(10)  
 declare @i_IdOrdenCompra as int    
@@ -58,10 +59,10 @@ begin
   
 insert into OrdenCompra(i_IdOrdenCompra,n_IdProveedor,n_IdMoneda,d_FechaEmision,
 v_NumeroOrdenCompra,v_Referencia,t_Observacion,f_SubTotal,f_IGV,f_Total,
-n_IdUsuarioCreacion,d_FechaCreacion,i_IdOrdenCompraEstado)  
+n_IdUsuarioCreacion,d_FechaCreacion,i_IdOrdenCompraEstado,v_RutaArchivo)  
 values(@i_IdOrdenCompra,@n_IdProveedor,@n_IdMoneda,@d_FechaEmision,
 @v_NumeroOrdenCompra,@v_Referencia,@t_Observacion,@f_SubTotal,@f_IGV,@f_Total,
-@n_IdUsuarioCreacion,getdate(),1)  
+@n_IdUsuarioCreacion,getdate(),1,@v_RutaArchivo)  
   
 end    
 else    
@@ -272,12 +273,13 @@ insert into Proveedor(n_IdProveedor,v_Nombre,b_Estado) values(@x,@v_Nombre,1)
 select @x  
 go
 
-create procedure Play_OrdenCompra_Seleccionar
+alter procedure Play_OrdenCompra_Seleccionar
 @i_IdOrdenCompra int
 as
 select oc.n_IdProveedor,n_IdMoneda,d_FechaEmision,v_NumeroOrdenCompra,v_Referencia,
 t_Observacion,f_SubTotal,f_IGV,f_Total,n_IdUsuarioCreacion,d_FechaCreacion,oc.i_IdOrdenCompraEstado,
-pro.v_Nombre as 'NombreProveedor',usu.v_Nombre as 'Usuario',oce.v_DescripcionEstado,usu.v_RutaFoto
+pro.v_Nombre as 'NombreProveedor',usu.v_Nombre as 'Usuario',oce.v_DescripcionEstado,usu.v_RutaFoto,
+oc.v_RutaArchivo
 from OrdenCompra oc inner join Proveedor pro on oc.n_IdProveedor = pro.n_IdProveedor
 inner join Usuario usu on oc.n_IdUsuarioCreacion = usu.n_IdUsuario
 inner join OrdenCompraEstado oce on oce.i_IdOrdenCompraEstado = oc.i_IdOrdenCompraEstado
@@ -369,3 +371,9 @@ left join usuario usu on ped.n_IdUsuarioRegistra = usu.n_IdUsuario
 inner join Almacen alm on ped.n_IdAlmacen = alm.n_IdAlmacen  
 left join usuario usu2 on ped.n_IdUsuarioVendedor = usu2.n_IdUsuario  
 where n_IdPedido = @n_IdPedido 
+go
+
+alter table ordencompra
+add v_RutaArchivo varchar(1000)
+go
+

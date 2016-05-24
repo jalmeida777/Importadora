@@ -641,5 +641,377 @@
             <td>&nbsp;</td>
             </tr>
             </table>
+
+        <table width="100%" id="tblProducto" runat="server"
+        style="background-image: url('images/form_sheetbg.png'); background-repeat: repeat; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #ddd;">
+        <tr>
+            <td width="15%">
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td width="15%">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td width="15%">
+                &nbsp;</td>
+            <td>
+                <div class="divDocumento">
+
+                    <table width="100%" __designer:mapid="fb" cellpadding="5">
+                            <tr __designer:mapid="fc">
+            <td height="10" width="20" __designer:mapid="fd">
+                &nbsp;</td>
+            <td __designer:mapid="fe">
+                    &nbsp;</td>
+            <td colspan="3" __designer:mapid="ff">
+                    &nbsp;</td>
+            <td align="right" __designer:mapid="100">
+
+                                    
+                           
+                                
+                &nbsp;</td>
+            <td width="20" __designer:mapid="103">
+                &nbsp;</td>
+        </tr>
+                            <tr __designer:mapid="fc">
+            <td height="10" width="20" __designer:mapid="fd">
+                &nbsp;</td>
+            <td __designer:mapid="fe" colspan="5">
+                <asp:Label ID="Label55" runat="server" Font-Bold="True" Font-Size="20pt" 
+                    Text="Producto" ForeColor="#4C4C4C"></asp:Label>
+                                </td>
+            <td width="20" __designer:mapid="103">
+                &nbsp;</td>
+        </tr>
+                            <tr __designer:mapid="104">
+                                <td height="10" width="20" __designer:mapid="105">
+                                    &nbsp;</td>
+                                <td __designer:mapid="106" 
+                                    style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                <asp:Label runat="server" Text="Nombre del Producto:" ID="Label54" 
+                    Font-Bold="False"></asp:Label>
+
+                                </td>
+                                <td colspan="3" __designer:mapid="108">
+                                    <asp:TextBox runat="server" MaxLength="20" CssClass="inputNormal" Width="300px" 
+                                        ID="txtProducto"></asp:TextBox>
+
+                                </td>
+            <td rowspan="5" align="right" __designer:mapid="100">
+
+                                    
+                           
+                                
+<a href="javascript:void(0);" onclick="OnMoreInfoClick(this)" __designer:mapid="101">
+                <asp:Image runat="server" ImageUrl="~/images/Prev.jpg" Height="150px" 
+                    Width="200px" ID="ibImagen"></asp:Image>
+
+                    </a>
+
+
+                </td>
+                                <td width="20" __designer:mapid="10b">
+                                    &nbsp;</td>
+                            </tr>
+                            <tr __designer:mapid="104">
+                                <td height="10" width="20" __designer:mapid="105">
+                                    &nbsp;</td>
+                                <td __designer:mapid="106" 
+                                    style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                                    <asp:Label runat="server" Text="C&#243;digo Interno:" ID="Label42"></asp:Label>
+
+                                </td>
+                                <td colspan="3" __designer:mapid="108">
+                                    <asp:TextBox runat="server" MaxLength="20" CssClass="inputNormal" Width="150px" 
+                                        ID="txtCodigoInterno"></asp:TextBox>
+
+                                    <asp:Label runat="server" Text="*" Font-Bold="True" Font-Size="10pt" 
+                                        ForeColor="#18AC85" ID="Label43"></asp:Label>
+
+                                </td>
+                                <td width="20" __designer:mapid="10b">
+                                    &nbsp;</td>
+                            </tr>
+        <tr __designer:mapid="10c">
+            <td height="10" width="20" __designer:mapid="10d">
+                &nbsp;</td>
+            <td __designer:mapid="10e" 
+                style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                    <asp:Label runat="server" Text="Presentaci&#243;n:" ID="Label44"></asp:Label>
+
+                </td>
+            <td colspan="3" __designer:mapid="110">
+                    <asp:TextBox runat="server" CssClass="inputNormal" Width="300px" 
+                        ID="txtPresentacion" placeholder="Presentación" 
+                        style="text-transform:uppercase"></asp:TextBox>
+
+                </td>
+            <td width="20" __designer:mapid="112">
+                &nbsp;</td>
+        </tr>
+        <tr __designer:mapid="113">
+            <td height="10" width="20" __designer:mapid="114">
+                &nbsp;</td>
+            <td __designer:mapid="115" 
+                style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                    <asp:Label runat="server" Text="Edad:" ID="Label45"></asp:Label>
+
+                </td>
+            <td colspan="3" __designer:mapid="117">
+                    <asp:DropDownList runat="server" CssClass="combo" Width="150px" ID="ddlEdad"></asp:DropDownList>
+
+                </td>
+            <td width="20" __designer:mapid="119">
+                &nbsp;</td>
+        </tr>
+        <tr __designer:mapid="11a">
+            <td height="10" width="20" __designer:mapid="11b">
+                &nbsp;</td>
+            <td __designer:mapid="11c" 
+                style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                    <asp:Label runat="server" Text="Genero:" ID="Label46"></asp:Label>
+
+                </td>
+            <td colspan="3" __designer:mapid="11e">
+                    <asp:RadioButtonList runat="server" RepeatDirection="Horizontal" Width="215px" 
+                        ID="rblSexo"><asp:ListItem Selected="True" Value="O">Ni&#241;o</asp:ListItem>
+<asp:ListItem Value="A">Ni&#241;a</asp:ListItem>
+<asp:ListItem Value="U">Ambos</asp:ListItem>
+</asp:RadioButtonList>
+
+                </td>
+            <td width="20" __designer:mapid="123">
+                &nbsp;</td>
+        </tr>
+        <tr __designer:mapid="124">
+            <td height="10" width="20" __designer:mapid="125">
+                &nbsp;</td>
+            <td __designer:mapid="126" 
+                style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                    <asp:Label runat="server" Text="Bater&#237;as:" ID="Label47"></asp:Label>
+
+                </td>
+            <td __designer:mapid="128">
+                                <asp:DropDownList runat="server" AutoPostBack="True" CssClass="combo" 
+                                    Width="150px" ID="ddlBateria" 
+                                    OnSelectedIndexChanged="ddlBateria_SelectedIndexChanged"></asp:DropDownList>
+
+                            </td>
+            <td __designer:mapid="12a">
+                                <asp:Label runat="server" Text="Cantidad:" ID="Label48"></asp:Label>
+
+                            </td>
+            <td __designer:mapid="12c">
+                                <asp:TextBox runat="server" CssClass="inputNormal" Enabled="False" Width="30px" 
+                                    ID="txtCantidadBaterias">0</asp:TextBox>
+
+                            </td>
+            <td align="right" __designer:mapid="12e">
+                <table class="style1" __designer:mapid="12f">
+                    <tr __designer:mapid="130">
+                        <td align="right" __designer:mapid="131">
+                                <asp:FileUpload runat="server" Width="130px" ID="fu2"></asp:FileUpload>
+
+                            </td>
+                        <td align="right" __designer:mapid="133">
+                            <asp:ImageButton runat="server" ImageUrl="~/images/upload.png" ID="ibUpload" 
+                                style="height: 16px" OnClick="ibUpload_Click"></asp:ImageButton>
+
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td width="20" __designer:mapid="135">
+                &nbsp;</td>
+        </tr>
+        <tr __designer:mapid="136">
+            <td height="10" width="20" __designer:mapid="137">
+                &nbsp;</td>
+            <td __designer:mapid="138" 
+                style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                    <asp:Label runat="server" Text="Precio S/.:" ID="Label49"></asp:Label>
+
+                </td>
+            <td __designer:mapid="13a">
+                    <asp:TextBox runat="server" CssClass="inputNormalMoneda" Width="50px" 
+                        ID="txtPrecio" placeholder="Precio" onkeypress="return ValidaNumeros(event);">0</asp:TextBox>
+
+                <asp:Label runat="server" Text="*" Font-Bold="True" Font-Size="10pt" 
+                        ForeColor="#18AC85" ID="Label50"></asp:Label>
+
+                </td>
+            <td __designer:mapid="13d">
+                    <asp:Label runat="server" Text="Costo US$.:" ID="Label8"></asp:Label>
+
+                </td>
+            <td __designer:mapid="13f">
+                    <asp:TextBox runat="server" CssClass="inputNormalMoneda" Width="50px" 
+                        ID="txtCosto" placeholder="Costo" onkeypress="return ValidaNumeros(event);">0</asp:TextBox>
+
+                    <asp:Label runat="server" Text="*" Font-Bold="True" Font-Size="10pt" 
+                        ForeColor="#18AC85" ID="Label25"></asp:Label>
+
+                </td>
+            <td __designer:mapid="142">
+                    <asp:Label runat="server" Text="C&#243;digo:" ID="Label51" Visible="False"></asp:Label>
+
+                    <asp:Label runat="server" Font-Bold="True" ID="lblCodigo" Visible="False"></asp:Label>
+
+                </td>
+            <td width="20" __designer:mapid="145">
+                &nbsp;</td>
+        </tr>
+        <tr __designer:mapid="146">
+            <td height="10" width="20" __designer:mapid="147">
+                &nbsp;</td>
+            <td __designer:mapid="148" 
+                style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                    <asp:Label runat="server" Text="Stock M&#237;nimo:" ID="Label9"></asp:Label>
+
+                </td>
+            <td __designer:mapid="14a">
+                    <asp:TextBox runat="server" CssClass="inputNormalMoneda" Width="50px" 
+                        ID="txtStockMinimo" placeholder="Stock" style="text-transform:uppercase" 
+                        onkeypress="return ValidaEntero(event);">0</asp:TextBox>
+
+                    <asp:Label runat="server" Text="*" Font-Bold="True" Font-Size="10pt" 
+                        ForeColor="#18AC85" ID="Label24"></asp:Label>
+
+                </td>
+            <td __designer:mapid="14d">
+                &nbsp;</td>
+            <td __designer:mapid="14e">
+                &nbsp;</td>
+            <td __designer:mapid="14f">
+                    <asp:Label runat="server" ID="lblRuta" Visible="False"></asp:Label>
+
+                </td>
+            <td width="20" __designer:mapid="151">
+                &nbsp;</td>
+        </tr>
+        <tr __designer:mapid="152">
+            <td height="10" width="20" __designer:mapid="153">
+                &nbsp;</td>
+            <td __designer:mapid="154" 
+                style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                    <asp:Label runat="server" Text="Marca:" ID="Label10"></asp:Label>
+
+                </td>
+            <td __designer:mapid="156">
+                    <asp:DropDownList runat="server" AutoPostBack="True" CssClass="combo" 
+                        Width="150px" ID="ddlMarca" 
+                        OnSelectedIndexChanged="ddlMarca_SelectedIndexChanged"></asp:DropDownList>
+
+                </td>
+            <td __designer:mapid="158">
+                    <asp:Label runat="server" Text="Modelo:" ID="Label11"></asp:Label>
+
+                </td>
+            <td __designer:mapid="15a">
+                    <asp:DropDownList runat="server" CssClass="combo" Enabled="False" Width="150px" 
+                        ID="ddlModelo"></asp:DropDownList>
+
+                </td>
+            <td __designer:mapid="15c">
+                    <asp:Label runat="server" ID="lblExtension" Visible="False"></asp:Label>
+
+                </td>
+            <td width="20" __designer:mapid="15e">
+                &nbsp;</td>
+        </tr>
+        <tr __designer:mapid="15f">
+            <td height="10" width="20" __designer:mapid="160">
+                &nbsp;</td>
+            <td __designer:mapid="161" 
+                style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933; width: 180px;">
+                    <asp:Label runat="server" Text="Familia:" ID="Label12"></asp:Label>
+
+                </td>
+            <td __designer:mapid="163">
+                    <asp:DropDownList runat="server" AutoPostBack="True" CssClass="combo" 
+                        Width="150px" ID="ddlCategoria" 
+                        OnSelectedIndexChanged="ddlCategoria_SelectedIndexChanged"></asp:DropDownList>
+
+                </td>
+            <td __designer:mapid="165">
+                    <asp:Label runat="server" Text="Sub Familia:" ID="Label13"></asp:Label>
+
+                </td>
+            <td __designer:mapid="167">
+                    <asp:DropDownList runat="server" CssClass="combo" Enabled="False" Width="150px" 
+                        ID="ddlSubCategoria"></asp:DropDownList>
+
+                </td>
+            <td __designer:mapid="169">
+                &nbsp;</td>
+            <td width="20" __designer:mapid="16a">
+                &nbsp;</td>
+        </tr>
+        <tr __designer:mapid="15f">
+            <td height="10" width="20" __designer:mapid="160">
+                &nbsp;</td>
+            <td __designer:mapid="161">
+                    &nbsp;</td>
+            <td __designer:mapid="163">
+                <table cellpadding="0" cellspacing="0" class="style1">
+                    <tr>
+                        <td width="65">
+                            <asp:ImageButton ID="btnGuardarProducto" runat="server" 
+                                ImageUrl="~/images/Guardar.jpg" onclick="btnGuardarProducto_Click" />
+                        </td>
+                        <td>
+                            <asp:ImageButton ID="btnSalirProducto" runat="server" 
+                                ImageUrl="~/images/Salir.jpg" onclick="btnSalirProducto_Click" />
+                        </td>
+                    </tr>
+                </table>
+
+                </td>
+            <td __designer:mapid="165">
+                    &nbsp;</td>
+            <td __designer:mapid="167">
+                    &nbsp;</td>
+            <td __designer:mapid="169">
+                &nbsp;</td>
+            <td width="20" __designer:mapid="16a">
+                &nbsp;</td>
+        </tr>
+
+                            <tr __designer:mapid="177">
+                                <td height="10" width="20" __designer:mapid="178">
+                                    &nbsp;</td>
+                                <td __designer:mapid="179">
+                                    &nbsp;</td>
+                                <td __designer:mapid="17a">
+                                    &nbsp;</td>
+                                <td __designer:mapid="17b">
+                                    &nbsp;</td>
+                                <td __designer:mapid="17c">
+                                    &nbsp;</td>
+                                <td align="right" __designer:mapid="17d">
+                                    <asp:Label runat="server" Text="* Campos obligatorios" Font-Bold="False" 
+                                        Font-Size="10pt" ForeColor="#18AC85" ID="Label53"></asp:Label>
+
+                                </td>
+                                <td width="20" __designer:mapid="17f">
+                                    &nbsp;</td>
+                            </tr>
+
+                    </table>
+
+                </div>
+            </td>
+            <td></td>
+            </tr>
+        <tr>
+            <td width="15%">
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>&nbsp;</td>
+            </tr>
+            </table>
 </asp:Content>
 
