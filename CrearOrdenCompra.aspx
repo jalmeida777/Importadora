@@ -470,15 +470,15 @@
                          <table width="100%" id="tblProveedor" runat="server"
         style="background-image: url('images/form_sheetbg.png'); background-repeat: repeat; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #ddd;">
         <tr>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
             <td>
                 &nbsp;</td>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
         </tr>
         <tr>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
             <td>
                 <div class="divDocumento">
@@ -634,7 +634,7 @@
             <td></td>
             </tr>
         <tr>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
             <td>
                 &nbsp;</td>
@@ -645,15 +645,15 @@
         <table width="100%" id="tblProducto" runat="server"
         style="background-image: url('images/form_sheetbg.png'); background-repeat: repeat; border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #ddd;">
         <tr>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
             <td>
                 &nbsp;</td>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
         </tr>
         <tr>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
             <td>
                 <div class="divDocumento">
@@ -699,7 +699,7 @@
                                         ID="txtProducto"></asp:TextBox>
 
                                 </td>
-            <td rowspan="5" align="right" __designer:mapid="100">
+            <td rowspan="5" align="left" __designer:mapid="100">
 
                                     
                            
@@ -811,11 +811,11 @@
             <td align="right" __designer:mapid="12e">
                 <table class="style1" __designer:mapid="12f">
                     <tr __designer:mapid="130">
-                        <td align="right" __designer:mapid="131">
+                        <td align="left" __designer:mapid="131">
                                 <asp:FileUpload runat="server" Width="130px" ID="fu2"></asp:FileUpload>
 
                             </td>
-                        <td align="right" __designer:mapid="133">
+                        <td align="left" __designer:mapid="133">
                             <asp:ImageButton runat="server" ImageUrl="~/images/upload.png" ID="ibUpload" 
                                 style="height: 16px" OnClick="ibUpload_Click"></asp:ImageButton>
 
@@ -1006,7 +1006,7 @@
             <td></td>
             </tr>
         <tr>
-            <td width="15%">
+            <td width="5%">
                 &nbsp;</td>
             <td>
                 &nbsp;</td>

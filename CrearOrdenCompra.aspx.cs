@@ -24,6 +24,13 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
             txtFechaInicial.Text = DateTime.Now.ToShortDateString();
             InicializarGrilla();
             tblProveedor.Visible = false;
+            ListarMarcas();
+            ddlMarca_SelectedIndexChanged(null, null);
+            ListarCategoria();
+            ddlCategoria_SelectedIndexChanged(null, null);
+            ListarEdad();
+            ListarBaterias();
+            tblProducto.Visible = false;
 
             if (Request.QueryString["i_IdOrdenCompra"] != null)
             {
@@ -66,6 +73,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                 gv.Columns[4].Visible = false;
                 gv.Enabled = false;
                 btnProveedor.Visible = true;
+                
             }
         }
     }
@@ -478,7 +486,6 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                     }
                 }
                 conn.Close();
-                productos.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem("Crear '" + prefixText + "'", "*"));
                 productos.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem("Crear y Editar ... '" + prefixText + "'", "%"));
                 return productos;
             }
@@ -679,48 +686,70 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
         gv.DataSource = dt;
         gv.DataBind();
+
+        //int fila = gv.Rows.Count - 1;
+        //TextBox tb = new TextBox();
+        //tb = (TextBox)gv.Rows[fila].Cells[1].FindControl("txtProducto");
+        //tb.Focus();
     }
 
     protected void hfIdProducto_ValueChanged(object sender, EventArgs e)
     {
         string IdProducto = ((HiddenField)sender).Value;
-        TextBox txtProducto = (TextBox)((HiddenField)sender).Parent.FindControl("txtProducto");
-        TextBox txtCostoUnidad = (TextBox)((HiddenField)sender).Parent.FindControl("txtCostoUnidad");
-        DataTable dtCosto = new DataTable();
-        SqlDataAdapter daCosto = new SqlDataAdapter("select f_Costo from Producto where n_IdProducto = " + IdProducto, conexion);
-        daCosto.Fill(dtCosto);
-        txtCostoUnidad.Text = dtCosto.Rows[0]["f_Costo"].ToString();
-
-        TextBox tPro = new TextBox();
-        TextBox tCan = new TextBox();
-        TextBox tCu = new TextBox();
-        HiddenField hf = new HiddenField();
-
-        DataTable dt = new DataTable();
-        dt = (DataTable)Session["Detalle"];
-
-        //Pasar de la grilla a la tabla
-        for (int i = 0; i < gv.Rows.Count; i++)
+        if (IdProducto == "%")
         {
-            hf = (HiddenField)gv.Rows[i].FindControl("hfIdProducto");
-            tPro = (TextBox)gv.Rows[i].Cells[0].FindControl("txtProducto");
-            tCan = (TextBox)gv.Rows[i].Cells[1].FindControl("txtCantidad");
-            tCu = (TextBox)gv.Rows[i].Cells[2].FindControl("txtCostoUnidad");
+            //Crear producto y editar
+            tblProducto.Visible = true;
+            tblGeneral.Visible = false;
+            toolbar.Visible = false;
 
-            dt.Rows[i]["n_IdProducto"] = hf.Value;
-            dt.Rows[i]["Producto"] = tPro.Text.Trim();
-            dt.Rows[i]["Cantidad"] = tCan.Text.Trim();
-            dt.Rows[i]["CostoUnitario"] = tCu.Text.Trim();
+            TextBox txtPro = (TextBox)((HiddenField)sender).Parent.FindControl("txtProducto");
+            int longitud = (txtPro.Text.Length - 21);
+            string DescripcionProducto = txtPro.Text.Substring(20, longitud);
+            txtProducto.Text = DescripcionProducto;
+            txtProducto.Focus();
         }
-        Session["Detalle"] = dt;
+        else
+        {
+             //el producto ya existe
+            TextBox txtProducto = (TextBox)((HiddenField)sender).Parent.FindControl("txtProducto");
+            TextBox txtCostoUnidad = (TextBox)((HiddenField)sender).Parent.FindControl("txtCostoUnidad");
+            DataTable dtCosto = new DataTable();
+            SqlDataAdapter daCosto = new SqlDataAdapter("select f_Costo from Producto where n_IdProducto = " + IdProducto, conexion);
+            daCosto.Fill(dtCosto);
+            txtCostoUnidad.Text = dtCosto.Rows[0]["f_Costo"].ToString();
 
-        gv.DataSource = dt;
-        gv.DataBind();
+            TextBox tPro = new TextBox();
+            TextBox tCan = new TextBox();
+            TextBox tCu = new TextBox();
+            HiddenField hf = new HiddenField();
 
-        //Producto seleccionado ya existe
-        txtProducto.Font.Bold = true;
-        txtProducto.Enabled = false;
-        ((HiddenField)sender).Value = IdProducto;
+            DataTable dt = new DataTable();
+            dt = (DataTable)Session["Detalle"];
+
+            //Pasar de la grilla a la tabla
+            for (int i = 0; i < gv.Rows.Count; i++)
+            {
+                hf = (HiddenField)gv.Rows[i].FindControl("hfIdProducto");
+                tPro = (TextBox)gv.Rows[i].Cells[0].FindControl("txtProducto");
+                tCan = (TextBox)gv.Rows[i].Cells[1].FindControl("txtCantidad");
+                tCu = (TextBox)gv.Rows[i].Cells[2].FindControl("txtCostoUnidad");
+
+                dt.Rows[i]["n_IdProducto"] = hf.Value;
+                dt.Rows[i]["Producto"] = tPro.Text.Trim();
+                dt.Rows[i]["Cantidad"] = tCan.Text.Trim();
+                dt.Rows[i]["CostoUnitario"] = tCu.Text.Trim();
+            }
+            Session["Detalle"] = dt;
+
+            gv.DataSource = dt;
+            gv.DataBind();
+
+            //Producto seleccionado ya existe
+            txtProducto.Font.Bold = true;
+            txtProducto.Enabled = false;
+            ((HiddenField)sender).Value = IdProducto;
+        }
     }
 
     protected void gv_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -895,155 +924,14 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
 
 
+        GuardarProducto();
 
 
-        if (lblCodigo.Text.Trim() == "")
-        {
 
-            string resultado = "";
-            //Validar que el no exista el producto con el mismo nombre
-            SqlDataAdapter daProducto = new SqlDataAdapter("select count(1) from producto where v_Descripcion = '" + txtProducto.Text.Trim() + "'", conexion);
-            DataTable dtProducto = new DataTable();
-            daProducto.Fill(dtProducto);
-            int cantidad = int.Parse(dtProducto.Rows[0][0].ToString());
-            if (cantidad > 0)
-            {
-                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'El nombre del producto ya existe!' });</script>", false);
-                return;
-            }
-            //Validar que el código interno no exista
-            SqlDataAdapter daCodigo = new SqlDataAdapter("select count(1) from Producto where v_CodigoInterno = '" + txtCodigoInterno.Text.Trim() + "'", conexion);
-            DataTable dtCodigo = new DataTable();
-            daCodigo.Fill(dtCodigo);
-            int cantidad2 = int.Parse(dtCodigo.Rows[0][0].ToString());
-            if (cantidad2 > 0)
-            {
-                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'El código interno ya existe!' });</script>", false);
-                return;
-            }
+        toolbar.Visible = true;
+        tblGeneral.Visible = true;
+        tblProducto.Visible = false;
 
-            try
-            {
-                //Registrar Producto
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = conexion;
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "Play_Producto_Insertar";
-                cmd.Parameters.AddWithValue("@v_Descripcion", txtProducto.Text.Trim().ToUpper());
-                cmd.Parameters.AddWithValue("@v_Presentacion", txtPresentacion.Text.Trim().ToUpper());
-                if (ddlEdad.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdEdad", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdEdad", ddlEdad.SelectedValue.ToString()); }
-                cmd.Parameters.AddWithValue("@c_Sexo", rblSexo.SelectedValue);
-                cmd.Parameters.AddWithValue("@v_RutaImagen", lblRuta.Text.Trim().ToUpper());
-                cmd.Parameters.AddWithValue("@f_Precio", txtPrecio.Text);
-                cmd.Parameters.AddWithValue("@f_Costo", txtCosto.Text);
-                cmd.Parameters.AddWithValue("@f_StockMinimo", int.Parse(txtStockMinimo.Text));
-                cmd.Parameters.AddWithValue("@n_IdProveedor", hdnValue.Value);
-                if (ddlMarca.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdMarca", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdMarca", ddlMarca.SelectedValue.ToString()); }
-                if (ddlModelo.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdModelo", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdModelo", ddlModelo.SelectedValue.ToString()); }
-                if (ddlCategoria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdCategoria", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdCategoria", ddlCategoria.SelectedValue.ToString()); }
-                if (ddlSubCategoria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdSubCategoria", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdSubCategoria", ddlSubCategoria.SelectedValue.ToString()); }
-                cmd.Parameters.AddWithValue("@b_Estado", 1);
-                if (ddlBateria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdPilas", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdPilas", ddlBateria.SelectedValue); }
-                cmd.Parameters.AddWithValue("@i_CantidadPilas", txtCantidadBaterias.Text);
-                cmd.Parameters.AddWithValue("@v_CodigoInterno", txtCodigoInterno.Text);
-                conexion.Open();
-                resultado = cmd.ExecuteScalar().ToString();
-                conexion.Close();
-                lblCodigo.Text = resultado;
-
-
-                //Guardar imagen con id del producto
-                if (lblRuta.Text.Trim() != "")
-                {
-                    string fullPath = Request.MapPath(lblRuta.Text.Trim());
-                    string fullPathDestino = Request.MapPath("~/Productos/");
-
-                    File.Copy(fullPath, fullPathDestino + lblCodigo.Text + lblExtension.Text.Trim(), true);
-                    //Limpiar carpeta temp
-                    File.Delete(fullPath);
-
-                    string nuevaRuta = "~/Productos/" + lblCodigo.Text.Trim() + lblExtension.Text;
-                    lblRuta.Text = nuevaRuta;
-
-                    ibImagen.ImageUrl = lblRuta.Text;
-
-                    //Crear imagen redimensionada
-                    string path = HttpContext.Current.Server.MapPath(lblRuta.Text);
-                    byte[] binaryImage = File.ReadAllBytes(path);
-                    HandleImageUpload(binaryImage, "~/Productos/Redimensionada/" + lblCodigo.Text.Trim() + lblExtension.Text);
-
-                    //Actualizar la ruta en la base de datos
-                    SqlCommand cmd2 = new SqlCommand();
-                    cmd2.Connection = conexion;
-                    cmd2.CommandType = CommandType.StoredProcedure;
-                    cmd2.CommandText = "Play_Producto_RutaImagen_Actualizar";
-                    cmd2.Parameters.AddWithValue("@n_IdProducto", resultado);
-                    cmd2.Parameters.AddWithValue("@v_RutaImagen", nuevaRuta);
-                    conexion.Open();
-                    cmd2.ExecuteNonQuery();
-                    conexion.Close();
-                }
-
-                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Producto registrado.' });</script>", false);
-            }
-            catch (Exception ex)
-            {
-                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.error({ message: '" + ex.Message + "' });</script>", false);
-            }
-
-
-        }
-        else
-        {
-            try
-            {
-                string resultado = "";
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = conexion;
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "Play_Producto_Actualizar";
-                cmd.Parameters.AddWithValue("@n_IdProducto", lblCodigo.Text.Trim());
-                cmd.Parameters.AddWithValue("@v_Descripcion", txtProducto.Text.Trim().ToUpper());
-                cmd.Parameters.AddWithValue("@v_Presentacion", txtPresentacion.Text.Trim().ToUpper());
-                if (ddlEdad.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdEdad", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdEdad", ddlEdad.SelectedValue.ToString()); }
-                cmd.Parameters.AddWithValue("@c_Sexo", rblSexo.SelectedValue);
-                cmd.Parameters.AddWithValue("@v_RutaImagen", lblRuta.Text.Trim().ToUpper());
-                cmd.Parameters.AddWithValue("@f_Precio", txtPrecio.Text);
-                cmd.Parameters.AddWithValue("@f_Costo", txtCosto.Text);
-                cmd.Parameters.AddWithValue("@f_StockMinimo", int.Parse(txtStockMinimo.Text));
-                cmd.Parameters.AddWithValue("@n_IdProveedor", hdnValue.Value);
-                if (ddlMarca.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdMarca", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdMarca", ddlMarca.SelectedValue.ToString()); }
-                if (ddlModelo.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdModelo", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdModelo", ddlModelo.SelectedValue.ToString()); }
-                if (ddlCategoria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdCategoria", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdCategoria", ddlCategoria.SelectedValue.ToString()); }
-                if (ddlSubCategoria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdSubCategoria", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdSubCategoria", ddlSubCategoria.SelectedValue.ToString()); }
-                cmd.Parameters.AddWithValue("@b_Estado", 1);
-                if (ddlBateria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdPilas", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdPilas", ddlBateria.SelectedValue); }
-                cmd.Parameters.AddWithValue("@i_CantidadPilas", txtCantidadBaterias.Text);
-                cmd.Parameters.AddWithValue("@v_CodigoInterno", txtCodigoInterno.Text);
-                conexion.Open();
-                resultado = cmd.ExecuteScalar().ToString();
-                conexion.Close();
-                lblCodigo.Text = resultado;
-
-                //Crear imagen redimensionada
-                string path = HttpContext.Current.Server.MapPath(lblRuta.Text.Trim().ToUpper());
-                byte[] binaryImage = File.ReadAllBytes(path);
-                HandleImageUpload(binaryImage, "~/Productos/Redimensionada/" + lblCodigo.Text.Trim() + ".jpg");
-
-                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Producto actualizado.' });</script>", false);
-            }
-            catch (SqlException ex)
-            {
-                if (ex.Number == 2627)
-                {
-                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.error({ message: 'Ya hay un producto registrado con el mismo código interno!' });</script>", false);
-                }
-                else
-                {
-                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.error({ message: '" + ex.Message + "' });</script>", false);
-                }
-            }
-        }
     }
 
     protected void btnSalirProducto_Click(object sender, ImageClickEventArgs e)
@@ -1066,5 +954,118 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
             txtCantidadBaterias.Enabled = true;
             txtCantidadBaterias.Focus();
         }
+    }
+
+    void GuardarProducto() 
+    {
+        string resultado = "";
+        //Validar que el no exista el producto con el mismo nombre
+        SqlDataAdapter daProducto = new SqlDataAdapter("select count(1) from producto where v_Descripcion = '" + txtProducto.Text.Trim() + "'", conexion);
+        DataTable dtProducto = new DataTable();
+        daProducto.Fill(dtProducto);
+        int cantidad = int.Parse(dtProducto.Rows[0][0].ToString());
+        if (cantidad > 0)
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'El nombre del producto ya existe!' });</script>", false);
+            return;
+        }
+        //Validar que el código interno no exista
+        SqlDataAdapter daCodigo = new SqlDataAdapter("select count(1) from Producto where v_CodigoInterno = '" + txtCodigoInterno.Text.Trim() + "'", conexion);
+        DataTable dtCodigo = new DataTable();
+        daCodigo.Fill(dtCodigo);
+        int cantidad2 = int.Parse(dtCodigo.Rows[0][0].ToString());
+        if (cantidad2 > 0)
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'El código interno ya existe!' });</script>", false);
+            return;
+        }
+
+        try
+        {
+            //Registrar Producto
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = conexion;
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "Play_Producto_Insertar";
+            cmd.Parameters.AddWithValue("@v_Descripcion", txtProducto.Text.Trim().ToUpper());
+            cmd.Parameters.AddWithValue("@v_Presentacion", txtPresentacion.Text.Trim().ToUpper());
+            if (ddlEdad.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdEdad", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdEdad", ddlEdad.SelectedValue.ToString()); }
+            cmd.Parameters.AddWithValue("@c_Sexo", rblSexo.SelectedValue);
+            cmd.Parameters.AddWithValue("@v_RutaImagen", lblRuta.Text.Trim().ToUpper());
+            cmd.Parameters.AddWithValue("@f_Precio", txtPrecio.Text);
+            cmd.Parameters.AddWithValue("@f_Costo", txtCosto.Text);
+            cmd.Parameters.AddWithValue("@f_StockMinimo", int.Parse(txtStockMinimo.Text));
+
+            if (hdnValue.Value == "") { cmd.Parameters.AddWithValue("@n_IdProveedor", DBNull.Value); }
+            else { cmd.Parameters.AddWithValue("@n_IdProveedor", hdnValue.Value); }
+
+            if (ddlMarca.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdMarca", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdMarca", ddlMarca.SelectedValue.ToString()); }
+            if (ddlModelo.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdModelo", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdModelo", ddlModelo.SelectedValue.ToString()); }
+            if (ddlCategoria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdCategoria", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdCategoria", ddlCategoria.SelectedValue.ToString()); }
+            if (ddlSubCategoria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdSubCategoria", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdSubCategoria", ddlSubCategoria.SelectedValue.ToString()); }
+
+            cmd.Parameters.AddWithValue("@b_Estado", 1);
+            if (ddlBateria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdPilas", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdPilas", ddlBateria.SelectedValue); }
+            cmd.Parameters.AddWithValue("@i_CantidadPilas", txtCantidadBaterias.Text);
+            cmd.Parameters.AddWithValue("@v_CodigoInterno", txtCodigoInterno.Text);
+            conexion.Open();
+            resultado = cmd.ExecuteScalar().ToString();
+            conexion.Close();
+            lblCodigo.Text = resultado;
+
+
+            //Guardar imagen con id del producto
+            if (lblRuta.Text.Trim() != "")
+            {
+                string fullPath = Request.MapPath(lblRuta.Text.Trim());
+                string fullPathDestino = Request.MapPath("~/Productos/");
+
+                File.Copy(fullPath, fullPathDestino + lblCodigo.Text + lblExtension.Text.Trim(), true);
+                //Limpiar carpeta temp
+                File.Delete(fullPath);
+
+                string nuevaRuta = "~/Productos/" + lblCodigo.Text.Trim() + lblExtension.Text;
+                lblRuta.Text = nuevaRuta;
+
+                ibImagen.ImageUrl = lblRuta.Text;
+
+                //Crear imagen redimensionada
+                string path = HttpContext.Current.Server.MapPath(lblRuta.Text);
+                byte[] binaryImage = File.ReadAllBytes(path);
+                HandleImageUpload(binaryImage, "~/Productos/Redimensionada/" + lblCodigo.Text.Trim() + lblExtension.Text);
+
+                //Actualizar la ruta en la base de datos
+                SqlCommand cmd2 = new SqlCommand();
+                cmd2.Connection = conexion;
+                cmd2.CommandType = CommandType.StoredProcedure;
+                cmd2.CommandText = "Play_Producto_RutaImagen_Actualizar";
+                cmd2.Parameters.AddWithValue("@n_IdProducto", resultado);
+                cmd2.Parameters.AddWithValue("@v_RutaImagen", nuevaRuta);
+                conexion.Open();
+                cmd2.ExecuteNonQuery();
+                conexion.Close();
+            }
+            //Mandarlo a la grilla
+            DataTable dt = new DataTable();
+            dt = (DataTable)Session["Detalle"];
+            int fila = dt.Rows.Count - 1;
+            dt.Rows[fila]["n_IdProducto"] = resultado;
+            dt.Rows[fila]["Producto"] = txtProducto.Text.Trim().ToUpper();
+            dt.Rows[fila]["Cantidad"] = "1";
+            dt.Rows[fila]["CostoUnitario"] = txtCosto.Text;
+            Session["Detalle"] = dt;
+
+            gv.DataSource = dt;
+            gv.DataBind();
+
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Producto registrado.' });</script>", false);
+        }
+        catch (Exception ex)
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.error({ message: '" + ex.Message + "' });</script>", false);
+        }
+
+
+
     }
 }
