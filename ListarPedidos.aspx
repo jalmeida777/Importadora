@@ -23,7 +23,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td width="90" class="label">
+                    <td width="90">
                         <asp:Label ID="Label1" runat="server" Text="Fecha Inicial:" Font-Bold="False"></asp:Label>
                     </td>
                     <td width="110">
@@ -35,7 +35,7 @@
                         TargetControlID="txtFechaInicial" Format="dd/MM/yyyy">
                         </cc1:CalendarExtender>
                     </td>
-                    <td width="85" class="label">
+                    <td width="85">
                         <asp:Label ID="Label2" runat="server" Text="Fecha Final:" Font-Bold="False"></asp:Label>
                     </td>
                     <td width="110">
@@ -78,6 +78,8 @@
                 <td align="left">
                     <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
                         onclick="btnSalir_Click" />
+
+              
                 </td>
                 </tr></table>
             </div>
@@ -126,13 +128,11 @@
                         </dx:GridViewDataTextColumn>
                         <dx:GridViewDataTextColumn Caption="Sub Total" FieldName="f_SubTotal" 
                             VisibleIndex="6" Width="100px">
-                            <PropertiesTextEdit DisplayFormatString="{0:C}">
-                            </PropertiesTextEdit>
+                            <PropertiesTextEdit DisplayFormatString="{0:C}"></PropertiesTextEdit>
                         </dx:GridViewDataTextColumn>
                         <dx:GridViewDataTextColumn Caption="Descuento" FieldName="f_Descuento" 
                             VisibleIndex="7" Width="100px">
-                            <PropertiesTextEdit DisplayFormatString="{0:C}">
-                            </PropertiesTextEdit>
+                            <PropertiesTextEdit DisplayFormatString="{0:C}"></PropertiesTextEdit>
                         </dx:GridViewDataTextColumn>
                     </Columns>
                     <SettingsBehavior AutoFilterRowInputDelay="0" />
