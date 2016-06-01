@@ -52,12 +52,11 @@
                 <asp:DropDownList ID="ddlAlmacen" runat="server" Width="200px" CssClass="combo">
                 </asp:DropDownList>
             </td>
-            <td class="label" width="170">
+            <td width="170">
                 <asp:CheckBox ID="chkStockCero" runat="server" Text="No mostrar stock cero" />
             </td>
             <td width="205">
-                <asp:CheckBox ID="chkEditar" runat="server" Visible="False" />
-            </td>
+                &nbsp;</td>
             <td>
                 &nbsp;</td>
         </tr>
@@ -74,7 +73,7 @@
                 </td>
                 <td width="65">
                     <asp:ImageButton ID="btnImprimir" runat="server" 
-                        ImageUrl="~/images/Imprimir.jpg" onclick="btnImprimir_Click" />
+                        ImageUrl="~/images/btnImprimir_New.png" onclick="btnImprimir_Click" />
                 </td>
                 <td width="65">
                   

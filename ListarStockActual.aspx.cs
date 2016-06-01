@@ -79,7 +79,6 @@ public partial class Procesos_ListarStockActual : System.Web.UI.Page
             LinkButton lbProducto = new LinkButton();
             lbProducto = (LinkButton)ASPxGridView1.FindRowCellTemplateControl(e.VisibleIndex, (GridViewDataColumn)(ASPxGridView1.Columns[2]), "lbProducto");
             lbProducto.PostBackUrl = "CrearProducto.aspx?n_IdProducto=" + n_IdProducto;
-            lbProducto.Enabled = chkEditar.Checked;
         }
     }
 

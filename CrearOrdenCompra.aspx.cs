@@ -60,6 +60,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                 }
                 lblEstado.Text = dt.Rows[0]["v_DescripcionEstado"].ToString();
                 lbAdjunto.Text = dt.Rows[0]["v_RutaArchivo"].ToString();
+                lbAdjunto.OnClientClick = "window.open('./OrdenCompra/" + dt.Rows[0]["v_RutaArchivo"].ToString() + "');";
 
                 //Detalle de la Orden de Compra
                 SqlDataAdapter daDetOC = new SqlDataAdapter("Play_OrdenCompraDetalle_Seleccionar " + i_IdOrdenCompra, conexion);
@@ -1057,6 +1058,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
             gv.DataSource = dt;
             gv.DataBind();
+            CalcularGrilla();
 
             ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Producto registrado.' });</script>", false);
         }
