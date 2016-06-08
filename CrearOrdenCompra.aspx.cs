@@ -69,12 +69,24 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                 Session["Detalle"] = dtDetOC;
                 gv.DataSource = dtDetOC;
                 gv.DataBind();
-                LinkButton lb = (LinkButton)gv.FooterRow.FindControl("lnkAgregarProducto");
-                lb.Visible = false;
-                gv.Columns[4].Visible = false;
-                gv.Enabled = false;
-                btnProveedor.Visible = true;
-                
+
+                if (lblEstado.Text.Trim().ToUpper() == "PENDIENTE")
+                {
+                    btnProveedor.Visible = true;
+                }
+                else
+                {
+                    LinkButton lb = (LinkButton)gv.FooterRow.FindControl("lnkAgregarProducto");
+                    lb.Visible = false;
+                    gv.Columns[5].Visible = false;
+                    gv.Enabled = false;
+                    btnProveedor.Visible = false;
+                    btnGuardar.Visible = false;
+                }
+            }
+            else 
+            {
+                gv.Columns[2].Visible = false;
             }
         }
     }
@@ -183,6 +195,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         dt.Columns.Add("CostoUnitario", typeof(Double));
         dt.Columns.Add("CostoTotal", typeof(Double));
         dt.Columns.Add("n_IdProducto");
+        dt.Columns.Add("Saldo");
 
         DataRow dr;
         dr = dt.NewRow();
@@ -191,6 +204,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         dr["Cantidad"] = "0";
         dr["CostoUnitario"] = "0";
         dr["CostoTotal"] = "0";
+        dr["Saldo"] = "0";
         dt.Rows.Add(dr);
 
         Session["Detalle"] = dt;
@@ -206,7 +220,11 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
     protected void btnGuardar_Click(object sender, ImageClickEventArgs e)
     {
-
+        if (hdnValue.Value == "") 
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Debe ingresar un proveedor' });</script>", false);
+            return;
+        }
         if (Session["dtUsuario"] != null)
         {
             DataTable dtUsuario = new DataTable();
@@ -221,79 +239,136 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
             try
             {
-                //Registrar Cabecera
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = cn;
-                cmd.Transaction = tran;
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandText = "Play_OrdenCompra_Registrar";
-                cmd.Parameters.AddWithValue("@n_IdProveedor", hdnValue.Value);
-                cmd.Parameters.AddWithValue("@n_IdMoneda", 1);
-                cmd.Parameters.AddWithValue("@d_FechaEmision", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
-                cmd.Parameters.AddWithValue("@v_Referencia", txtReferencia.Text.Trim().ToUpper());
-                cmd.Parameters.AddWithValue("@t_Observacion", txtObservacion.Text.Trim());
-                cmd.Parameters.AddWithValue("@f_SubTotal", double.Parse(lblSubTotal.Text));
-                cmd.Parameters.AddWithValue("@f_IGV", double.Parse(lblIgv.Text));
-                cmd.Parameters.AddWithValue("@f_Total", double.Parse(lblTotal.Text));
-                cmd.Parameters.AddWithValue("@n_IdUsuarioCreacion", n_IdUsuario);
-                cmd.Parameters.AddWithValue("@v_RutaArchivo", lbAdjunto.Text);
-                
-                string i_IdOrdenCompra = cmd.ExecuteScalar().ToString();
-                cmd.Dispose();
-
-                if (i_IdOrdenCompra.Trim() == "0")
+                if (Request.QueryString["i_IdOrdenCompra"] == null)
                 {
-                    tran.Rollback();
-                    cn.Close();
-                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'El correlativo de la Orden de Compra ha terminado' });</script>", false);
-                    return;
+                    //Registrar Cabecera
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = cn;
+                    cmd.Transaction = tran;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "Play_OrdenCompra_Registrar";
+                    cmd.Parameters.AddWithValue("@n_IdProveedor", hdnValue.Value);
+                    cmd.Parameters.AddWithValue("@n_IdMoneda", 1);
+                    cmd.Parameters.AddWithValue("@d_FechaEmision", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
+                    cmd.Parameters.AddWithValue("@v_Referencia", txtReferencia.Text.Trim().ToUpper());
+                    cmd.Parameters.AddWithValue("@t_Observacion", txtObservacion.Text.Trim());
+                    cmd.Parameters.AddWithValue("@f_SubTotal", double.Parse(lblSubTotal.Text));
+                    cmd.Parameters.AddWithValue("@f_IGV", double.Parse(lblIgv.Text));
+                    cmd.Parameters.AddWithValue("@f_Total", double.Parse(lblTotal.Text));
+                    cmd.Parameters.AddWithValue("@n_IdUsuarioCreacion", n_IdUsuario);
+                    cmd.Parameters.AddWithValue("@v_RutaArchivo", lbAdjunto.Text);
+
+                    string i_IdOrdenCompra = cmd.ExecuteScalar().ToString();
+                    cmd.Dispose();
+
+                    if (i_IdOrdenCompra.Trim() == "0")
+                    {
+                        tran.Rollback();
+                        cn.Close();
+                        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'El correlativo de la Orden de Compra ha terminado' });</script>", false);
+                        return;
+                    }
+
+                    SqlCommand cmd0 = new SqlCommand();
+                    cmd0.Connection = cn;
+                    cmd0.Transaction = tran;
+                    cmd0.CommandType = CommandType.Text;
+                    cmd0.CommandText = "select v_NumeroOrdenCompra from OrdenCompra where i_IdOrdenCompra = " + i_IdOrdenCompra;
+                    lblNumero.Text = cmd0.ExecuteScalar().ToString();
+                    cmd0.Dispose();
+
+                    DataTable dtDetalle = new DataTable();
+                    dtDetalle = (DataTable)Session["Detalle"];
+
+                    for (int i = 0; i < dtDetalle.Rows.Count; i++)
+                    {
+                        //Registrar Detalle
+                        SqlCommand cmdDetalle = new SqlCommand();
+                        cmdDetalle.Connection = cn;
+                        cmdDetalle.Transaction = tran;
+                        cmdDetalle.CommandType = CommandType.StoredProcedure;
+                        cmdDetalle.CommandText = "Play_OrdenCompraDetalle_Insertar";
+                        cmdDetalle.Parameters.AddWithValue("@i_IdOrdenCompra", i_IdOrdenCompra);
+                        cmdDetalle.Parameters.AddWithValue("@n_IdProducto", dtDetalle.Rows[i]["n_IdProducto"].ToString());
+                        cmdDetalle.Parameters.AddWithValue("@i_Cantidad", dtDetalle.Rows[i]["Cantidad"].ToString());
+                        cmdDetalle.Parameters.AddWithValue("@f_CostoUnidad", dtDetalle.Rows[i]["CostoUnitario"].ToString());
+                        cmdDetalle.Parameters.AddWithValue("@f_CostoTotal", dtDetalle.Rows[i]["CostoTotal"].ToString());
+                        cmdDetalle.ExecuteNonQuery();
+                        cmdDetalle.Dispose();
+                    }
+
+                    //Actualizar Correlativo Orden Compra
+                    SqlCommand cmd5 = new SqlCommand();
+                    cmd5.Connection = cn;
+                    cmd5.Transaction = tran;
+                    cmd5.CommandType = CommandType.StoredProcedure;
+                    cmd5.CommandText = "Play_Correlativo_Aumentar_SinAlmacen";
+                    cmd5.Parameters.AddWithValue("@n_IdTipoDocumento", 10);
+                    cmd5.ExecuteNonQuery();
+                    cmd5.Dispose();
+
+
+                    tran.Commit();
+                    BloquearOrdenCompra();
+                    lblUsuarioRegistro.Text = dtUsuario.Rows[0]["v_Usuario"].ToString();
+                    lblFechaRegistro.Text = DateTime.Now.ToString();
+                    ibUsuarioRegistro.ImageUrl = dtUsuario.Rows[0]["v_RutaFoto"].ToString();
+                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Orden de Compra Registrada Satisfactoriamente' });</script>", false);
                 }
-
-                SqlCommand cmd0 = new SqlCommand();
-                cmd0.Connection = cn;
-                cmd0.Transaction = tran;
-                cmd0.CommandType = CommandType.Text;
-                cmd0.CommandText = "select v_NumeroOrdenCompra from OrdenCompra where i_IdOrdenCompra = " + i_IdOrdenCompra;
-                lblNumero.Text = cmd0.ExecuteScalar().ToString();
-                cmd0.Dispose();
-
-                DataTable dtDetalle = new DataTable();
-                dtDetalle = (DataTable)Session["Detalle"];
-
-                for (int i = 0; i < dtDetalle.Rows.Count; i++)
+                else if (Request.QueryString["i_IdOrdenCompra"] != null)
                 {
-                    //Registrar Detalle
-                    SqlCommand cmdDetalle = new SqlCommand();
-                    cmdDetalle.Connection = cn;
-                    cmdDetalle.Transaction = tran;
-                    cmdDetalle.CommandType = CommandType.StoredProcedure;
-                    cmdDetalle.CommandText = "Play_OrdenCompraDetalle_Insertar";
-                    cmdDetalle.Parameters.AddWithValue("@i_IdOrdenCompra", i_IdOrdenCompra);
-                    cmdDetalle.Parameters.AddWithValue("@n_IdProducto", dtDetalle.Rows[i]["n_IdProducto"].ToString());
-                    cmdDetalle.Parameters.AddWithValue("@i_Cantidad", dtDetalle.Rows[i]["Cantidad"].ToString());
-                    cmdDetalle.Parameters.AddWithValue("@f_CostoUnidad", dtDetalle.Rows[i]["CostoUnitario"].ToString());
-                    cmdDetalle.Parameters.AddWithValue("@f_CostoTotal", dtDetalle.Rows[i]["CostoTotal"].ToString());
-                    cmdDetalle.ExecuteNonQuery();
-                    cmdDetalle.Dispose();
+                    string i_IdOrdenCompra = Request.QueryString["i_IdOrdenCompra"];
+                    //Actualizar datos
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = cn;
+                    cmd.Transaction = tran;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "Play_OrdenCompra_Actualizar";
+                    cmd.Parameters.AddWithValue("@i_IdOrdenCompra", i_IdOrdenCompra);
+                    cmd.Parameters.AddWithValue("@n_IdProveedor", hdnValue.Value);
+                    cmd.Parameters.AddWithValue("@d_FechaEmision", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
+                    cmd.Parameters.AddWithValue("@v_Referencia", txtReferencia.Text.Trim().ToUpper());
+                    cmd.Parameters.AddWithValue("@t_Observacion", txtObservacion.Text.Trim());
+                    cmd.Parameters.AddWithValue("@f_SubTotal", double.Parse(lblSubTotal.Text));
+                    cmd.Parameters.AddWithValue("@f_IGV", double.Parse(lblIgv.Text));
+                    cmd.Parameters.AddWithValue("@f_Total", double.Parse(lblTotal.Text));
+                    cmd.Parameters.AddWithValue("@v_RutaArchivo", lbAdjunto.Text);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+
+                    //Eliminar detalle
+                    SqlCommand cmdEliminar = new SqlCommand();
+                    cmdEliminar.Connection = cn;
+                    cmdEliminar.Transaction = tran;
+                    cmdEliminar.CommandType = CommandType.StoredProcedure;
+                    cmdEliminar.CommandText = "Play_OrdenCompraDetalle_Eliminar";
+                    cmdEliminar.Parameters.AddWithValue("@i_IdOrdenCompra", i_IdOrdenCompra);
+                    cmdEliminar.ExecuteNonQuery();
+                    cmdEliminar.Dispose();
+
+                    DataTable dtDetalle = new DataTable();
+                    dtDetalle = (DataTable)Session["Detalle"];
+
+                    for (int i = 0; i < dtDetalle.Rows.Count; i++)
+                    {
+                        //Registrar Detalle
+                        SqlCommand cmdDetalle = new SqlCommand();
+                        cmdDetalle.Connection = cn;
+                        cmdDetalle.Transaction = tran;
+                        cmdDetalle.CommandType = CommandType.StoredProcedure;
+                        cmdDetalle.CommandText = "Play_OrdenCompraDetalle_Insertar";
+                        cmdDetalle.Parameters.AddWithValue("@i_IdOrdenCompra", i_IdOrdenCompra);
+                        cmdDetalle.Parameters.AddWithValue("@n_IdProducto", dtDetalle.Rows[i]["n_IdProducto"].ToString());
+                        cmdDetalle.Parameters.AddWithValue("@i_Cantidad", dtDetalle.Rows[i]["Cantidad"].ToString());
+                        cmdDetalle.Parameters.AddWithValue("@f_CostoUnidad", dtDetalle.Rows[i]["CostoUnitario"].ToString());
+                        cmdDetalle.Parameters.AddWithValue("@f_CostoTotal", dtDetalle.Rows[i]["CostoTotal"].ToString());
+                        cmdDetalle.ExecuteNonQuery();
+                        cmdDetalle.Dispose();
+                    }
+
+                    tran.Commit();
+                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Orden de Compra Actualizada Satisfactoriamente' });</script>", false);
                 }
-
-                //Actualizar Correlativo Orden Compra
-                SqlCommand cmd5 = new SqlCommand();
-                cmd5.Connection = cn;
-                cmd5.Transaction = tran;
-                cmd5.CommandType = CommandType.StoredProcedure;
-                cmd5.CommandText = "Play_Correlativo_Aumentar_SinAlmacen";
-                cmd5.Parameters.AddWithValue("@n_IdTipoDocumento", 10);
-                cmd5.ExecuteNonQuery();
-                cmd5.Dispose();
-
-
-                tran.Commit();
-                BloquearOrdenCompra();
-                lblUsuarioRegistro.Text = dtUsuario.Rows[0]["v_Usuario"].ToString();
-                lblFechaRegistro.Text = DateTime.Now.ToString();
-                ibUsuarioRegistro.ImageUrl = dtUsuario.Rows[0]["v_RutaFoto"].ToString();
-                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Orden de Compra Registrada Satisfactoriamente' });</script>", false);
             }
             catch (Exception ex)
             {
@@ -389,6 +464,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
             }
 
             dt.Rows[i]["Cantidad"] = Cantidad;
+            dt.Rows[i]["Saldo"] = Cantidad;
             dt.Rows[i]["Producto"] = dt.Rows[i]["Producto"].ToString();
             dt.Rows[i]["CostoUnitario"] = CostoUnitario;
 
@@ -417,7 +493,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
         if (gv.Rows.Count > 0)
         {
-            gv.FooterRow.Cells[3].Text = TotalColumna1.ToString("n2");
+            gv.FooterRow.Cells[4].Text = TotalColumna1.ToString("n2");
         }
     }
 
@@ -681,6 +757,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         dr["Cantidad"] = "0";
         dr["CostoUnitario"] = "0";
         dr["CostoTotal"] = "0";
+        dr["Saldo"] = "0";
         dt.Rows.Add(dr);
 
         Session["Detalle"] = dt;
@@ -788,6 +865,22 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
             lbAdjunto.Text = filename;
             lbAdjunto.OnClientClick = "window.open('OrdenCompra/" + filename + "')";
         }
+
+        if (Request.QueryString["i_IdOrdenCompra"] != null) 
+        {
+            string i_IdOrdenCompra = Request.QueryString["i_IdOrdenCompra"];
+            SqlCommand cmd = new SqlCommand();
+            cmd.Connection = conexion;
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandText = "Play_OrdenCompra_Actualizar_Archivo";
+            cmd.Parameters.AddWithValue("@i_IdOrdenCompra", i_IdOrdenCompra);
+            cmd.Parameters.AddWithValue("@v_RutaArchivo", lbAdjunto.Text);
+            conexion.Open();
+            cmd.ExecuteNonQuery();
+            conexion.Close();
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Archivo adjunto guardado correctamente' });</script>", false);
+        }
+
     }
 
     protected void ddlMarca_SelectedIndexChanged(object sender, EventArgs e)

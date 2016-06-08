@@ -318,6 +318,9 @@
                             </EditItemTemplate>
                             <ItemStyle Width="50px" />
                         </asp:TemplateField>
+                        <asp:BoundField DataField="Saldo" HeaderText="Saldo">
+                        <ItemStyle HorizontalAlign="Right" Width="50px" />
+                        </asp:BoundField>
                         <asp:TemplateField HeaderText="Costo Unidad S/.">
                             <ItemTemplate>
                                 <asp:TextBox ID="txtCostoUnidad" runat="server" AutoPostBack="True" 
