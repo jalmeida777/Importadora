@@ -85,22 +85,28 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
                 <div class="toolbar" id="toolbar" runat="server">
-            <table width="100%"><tr><td width="65">
+            <table width="100%"><tr><td width="95">
                 
-                <asp:ImageButton ID="btnGuardar" runat="server" ImageUrl="~/images/Guardar.jpg" 
-                    onclick="btnGuardar_Click" OnClientClick="if (confirm('Seguro de guardar?')) { btnGuardar.disabled = false; return true; } else { return false; }" />
-                
-                </td>
-                <td width="65">
-                  
-                    <asp:ImageButton ID="btnNuevo" runat="server" ImageUrl="~/images/Nuevo.jpg" 
-                        onclick="btnNuevo_Click" />
+                    <asp:ImageButton ID="btnNuevo" runat="server" 
+                        ImageUrl="~/images/btnNuevo_New.png" onclick="btnNuevo_Click" />
                   
                 </td>
-                <td>
+                <td width="95">
+                  
+                <asp:ImageButton ID="btnGuardar" runat="server" 
+                    ImageUrl="~/images/btnGuardar_New.png" onclick="btnGuardar_Click" />
+                
+                </td>
+                <td width="95">
                    
-                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
-                        onclick="btnSalir_Click" />
+                    <asp:ImageButton ID="btnDespachar" runat="server" 
+                        ImageUrl="~/images/btnDespachar_New.png" />
+                   
+                </td>
+                <td align="right">
+                   
+                    <asp:ImageButton ID="btnSalir" runat="server" 
+                        ImageUrl="~/images/btnSalir_New.png" onclick="btnSalir_Click" />
                    
                 </td>
                 </tr></table>

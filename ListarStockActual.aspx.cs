@@ -94,19 +94,17 @@ public partial class Procesos_ListarStockActual : System.Web.UI.Page
         ImagenGrande.ImageUrl = dt.Rows[0]["v_RutaImagen"].ToString();
     }
 
-    protected void btnOrdenCompra_Click(object sender, EventArgs e)
-    {
-        Response.Redirect("ListarOrdenCompra.aspx");
-    }
-    protected void btnNotaIngreso_Click(object sender, EventArgs e)
+
+    protected void btnNotaIngreso_Click(object sender, ImageClickEventArgs e)
     {
         Response.Redirect("ListarNotaIngreso.aspx");
     }
-    protected void btnNotaSalida_Click(object sender, EventArgs e)
+
+    protected void btnNotaSalida_Click(object sender, ImageClickEventArgs e)
     {
         Response.Redirect("ListarNotaSalida.aspx");
     }
-    protected void btnTraslado_Click(object sender, EventArgs e)
+    protected void btnTraslado_Click(object sender, ImageClickEventArgs e)
     {
         Response.Redirect("ListarOrdenTrasladoInd.aspx");
     }

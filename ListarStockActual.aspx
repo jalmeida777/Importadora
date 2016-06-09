@@ -65,40 +65,34 @@
 
 
         <div class="toolbar">
-            <table width="100%"><tr><td width="65">
+            <table width="100%"><tr><td width="95">
                 
                 <asp:ImageButton ID="btnConsultar" runat="server" 
-                    ImageUrl="~/images/Buscar.jpg" onclick="btnConsultar_Click" />
+                    ImageUrl="~/images/btnBuscar_New.png" onclick="btnConsultar_Click" />
                 
                 </td>
-                <td width="65">
+                <td width="95">
                     <asp:ImageButton ID="btnImprimir" runat="server" 
                         ImageUrl="~/images/btnImprimir_New.png" onclick="btnImprimir_Click" />
                 </td>
                 <td width="65">
-                  
-                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
-                        onclick="btnSalir_Click" />
-                  
-                </td>
-                <td width="65">
                     &nbsp;</td>
-                <td width="155">
-                    <asp:Button ID="btnOrdenCompra" runat="server" onclick="btnOrdenCompra_Click" 
-                        Text="Orden de Compra" Width="150px" />
+                <td width="95">
+                    <asp:ImageButton ID="btnNotaIngreso" runat="server" 
+                        ImageUrl="~/images/btnNotaIngreso_New.png" onclick="btnNotaIngreso_Click" />
+                </td>
+                <td width="95">
+                    <asp:ImageButton ID="btnNotaSalida" runat="server" 
+                        ImageUrl="~/images/btnNotaSalida_New.png" onclick="btnNotaSalida_Click" />
                 </td>
                 <td width="155">
-                    <asp:Button ID="btnNotaIngreso" runat="server" onclick="btnNotaIngreso_Click" 
-                        Text="Nota de Ingreso" Width="150px" />
+                    <asp:ImageButton ID="btnTraslado" runat="server" 
+                        ImageUrl="~/images/btnTraslado_New.png" onclick="btnTraslado_Click" />
                 </td>
-                <td width="155">
-                    <asp:Button ID="btnNotaSalida" runat="server" onclick="btnNotaSalida_Click" 
-                        Text="Nota de Salida" Width="150px" />
-                </td>
-                <td>
+                <td align="right">
                    
-                    <asp:Button ID="btnTraslado" runat="server" onclick="btnTraslado_Click" 
-                        Text="Traslado Entre Almacenes" />
+                    <asp:ImageButton ID="btnSalir" runat="server" 
+                        ImageUrl="~/images/btnSalir_New.png" onclick="btnSalir_Click" />
                    
                 </td>
                 </tr></table>
