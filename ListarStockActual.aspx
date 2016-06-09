@@ -42,10 +42,10 @@
     <table width="100%" cellpadding="3" cellspacing="3">
         <tr>
             <td colspan="5">
-                <h1 class="label">Stock Actual</h1></td>
+                <h1 class="label">Productos</h1></td>
         </tr>
         <tr>
-            <td width="65" class="label">
+            <td width="65" style="padding-left: 10px">
                 <asp:Label ID="Label1" runat="server" Text="Almacén:"></asp:Label>
             </td>
             <td width="205">
@@ -67,9 +67,13 @@
         <div class="toolbar">
             <table width="100%"><tr><td width="95">
                 
-                <asp:ImageButton ID="btnConsultar" runat="server" 
-                    ImageUrl="~/images/btnBuscar_New.png" onclick="btnConsultar_Click" />
+                <asp:ImageButton ID="btnNuevo" runat="server" 
+                    ImageUrl="~/images/btnNuevo_New.png" onclick="btnNuevo_Click" />
                 
+                </td>
+                <td width="95">
+                    <asp:ImageButton ID="btnConsultar" runat="server" 
+                        ImageUrl="~/images/btnBuscar_New.png" onclick="btnConsultar_Click" />
                 </td>
                 <td width="95">
                     <asp:ImageButton ID="btnImprimir" runat="server" 
@@ -85,11 +89,11 @@
                     <asp:ImageButton ID="btnNotaSalida" runat="server" 
                         ImageUrl="~/images/btnNotaSalida_New.png" onclick="btnNotaSalida_Click" />
                 </td>
-                <td width="155">
+                <td width="95">
                     <asp:ImageButton ID="btnTraslado" runat="server" 
                         ImageUrl="~/images/btnTraslado_New.png" onclick="btnTraslado_Click" />
                 </td>
-                <td align="right">
+                <td align="left">
                    
                     <asp:ImageButton ID="btnSalir" runat="server" 
                         ImageUrl="~/images/btnSalir_New.png" onclick="btnSalir_Click" />

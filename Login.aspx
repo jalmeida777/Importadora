@@ -14,7 +14,7 @@
     
         <table cellpadding="4" cellspacing="4" width="100%">
             <tr>
-                <td class="label">
+                <td>
                     <asp:Label ID="Label1" runat="server" Text="Usuario:"></asp:Label>
                 </td>
                 <td>
@@ -23,7 +23,7 @@
                 </td>
             </tr>
             <tr>
-                <td class="label">
+                <td>
                     <asp:Label ID="Label2" runat="server" Text="Contraseña:"></asp:Label>
                 </td>
                 <td>

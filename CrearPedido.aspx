@@ -84,28 +84,30 @@
 <asp:hiddenfield id="hdnValue" onvaluechanged="hdnValue_ValueChanged" runat="server"/>
 
                 <div class="toolbar" id="toolbar" runat ="server">
-            <table width="100%"><tr><td width="65">
+            <table width="100%"><tr><td width="95">
                 
-                <asp:ImageButton ID="btnGuardar" runat="server" ImageUrl="~/images/Guardar.jpg" 
-                    onclick="btnGuardar_Click" OnClientClick="if (confirm('Seguro de guardar?')) { btnGuardar.disabled = false; return true; } else { return false; }" />
-                
-                </td>
-                <td width="65">
-                  
-                    <asp:ImageButton ID="btnNuevo" runat="server" ImageUrl="~/images/Nuevo.jpg" 
+                    <asp:ImageButton ID="btnNuevo" runat="server" ImageUrl="~/images/btnNuevo_New.png" 
                         onclick="btnNuevo_Click" />
                   
                 </td>
-                <td width="65">
+                <td width="95">
+                  
+                <asp:ImageButton ID="btnGuardar" runat="server" ImageUrl="~/images/btnGuardar_New.png" 
+                    onclick="btnGuardar_Click" 
+                    OnClientClick="if (confirm('Seguro de guardar?')) { btnGuardar.disabled = false; return true; } else { return false; }" />
+                
+                </td>
+                <td width="95">
                    
-                    <asp:ImageButton ID="btnAnular" runat="server" ImageUrl="~/images/Anular.jpg" 
-                        Visible="False" onclick="btnAnular_Click" OnClientClick="if (confirm('Seguro de anular?')) { btnAnular.disabled = false; return true; } else { return false; }" />
+                    <asp:ImageButton ID="btnAnular" runat="server" ImageUrl="~/images/btnAnular_New.png" 
+                        Visible="False" onclick="btnAnular_Click" 
+                        OnClientClick="if (confirm('Seguro de anular?')) { btnAnular.disabled = false; return true; } else { return false; }" />
                    
                 </td>
-                <td width="65">
+                <td width="95">
                    
                     <asp:ImageButton ID="btnImprimir" runat="server" 
-                        ImageUrl="~/images/Imprimir.jpg" Visible="False" 
+                        ImageUrl="~/images/btnImprimir_New.png" Visible="False" 
                         onclick="btnImprimir_Click" />
 
                         <cc1:ConfirmButtonExtender ID="ConfirmButtonExtender3" runat="server" 
@@ -114,9 +116,9 @@
                 </cc1:ConfirmButtonExtender>
                    
                 </td>
-                <td width="65" align="left">
+                <td align="left">
                    
-                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
+                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/btnSalir_New.png" 
                         onclick="btnSalir_Click" />
                    
                 </td>

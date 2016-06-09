@@ -10,12 +10,12 @@
                 <table width="100%">
                     <tr>
                         <td colspan="11">
-                            <h1 class="label">
+                            <h1>
                                 Notas de Salida</h1>
                         </td>
                     </tr>
                     <tr>
-                        <td class="label" width="90">
+                        <td width="90" style="padding-left: 10px">
                             <asp:Label ID="Label1" runat="server" Font-Bold="False" Text="Fecha Inicial:"></asp:Label>
                         </td>
                         <td width="110">
@@ -25,7 +25,7 @@
                                 TargetControlID="txtFechaInicial">
                             </cc1:CalendarExtender>
                         </td>
-                        <td class="label" width="85">
+                        <td width="85">
                             <asp:Label ID="Label2" runat="server" Font-Bold="False" Text="Fecha Final:"></asp:Label>
                         </td>
                         <td width="110">
@@ -35,7 +35,7 @@
                                 Enabled="True" Format="dd/MM/yyyy" TargetControlID="txtFechaFinal">
                             </cc1:CalendarExtender>
                         </td>
-                        <td width="70" class="label">
+                        <td width="70">
                             <asp:Label ID="Label3" runat="server" Font-Bold="False" Text="Sucursal:"></asp:Label>
                         </td>
                         <td width="155">
@@ -61,16 +61,18 @@
             <div class="toolbar">
                 <table width="100%">
                     <tr>
-                        <td width="65">
-                            <asp:ImageButton ID="btnConsultar" runat="server" 
-                                ImageUrl="~/images/Buscar.jpg" onclick="btnConsultar_Click" ToolTip="Buscar" />
+                        <td width="95">
+                            <asp:ImageButton ID="btnNuevo" runat="server" 
+                                ImageUrl="~/images/btnNuevo_New.png" onclick="btnNuevo_Click" 
+                                ToolTip="Nuevo" />
                         </td>
-                        <td width="65">
-                            <asp:ImageButton ID="btnNuevo" runat="server" ImageUrl="~/images/Nuevo.jpg" 
-                                onclick="btnNuevo_Click" ToolTip="Nuevo" />
+                        <td width="95">
+                            <asp:ImageButton ID="btnConsultar" runat="server" 
+                                ImageUrl="~/images/btnBuscar_New.png" onclick="btnConsultar_Click" 
+                                ToolTip="Buscar" />
                         </td>
                         <td>
-                            <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
+                            <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/btnSalir_New.png" 
                                 onclick="btnSalir_Click" />
                         </td>
                     </tr>

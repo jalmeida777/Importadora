@@ -113,11 +113,11 @@
             </div>
 
      <div class="toolbar">
-            <table width="100%"><tr><td width="65">
+            <table width="100%"><tr><td width="95">
                 
                 
                 
-                                <asp:ImageButton ID="btnGuardar" runat="server" ImageUrl="~/images/Guardar.jpg" 
+                                <asp:ImageButton ID="btnGuardar" runat="server" ImageUrl="~/images/btnGuardar_New.png" 
                                     onclick="btnGuardar_Click" />
                             <cc1:ConfirmButtonExtender ID="btnGuardar_ConfirmButtonExtender" runat="server" 
                                 ConfirmText="¿Seguro de guardar los datos?" Enabled="True" 
@@ -127,12 +127,12 @@
                 
                 
                 </td>
-                <td width="65">
+                <td width="95">
                   
                  
                   
                                 <asp:ImageButton ID="btnImprimir" runat="server" 
-                                    ImageUrl="~/images/Imprimir.jpg" onclick="btnImprimir_Click" />
+                                    ImageUrl="~/images/btnImprimir_New.png" onclick="btnImprimir_Click" />
                   
                  
                   
@@ -141,7 +141,7 @@
                    
                     
                    
-                                <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
+                                <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/btnSalir_New.png" 
                                     onclick="btnSalir_Click" />
                   
                  

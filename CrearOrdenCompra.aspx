@@ -94,7 +94,8 @@
                 <td width="95">
                   
                 <asp:ImageButton ID="btnGuardar" runat="server" 
-                    ImageUrl="~/images/btnGuardar_New.png" onclick="btnGuardar_Click" />
+                    ImageUrl="~/images/btnGuardar_New.png" onclick="btnGuardar_Click" 
+                        onclientclick="if (confirm('Seguro de guardar?')) { btnGuardar.disabled = false; return true; } else { return false; }" />
                 
                 </td>
                 <td width="95">
@@ -103,7 +104,7 @@
                         ImageUrl="~/images/btnDespachar_New.png" />
                    
                 </td>
-                <td align="right">
+                <td align="left">
                    
                     <asp:ImageButton ID="btnSalir" runat="server" 
                         ImageUrl="~/images/btnSalir_New.png" onclick="btnSalir_Click" />

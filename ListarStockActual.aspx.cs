@@ -108,4 +108,8 @@ public partial class Procesos_ListarStockActual : System.Web.UI.Page
     {
         Response.Redirect("ListarOrdenTrasladoInd.aspx");
     }
+    protected void btnNuevo_Click(object sender, ImageClickEventArgs e)
+    {
+        Response.Redirect("CrearProducto.aspx");
+    }
 }

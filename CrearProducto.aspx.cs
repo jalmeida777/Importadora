@@ -409,7 +409,7 @@ public partial class CrearProducto : System.Web.UI.Page
 
     protected void btnSalir_Click(object sender, ImageClickEventArgs e)
     {
-        Response.Redirect("ListarProducto.aspx");
+        Response.Redirect("ListarStockActual.aspx");
     }
 
     protected void ddlMarca_SelectedIndexChanged(object sender, EventArgs e)

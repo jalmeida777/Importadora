@@ -39,7 +39,7 @@
                             Enabled="True" Format="dd/MM/yyyy" TargetControlID="txtFechaFinal">
                         </cc1:CalendarExtender>
                     </td>
-                    <td width="65" class="label">
+                    <td width="65">
                         <asp:Label ID="Label3" runat="server" Text="Estado:"></asp:Label>
                     </td>
                     <td align="left">
@@ -55,15 +55,14 @@
             </div>
             <div class="toolbar">
             <table width="100%"><tr><td width="95">
-                <asp:ImageButton ID="btnConsultar" runat="server" 
-                    ImageUrl="~/images/btnBuscar_New.png" onclick="btnConsultar_Click" 
-                    ToolTip="Buscar" />
+                <asp:ImageButton ID="btnNuevo" runat="server" 
+                    ImageUrl="~/images/btnNuevo_New.png" onclick="btnNuevo_Click" ToolTip="Nuevo" />
                 </td>
                 <td width="95">
-                    <asp:ImageButton ID="btnNuevo" runat="server" ImageUrl="~/images/btnNuevo_New.png" 
-                        onclick="btnNuevo_Click" ToolTip="Nuevo" />
+                    <asp:ImageButton ID="btnConsultar" runat="server" ImageUrl="~/images/btnBuscar_New.png" 
+                        onclick="btnConsultar_Click" ToolTip="Buscar" />
                 </td>
-                <td align="right">
+                <td align="left">
                     <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/btnSalir_New.png" 
                         onclick="btnSalir_Click" />
                 </td>

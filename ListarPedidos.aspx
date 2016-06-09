@@ -23,7 +23,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td width="90">
+                    <td width="90" style="padding-left: 10px">
                         <asp:Label ID="Label1" runat="server" Text="Fecha Inicial:" Font-Bold="False"></asp:Label>
                     </td>
                     <td width="110">
@@ -48,13 +48,13 @@
                     <td width="70">
                         <asp:Label ID="Label3" runat="server" Font-Bold="False" Text="Sucursal:"></asp:Label>
                     </td>
-                    <td class="label" width="210">
+                    <td width="210">
                         <asp:DropDownList ID="ddlAlmacen" runat="server" 
                             CssClass="combo" 
                             Width="200px">
                         </asp:DropDownList>
                     </td>
-                    <td class="label">
+                    <td>
                         
                         <asp:CheckBox ID="chkHabilitado" runat="server" Checked="True" 
                             Font-Bold="False" Text="Habilitados" />
@@ -67,16 +67,16 @@
             </table>
             </div>
             <div class="toolbar">
-            <table width="100%"><tr><td width="65">
-                <asp:ImageButton ID="btnConsultar" runat="server" 
-                    ImageUrl="~/images/Buscar.jpg" onclick="btnConsultar_Click" ToolTip="Buscar" />
+            <table width="100%"><tr><td width="95">
+                <asp:ImageButton ID="btnNuevo" runat="server" 
+                    ImageUrl="~/images/btnNuevo_New.png" onclick="btnNuevo_Click" ToolTip="Nuevo" />
                 </td>
-                <td width="65">
-                    <asp:ImageButton ID="btnNuevo" runat="server" ImageUrl="~/images/Nuevo.jpg" 
-                        onclick="btnNuevo_Click" ToolTip="Nuevo" />
+                <td width="95">
+                    <asp:ImageButton ID="btnConsultar" runat="server" ImageUrl="~/images/btnBuscar_New.png" 
+                        onclick="btnConsultar_Click" ToolTip="Buscar" />
                 </td>
                 <td align="left">
-                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
+                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/btnSalir_New.png" 
                         onclick="btnSalir_Click" />
 
               
