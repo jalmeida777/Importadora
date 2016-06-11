@@ -35,6 +35,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
             if (Request.QueryString["i_IdOrdenCompra"] != null)
             {
                 string i_IdOrdenCompra = Request.QueryString["i_IdOrdenCompra"].ToString();
+                hfIdOrdenCompra.Value = i_IdOrdenCompra;
                 //Cabecera de la Orden de Compra
                 SqlDataAdapter da = new SqlDataAdapter("Play_OrdenCompra_Seleccionar " + i_IdOrdenCompra, conexion);
                 DataTable dt = new DataTable();
@@ -74,19 +75,47 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                 {
                     btnProveedor.Visible = true;
                 }
-                else
+                else if (lblEstado.Text.Trim().ToUpper() == "RECIBIDO PARCIAL")
                 {
                     LinkButton lb = (LinkButton)gv.FooterRow.FindControl("lnkAgregarProducto");
                     lb.Visible = false;
                     gv.Columns[5].Visible = false;
                     gv.Enabled = false;
                     btnProveedor.Visible = false;
-                    btnGuardar.Visible = false;
+                    btnGuardar.Enabled = false;
+
+                    txtProveedor.Enabled = false;
+                    fu1.Enabled = false;
+                    btnSubirArchivo.Enabled = false;
+                    txtFechaInicial.Enabled = false;
+                    txtReferencia.Enabled = false;
+                    txtObservacion.Enabled = false;
+                }
+                else if (lblEstado.Text.Trim().ToUpper() == "RECIBIDO TOTAL")
+                {
+                    LinkButton lb = (LinkButton)gv.FooterRow.FindControl("lnkAgregarProducto");
+                    lb.Visible = false;
+                    gv.Columns[5].Visible = false;
+                    gv.Enabled = false;
+                    btnProveedor.Visible = false;
+                    btnGuardar.Enabled = false;
+                    btnDespachar.Enabled = false;
+                    txtProveedor.Enabled = false;
+                    fu1.Enabled = false;
+                    btnSubirArchivo.Enabled = false;
+                    txtFechaInicial.Enabled = false;
+                    txtReferencia.Enabled = false;
+                    txtObservacion.Enabled = false;
+                }
+                else if (lblEstado.Text.Trim().ToUpper() == "ANULADO")
+                {
+                    BloquearOrdenCompra();
                 }
             }
             else 
             {
                 gv.Columns[2].Visible = false;
+                btnDespachar.Enabled = false;
             }
         }
     }
@@ -259,6 +288,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@v_RutaArchivo", lbAdjunto.Text);
 
                     string i_IdOrdenCompra = cmd.ExecuteScalar().ToString();
+                    hfIdOrdenCompra.Value = i_IdOrdenCompra;
                     cmd.Dispose();
 
                     if (i_IdOrdenCompra.Trim() == "0")
@@ -313,11 +343,13 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                     lblUsuarioRegistro.Text = dtUsuario.Rows[0]["v_Usuario"].ToString();
                     lblFechaRegistro.Text = DateTime.Now.ToString();
                     ibUsuarioRegistro.ImageUrl = dtUsuario.Rows[0]["v_RutaFoto"].ToString();
+                    btnDespachar.Enabled = true;
                     ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Orden de Compra Registrada Satisfactoriamente' });</script>", false);
                 }
                 else if (Request.QueryString["i_IdOrdenCompra"] != null)
                 {
                     string i_IdOrdenCompra = Request.QueryString["i_IdOrdenCompra"];
+                    hfIdOrdenCompra.Value = i_IdOrdenCompra;
                     //Actualizar datos
                     SqlCommand cmd = new SqlCommand();
                     cmd.Connection = cn;
@@ -504,6 +536,11 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         gv.Enabled = false;
         txtObservacion.Enabled = false;
         btnGuardar.Enabled = false;
+        btnDespachar.Enabled = false;
+        txtProveedor.Enabled = false;
+        fu1.Enabled = false;
+        btnSubirArchivo.Enabled = false;
+        lbAdjunto.Enabled = false;
     }
 
     [System.Web.Script.Services.ScriptMethod()]
@@ -1162,5 +1199,14 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
 
 
+    }
+
+    protected void btnDespachar_Click(object sender, ImageClickEventArgs e)
+    {
+        if (lblEstado.Text.Trim().ToUpper() == "PENDIENTE" || lblEstado.Text.Trim().ToUpper() == "RECIBIDO PARCIAL")
+        {
+            string i_IdOrdenCompra = hfIdOrdenCompra.Value;
+            Response.Redirect("CrearNotaIngreso.aspx?i_IdOrdenCompra=" + i_IdOrdenCompra);
+        }
     }
 }

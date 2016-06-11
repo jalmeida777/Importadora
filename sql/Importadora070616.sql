@@ -66,3 +66,57 @@ as
 update OrdenCompra set v_RutaArchivo = @v_RutaArchivo 
 where i_IdOrdenCompra = @i_IdOrdenCompra
 go
+
+alter procedure Play_OrdenCompraDetalle_SeleccionarSaldos   
+@i_IdOrdenCompra int    
+as    
+select 
+ocd.n_IdProducto,    
+pro.v_Descripcion as 'Producto',
+i_Saldo as 'Cantidad'    
+from OrdenCompraDetalle ocd inner join Producto pro on ocd.n_IdProducto = pro.n_IdProducto    
+where i_IdOrdenCompra = @i_IdOrdenCompra  
+and i_Saldo > 0
+go
+
+create procedure Play_OrdenCompraDetalle_ActualizarSaldo
+@i_IdOrdenCompra int,
+@n_IdProducto int,
+@i_Cantidad int
+as
+update OrdenCompraDetalle set i_Saldo = i_Saldo - @i_Cantidad
+where n_IdProducto = @n_IdProducto
+and i_IdOrdenCompra = @i_IdOrdenCompra
+go
+
+create procedure Play_OrdenCompraDocumento_Insertar
+@i_IdOrdenCompra int,
+@n_IdAlmacen numeric(10,0),
+@n_IdTipoDocumento numeric(10,0),
+@v_NumeroDocumento varchar(10)
+as
+insert into OrdenCompraDocumento
+values (@i_IdOrdenCompra,@n_IdAlmacen,
+@n_IdTipoDocumento,@v_NumeroDocumento)
+go
+
+create procedure Play_OrdenCompra_CambiarEstado
+@i_IdOrdenCompra int
+as
+declare @Cantidad int
+declare @Saldo int
+
+set @Cantidad = (select isnull(sum(i_Cantidad),0) as 'Cantidad' from ordencompradetalle where i_idOrdenCompra = @i_IdOrdenCompra)
+set @Saldo = (select isnull(sum(i_Saldo),0) as 'Saldo' from ordencompradetalle where i_idOrdenCompra = @i_IdOrdenCompra)
+
+if @Saldo = 0
+begin
+update OrdenCompra set i_IdOrdenCompraEstado = 3 where i_idOrdenCompra = @i_IdOrdenCompra --Recibido Total
+end
+else if  @Saldo < @Cantidad
+begin
+update OrdenCompra set i_IdOrdenCompraEstado = 2 where i_idOrdenCompra = @i_IdOrdenCompra --Recibido Parcial
+end
+go
+
+select * from OrdenCompraDocumento

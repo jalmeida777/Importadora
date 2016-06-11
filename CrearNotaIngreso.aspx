@@ -69,24 +69,26 @@
 
 
                 <div class="toolbar" id="toolbar" runat="server">
-            <table width="100%"><tr><td width="65">
+            <table width="100%"><tr><td width="95">
                 
                     <asp:ImageButton ID="btnNuevo" runat="server" ImageUrl="~/images/btnNuevo_New.png" 
                         onclick="btnNuevo_Click" />
                   
                 </td>
-                <td width="65">
+                <td width="95">
                   
                 <asp:ImageButton ID="btnGuardar" runat="server" ImageUrl="~/images/btnGuardar_New.png" 
                     onclick="btnGuardar_Click" 
                         OnClientClick="if (confirm('Seguro de guardar?')) { btnGuardar.disabled = false; return true; } else { return false; }" />
                 
                 </td>
-                <td width="65">
+                <td width="95">
                    
                     <asp:ImageButton ID="ibAnular" runat="server" ImageUrl="~/images/btnAnular_New.png" 
-                        onclick="ibAnular_Click" Visible="False" 
-                        OnClientClick="if (confirm('Seguro de anular?')) { ibAnular.disabled = false; return true; } else { return false; }" />
+                        onclick="ibAnular_Click" 
+                        
+                        OnClientClick="if (confirm('Seguro de anular?')) { ibAnular.disabled = false; return true; } else { return false; }" 
+                        Enabled="False" />
                 </td>
                 <td>
                    
@@ -159,15 +161,15 @@
                 &nbsp;</td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933" 
                 width="120">
-                <asp:Label ID="Label3" runat="server" Text="Sucursal:" ForeColor="#4C4C4C"></asp:Label>
+                <asp:Label ID="Label3" runat="server" Text="Sucursal" ForeColor="#4C4C4C"></asp:Label>
             </td>
             <td style="padding-left: 5px">
                 <asp:DropDownList ID="ddlAlmacen" runat="server" Width="150px" CssClass="combo">
                 </asp:DropDownList>
             </td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933" 
-                width="100">
-                <asp:Label ID="Label2" runat="server" Text="Fecha:" ForeColor="#4C4C4C"></asp:Label>
+                width="120">
+                <asp:Label ID="Label2" runat="server" Text="Fecha" ForeColor="#4C4C4C"></asp:Label>
             </td>
             <td style="padding-left: 5px">
                         <asp:TextBox ID="txtFechaInicial" runat="server" CssClass="inputsFecha"
@@ -185,7 +187,7 @@
             <td>
                 &nbsp;</td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
-                <asp:Label ID="Label4" runat="server" Text="Tipo Movimiento:" 
+                <asp:Label ID="Label4" runat="server" Text="Tipo Movimiento" 
                     ForeColor="#4C4C4C"></asp:Label>
             </td>
             <td style="padding-left: 5px">
@@ -194,7 +196,7 @@
                 </asp:DropDownList>
             </td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
-                <asp:Label ID="Label5" runat="server" Text="Referencia:" ForeColor="#4C4C4C"></asp:Label>
+                <asp:Label ID="Label5" runat="server" Text="Referencia" ForeColor="#4C4C4C"></asp:Label>
             </td>
             <td style="padding-left: 5px">
                 <asp:TextBox ID="txtReferencia" runat="server" CssClass="inputNormal"></asp:TextBox>
@@ -206,12 +208,12 @@
             <td>
                 &nbsp;</td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
-                <asp:Label ID="Label28" runat="server" Text="Estado:"></asp:Label>
+                <asp:Label ID="Label28" runat="server" Text="Estado"></asp:Label>
             </td>
             <td style="padding-left: 5px">
                 <asp:Label ID="lblEstado" runat="server" Font-Bold="True"></asp:Label>
             </td>
-            <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
+            <td>
                 &nbsp;</td>
             <td style="padding-left: 5px">
                 &nbsp;</td>

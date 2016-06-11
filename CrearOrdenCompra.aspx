@@ -101,7 +101,7 @@
                 <td width="95">
                    
                     <asp:ImageButton ID="btnDespachar" runat="server" 
-                        ImageUrl="~/images/btnDespachar_New.png" />
+                        ImageUrl="~/images/btnDespachar_New.png" onclick="btnDespachar_Click" />
                    
                 </td>
                 <td align="left">
@@ -136,7 +136,8 @@
             <td>
                 &nbsp;</td>
             <td>
-                &nbsp;</td>
+                <asp:HiddenField ID="hfIdOrdenCompra" runat="server" />
+            </td>
             <td>
                 &nbsp;</td>
             <td>

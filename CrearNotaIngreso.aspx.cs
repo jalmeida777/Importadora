@@ -45,7 +45,7 @@ public partial class CrearNotaIngreso : System.Web.UI.Page
                 {
                     lblEstado.Text = "Activo";
                     lblEstado.ForeColor = System.Drawing.Color.Green;
-                    ibAnular.Visible = true;
+                    ibAnular.Enabled = true;
                 }
                 else
                 {
@@ -53,7 +53,7 @@ public partial class CrearNotaIngreso : System.Web.UI.Page
                     lblEstado.ForeColor = System.Drawing.Color.Red;
                     Label1.ForeColor = System.Drawing.Color.Red;
                     lblNumero.ForeColor = System.Drawing.Color.Red;
-                    ibAnular.Visible = false;
+                    ibAnular.Enabled = false;
                 }
 
                 lblUsuarioRegistro.Text = dt.Rows[0]["UsuarioRegistra"].ToString();
@@ -73,6 +73,26 @@ public partial class CrearNotaIngreso : System.Web.UI.Page
                 gv.DataSource = dtDetalle;
                 gv.DataBind();
                 BloquearNotaIngreso();
+            }
+            else if (Request.QueryString["i_IdOrdenCompra"] != null)
+            {
+                string i_IdOrdenCompra = Request.QueryString["i_IdOrdenCompra"].ToString();
+                //Mostrar datos del a orden de compra
+                SqlDataAdapter da = new SqlDataAdapter("Play_OrdenCompra_Seleccionar " + i_IdOrdenCompra, conexion);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                txtReferencia.Text = dt.Rows[0]["v_Referencia"].ToString();
+                txtReferencia.Enabled = false;
+                Label5.Text = "Orden de Compra:";
+
+                //Mostrar saldos de la Orden de compra
+                SqlDataAdapter daDetOC = new SqlDataAdapter("Play_OrdenCompraDetalle_SeleccionarSaldos " + i_IdOrdenCompra, conexion);
+                DataTable dtDetOC = new DataTable();
+                daDetOC.Fill(dtDetOC);
+                Session["Detalle"] = dtDetOC;
+                gv.DataSource = dtDetOC;
+                gv.DataBind();
+                gv.FooterRow.Visible = false;
             }
         }
     }
@@ -240,6 +260,11 @@ public partial class CrearNotaIngreso : System.Web.UI.Page
 
             if (dt.Rows.Count == 0) { InicializarGrilla(); }
 
+            if (Request.QueryString["i_IdOrdenCompra"] != null)
+            {
+                gv.FooterRow.Visible = false;
+            }
+
         }
         catch (Exception)
         {
@@ -255,7 +280,15 @@ public partial class CrearNotaIngreso : System.Web.UI.Page
     protected void btnSalir_Click(object sender, ImageClickEventArgs e)
     {
         Session.Remove("Detalle");
-        Response.Redirect("ListarNotaIngreso.aspx");
+        if (Request.QueryString["i_IdOrdenCompra"] != null) 
+        {
+            string i_IdOrdenCompra = Request.QueryString["i_IdOrdenCompra"];
+            Response.Redirect("CrearOrdenCompra.aspx?i_IdOrdenCompra=" + i_IdOrdenCompra);
+        }
+        else
+        {
+            Response.Redirect("ListarNotaIngreso.aspx");
+        }
     }
 
     protected void btnGuardar_Click(object sender, ImageClickEventArgs e)
@@ -383,6 +416,22 @@ public partial class CrearNotaIngreso : System.Web.UI.Page
                     cmd4.Parameters.AddWithValue("@n_IdProveedor", DBNull.Value);
                     cmd4.ExecuteNonQuery();
                     cmd4.Dispose();
+
+                    //Si viene de una orden de compra -> Actualizar saldos
+                    if (Request.QueryString["i_IdOrdenCompra"] != null)
+                    {
+                        string i_IdOrdenCompra = Request.QueryString["i_IdOrdenCompra"].ToString();
+                        SqlCommand cmd6 = new SqlCommand();
+                        cmd6.Connection = cn;
+                        cmd6.Transaction = tran;
+                        cmd6.CommandType = CommandType.StoredProcedure;
+                        cmd6.CommandText = "Play_OrdenCompraDetalle_ActualizarSaldo";
+                        cmd6.Parameters.AddWithValue("@i_IdOrdenCompra", i_IdOrdenCompra);
+                        cmd6.Parameters.AddWithValue("@n_IdProducto", n_IdProducto);
+                        cmd6.Parameters.AddWithValue("@i_Cantidad", dt.Rows[i]["Cantidad"].ToString());
+                        cmd6.ExecuteNonQuery();
+                        cmd6.Dispose();
+                    }
                 }
 
                 //Actualizar Correlativos
@@ -394,6 +443,34 @@ public partial class CrearNotaIngreso : System.Web.UI.Page
                 cmd5.Parameters.AddWithValue("@n_IdTipoDocumento", 8);
                 cmd5.Parameters.AddWithValue("@n_IdAlmacen", ddlAlmacen.SelectedValue);
                 cmd5.ExecuteNonQuery();
+                cmd5.Dispose();
+
+                if (Request.QueryString["i_IdOrdenCompra"] != null)
+                {
+                    //Registrar documentos asociados a la orden de compra
+                    string i_IdOrdenCompra = Request.QueryString["i_IdOrdenCompra"].ToString();
+                    SqlCommand cmd7 = new SqlCommand();
+                    cmd7.Connection = cn;
+                    cmd7.Transaction = tran;
+                    cmd7.CommandType = CommandType.StoredProcedure;
+                    cmd7.CommandText = "Play_OrdenCompraDocumento_Insertar";
+                    cmd7.Parameters.AddWithValue("@i_IdOrdenCompra", i_IdOrdenCompra);
+                    cmd7.Parameters.AddWithValue("@n_IdAlmacen", ddlAlmacen.SelectedValue);
+                    cmd7.Parameters.AddWithValue("@n_IdTipoDocumento", 8);
+                    cmd7.Parameters.AddWithValue("@v_NumeroDocumento", numero);
+                    cmd7.ExecuteNonQuery();
+                    cmd7.Dispose();
+
+                    //Comprobar el estado de la orden de compra (recibido parcial o recibido total)
+                    SqlCommand cmd8 = new SqlCommand();
+                    cmd8.Connection = cn;
+                    cmd8.Transaction = tran;
+                    cmd8.CommandType = CommandType.StoredProcedure;
+                    cmd8.CommandText = "Play_OrdenCompra_CambiarEstado";
+                    cmd8.Parameters.AddWithValue("@i_IdOrdenCompra", i_IdOrdenCompra);
+                    cmd8.ExecuteNonQuery();
+                    cmd8.Dispose();
+                }
 
                 tran.Commit();
                 lblNumero.Text = numero;
@@ -469,7 +546,7 @@ public partial class CrearNotaIngreso : System.Web.UI.Page
                     lblEstado.ForeColor = System.Drawing.Color.Red;
                     Label1.ForeColor = System.Drawing.Color.Red;
                     lblNumero.ForeColor = System.Drawing.Color.Red;
-                    ibAnular.Visible = false;
+                    ibAnular.Enabled = false;
 
                     BloquearNotaIngreso();
 

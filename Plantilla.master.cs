@@ -109,6 +109,19 @@ public partial class Plantilla : System.Web.UI.MasterPage
 
     protected void LoginStatus1_LoggingOut(object sender, LoginCancelEventArgs e)
     {
-        Session.Abandon();
+        try
+        {
+            if (Session["MenuHTML"] != null) { Session["MenuHTML"] = null; }
+            if (Session["Detalle"] != null) { Session["Detalle"] = null; }
+            if (Session["dtAlmacenes"] != null) { Session["dtAlmacenes"] = null; }
+            if (Session["dtUsuario"] != null) { Session["dtUsuario"] = null; }
+            if (Session["dtParametro"] != null) { Session["dtParametro"] = null; }
+            Session.Abandon();
+        }
+        catch (Exception)
+        {
+            
+        }
+
     }
 }
