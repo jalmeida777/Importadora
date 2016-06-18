@@ -17,7 +17,7 @@ public partial class FlujoCajaDiaria : System.Web.UI.Page
         {
             txtFecha.Text = DateTime.Now.ToShortDateString();
             ListarSucursal();
-
+            tblConsulta.Visible = false;
         }
     }
 
@@ -49,20 +49,46 @@ public partial class FlujoCajaDiaria : System.Web.UI.Page
                 DataTable dt = new DataTable();
                 da.Fill(dt);
 
-                lblCajaInicial.Text = dt.Rows[0]["f_CajaInicial"].ToString();
-                lblTotalIngresos.Text = dt.Rows[0]["f_IngresoAdicional"].ToString();
-                lblTotalSalidas.Text = dt.Rows[0]["f_SalidaAdicional"].ToString();
-                lblTotalVentas.Text = dt.Rows[0]["f_TotalVenta"].ToString();
-                lblCajaFinal.Text = dt.Rows[0]["f_CajaFinal"].ToString();
-                lblCajaReal.Text = dt.Rows[0]["f_CajaReal"].ToString();
+                lblCajaInicial.Text = decimal.Parse(dt.Rows[0]["f_CajaInicial"].ToString()).ToString("C");
+                lblTotalSalidas.Text = decimal.Parse(dt.Rows[0]["f_SalidaAdicional"].ToString()).ToString("C");
+                lblTotalIngresos.Text = decimal.Parse(dt.Rows[0]["f_IngresoAdicional"].ToString()).ToString("C");
+                lblTotalVentas.Text = decimal.Parse(dt.Rows[0]["f_TotalVenta"].ToString()).ToString("C");
+                lblCajaFinal.Text = decimal.Parse(dt.Rows[0]["f_CajaFinal"].ToString()).ToString("C");
+                lblCajaReal.Text = decimal.Parse(dt.Rows[0]["f_CajaReal"].ToString()).ToString("C");
 
 
                 DataTable dt2 = new DataTable();
                 SqlDataAdapter da2 = new SqlDataAdapter("Play_CajaMovimiento_Listar " + idCaja, conexion);
                 da2.Fill(dt2);
+
+                decimal total = 0;
+                for (int i = 0; i < dt2.Rows.Count; i++)
+                {
+                    total = total + decimal.Parse(dt2.Rows[i]["f_Importe"].ToString());
+
+                }
+
                 gvReciboCaja.DataSource = dt2;
                 gvReciboCaja.DataBind();
+                string movimiento = "";
+                for (int i = 0; i < gvReciboCaja.Rows.Count; i++)
+                {
+                    movimiento = gvReciboCaja.Rows[i].Cells[3].Text;
+                    if (movimiento == "INGRESO")
+                    {
+                        gvReciboCaja.Rows[i].Cells[4].ForeColor = System.Drawing.Color.Green;
+                    }
+                    else if (movimiento == "SALIDA")
+                    {
+                        gvReciboCaja.Rows[i].Cells[4].ForeColor = System.Drawing.Color.Red;
+                    }
+                }
 
+                if (dt2.Rows.Count > 0)
+                {
+                    gvReciboCaja.FooterRow.Cells[4].Text = total.ToString("C");//Importe
+                }
+                tblConsulta.Visible = true;
             }
             else 
             {

@@ -107,7 +107,7 @@ public partial class CierreCaja : System.Web.UI.Page
 
             //Reconocer el id de la caja segun el almacen y la fecha
             DataTable dtIdCaja = new DataTable();
-            SqlDataAdapter daIdCaja = new SqlDataAdapter("BDVETER_CajaHistorica_SelectID " + idAlmacen + "," + anio + "," + mes + "," + dia, conexion);
+            SqlDataAdapter daIdCaja = new SqlDataAdapter("Play_CajaHistorica_SelectID " + idAlmacen + "," + anio + "," + mes + "," + dia, conexion);
             daIdCaja.Fill(dtIdCaja);
             string idCaja = dtIdCaja.Rows[0]["i_IdCaja"].ToString();
             if (idCaja == "")
@@ -120,10 +120,10 @@ public partial class CierreCaja : System.Web.UI.Page
             SqlCommand cmd = new SqlCommand();
             cmd.Connection = conexion;
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "BDVETER_CajaHistorica_RegistrarCierre";
+            cmd.CommandText = "Play_CajaHistorica_RegistrarCierre";
             cmd.Parameters.AddWithValue("@f_CajaReal", double.Parse(txtmonto.Text));
             cmd.Parameters.AddWithValue("@n_IdUsuarioCierre", n_IdUsuario);
-            cmd.Parameters.AddWithValue("@i_IdAlmacen", idAlmacen);
+            cmd.Parameters.AddWithValue("@n_IdAlmacen", idAlmacen);
             cmd.Parameters.AddWithValue("@i_IdCaja", idCaja);
             conexion.Open();
             cmd.ExecuteNonQuery();

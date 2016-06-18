@@ -94,7 +94,7 @@ public partial class CrearPedido : System.Web.UI.Page
 
 
 
-                btnAnular.Visible = true;
+                btnAnular.Enabled = true;
                 btnAnular.Enabled = true;
                 lblNumeroPedido.Visible = true;
                 lnkAgregarProducto.Enabled = true;
@@ -498,6 +498,21 @@ public partial class CrearPedido : System.Web.UI.Page
                         cmdKardex.Dispose();
                     }
 
+                    //Registra Movimiento de Caja Chica
+                    SqlCommand cmdCaja = new SqlCommand();
+                    cmdCaja.Connection = cn;
+                    cmdCaja.Transaction = tran;
+                    cmdCaja.CommandType = CommandType.StoredProcedure;
+                    cmdCaja.CommandText = "Play_Pedido_CajaMovimiento";
+                    cmdCaja.Parameters.AddWithValue("@n_IdAlmacen", ddlTienda.SelectedValue);
+                    cmdCaja.Parameters.AddWithValue("@i_IdConceptoCaja", "1");//Venta
+                    cmdCaja.Parameters.AddWithValue("@c_TipoMovimiento", "E");
+                    cmdCaja.Parameters.AddWithValue("@f_Importe", lblTotal.Text);
+                    cmdCaja.Parameters.AddWithValue("@v_NroDocumento", NumeroPedido);
+                    cmdCaja.Parameters.AddWithValue("@n_IdUsuario", n_IdUsuario);
+                    cmdCaja.ExecuteNonQuery();
+                    cmdCaja.Dispose();
+
                     //Actualizar Correlativo del Pedido
                     SqlCommand cmd5 = new SqlCommand();
                     cmd5.Connection = cn;
@@ -558,7 +573,7 @@ public partial class CrearPedido : System.Web.UI.Page
     {
         ddlTienda.Enabled = false;
         btnAnular.Enabled = true;
-        btnImprimir.Visible = true;
+        btnImprimir.Enabled = true;
         btnImprimir.Enabled = true;
         ibEstablecerSucursal.Visible = false;
         gv.Enabled = false;
@@ -576,6 +591,7 @@ public partial class CrearPedido : System.Web.UI.Page
         lnkAgregarProducto.Enabled = false;
         gv.Enabled = false;
         txtPago.Enabled = false;
+        txtDescuento.Enabled = false;
         txtObservacion.Enabled = false;
         btnGuardar.Enabled = false;
         btnAnular.Enabled = false;
@@ -1316,10 +1332,27 @@ public partial class CrearPedido : System.Web.UI.Page
                         cmdp.ExecuteNonQuery();
                         cmdp.Dispose();
 
+                        decimal importeNegativo = decimal.Parse(lblTotal.Text) * -1;
+
+                        //Registra Movimiento de Caja Chica
+                        SqlCommand cmdCaja = new SqlCommand();
+                        cmdCaja.Connection = cn;
+                        cmdCaja.Transaction = tran;
+                        cmdCaja.CommandType = CommandType.StoredProcedure;
+                        cmdCaja.CommandText = "Play_Pedido_CajaMovimiento";
+                        cmdCaja.Parameters.AddWithValue("@n_IdAlmacen", ddlTienda.SelectedValue);
+                        cmdCaja.Parameters.AddWithValue("@i_IdConceptoCaja", "2");//Venta Anulada
+                        cmdCaja.Parameters.AddWithValue("@c_TipoMovimiento", "S");
+                        cmdCaja.Parameters.AddWithValue("@f_Importe", importeNegativo);
+                        cmdCaja.Parameters.AddWithValue("@v_NroDocumento", lblNumeroPedido.Text);
+                        cmdCaja.Parameters.AddWithValue("@n_IdUsuario", n_IdUsuario);
+                        cmdCaja.ExecuteNonQuery();
+                        cmdCaja.Dispose();
+
                         tran.Commit(); 
                         BloquearTodo();
-                        btnGuardar.Visible = false;
-                        btnAnular.Visible = false;
+                        btnGuardar.Enabled = false;
+                        btnAnular.Enabled = false;
                         Label1.ForeColor = System.Drawing.Color.Red;
                         lblNumeroPedido.ForeColor = System.Drawing.Color.Red;
                         ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Pedido Anulado Satisfactoriamente' });</script>", false);
@@ -1357,11 +1390,41 @@ public partial class CrearPedido : System.Web.UI.Page
 
     protected void ibEstablecerSucursal_Click(object sender, ImageClickEventArgs e)
     {
-        ListarUsuariosVendedores();
-        ddlVendedor.Enabled = true;
-        ddlTienda.Enabled = false;
-        lnkAgregarProducto.Enabled = true;
-        ibEstablecerSucursal.Visible = false;
+        if (ValidarCaja() == true)
+        {
+            ListarUsuariosVendedores();
+            ddlVendedor.Enabled = true;
+            ddlTienda.Enabled = false;
+            lnkAgregarProducto.Enabled = true;
+            ibEstablecerSucursal.Visible = false;
+        }
+        else 
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'No se encontró tipo de cambio para el día de hoy' });</script>", false);
+            BloquearTodo();
+        }
+    }
+
+    bool ValidarCaja() 
+    {
+        //Validar que la caja esté abierta
+        string Almacen = ddlTienda.SelectedValue;
+        string Año = DateTime.Now.Year.ToString();
+        string Mes = DateTime.Now.Month.ToString();
+        string Dia = DateTime.Now.Day.ToString();
+        DataTable dtCaja = new DataTable();
+        SqlDataAdapter daCaja = new SqlDataAdapter("Play_Valida_Caja " + Almacen + "," + Año + "," + Mes + "," + Dia, conexion);
+        daCaja.Fill(dtCaja);
+        int Existe = int.Parse(dtCaja.Rows[0]["Existe"].ToString());
+        if (Existe == 0)
+        {
+            return false;
+        }
+        else if (Existe == 1)
+        {
+            return true;
+        }
+        else { return false; }
     }
 
     protected void txtPrecio_TextChanged(object sender, EventArgs e)

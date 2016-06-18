@@ -99,16 +99,18 @@
                 </td>
                 <td width="95">
                    
-                    <asp:ImageButton ID="btnAnular" runat="server" ImageUrl="~/images/btnAnular_New.png" 
-                        Visible="False" onclick="btnAnular_Click" 
-                        OnClientClick="if (confirm('Seguro de anular?')) { btnAnular.disabled = false; return true; } else { return false; }" />
+                    <asp:ImageButton ID="btnAnular" runat="server" 
+                        ImageUrl="~/images/btnAnular_New.png" onclick="btnAnular_Click" 
+                        
+                        OnClientClick="if (confirm('Seguro de anular?')) { btnAnular.disabled = false; return true; } else { return false; }" 
+                        Enabled="False" />
                    
                 </td>
                 <td width="95">
                    
                     <asp:ImageButton ID="btnImprimir" runat="server" 
-                        ImageUrl="~/images/btnImprimir_New.png" Visible="False" 
-                        onclick="btnImprimir_Click" />
+                        ImageUrl="~/images/btnImprimir_New.png" 
+                        onclick="btnImprimir_Click" Enabled="False" />
 
                         <cc1:ConfirmButtonExtender ID="ConfirmButtonExtender3" runat="server" 
                     ConfirmText="¿Seguro de imprimir?" Enabled="True" 
@@ -216,7 +218,7 @@
             </td>
             <td style="padding-left: 5px">
                         <asp:TextBox ID="txtFechaInicial" runat="server" CssClass="inputsFecha"
-                            MaxLength="10"></asp:TextBox>
+                            MaxLength="10" Enabled="False"></asp:TextBox>
                         <cc1:CalendarExtender 
                         ID="CalendarExtender1" 
                         runat="server" 

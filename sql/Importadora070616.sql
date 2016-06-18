@@ -196,13 +196,111 @@ from CajaHistorica
 where i_IdCaja = @i_IdCaja
 go
 
-create PROCEDURE Play_CajaMovimiento_Listar
+alter PROCEDURE Play_CajaMovimiento_Listar
 @i_IdCaja int
 as
-
-select cm.i_IdCaja,cm.v_NroDocumento, td.v_Descripcion, d_FechaMovimiento,co.v_Descripcion,f_Ingreso,f_Salida,f_Saldo 
+select cm.i_IdCaja,cm.v_NroDocumento, 
+td.v_Descripcion as 'TipoDocumento',
+ltrim(right(convert(varchar(25),d_FechaMovimiento, 100), 7)) as d_FechaMovimiento ,
+co.v_Descripcion as 'Concepto',
+cm.f_Importe,
+case cm.c_TipoMovimiento when 'E' then 'INGRESO' ELSE 'SALIDA' END AS 'c_TipoMovimiento',
+usu.v_Usuario
 from CajaMovimiento cm inner join TipoDocumento td 
 on cm.n_IdTipoDocumento = td.n_IdTipoDocumento 
-inner join CajaConcepto co 
-on cm.i_IdConceptoCaja = co.i_IdCajaConcepto 
+inner join CajaConcepto co on cm.i_IdConceptoCaja = co.i_IdCajaConcepto 
+left join Usuario usu on cm.n_IdUsuario = usu.n_IdUsuario
 where cm.i_IdCaja = @i_IdCaja
+go
+
+alter procedure Play_CajaHistorica_RegistrarCierre --100,1,2,1    
+@f_CajaReal float,    
+@n_IdUsuarioCierre numeric(10,0),  
+@i_IdCaja int,  
+@n_IdAlmacen numeric(10,0)
+as                        
+update dbo.CajaHistorica 
+set f_CajaReal = @f_CajaReal, 
+n_IdUsuarioCierre = @n_IdUsuarioCierre,
+d_FechaCierre = GETDATE(),
+b_Estado = 0
+where i_IdCaja = @i_IdCaja and n_IdAlmacen = @n_IdAlmacen
+go
+
+sp_helptext Play_CajaHistorica_Registrar
+
+alter procedure Play_Valida_Caja --1,2016,5,14  
+@n_IdAlmacen numeric(10,0),  
+@i_Año int,  
+@i_Mes int,  
+@i_Dia int  
+as  
+select count(1) as 'Existe' from CajaHistorica   
+where n_IdAlmacen = @n_IdAlmacen  
+and year(d_Fecha)=@i_Año  
+and month(d_Fecha)=@i_Mes  
+and day(d_Fecha)=@i_Dia  
+and b_Estado = 1
+go
+
+
+
+create procedure Play_CajaHistorica_Registrar  --1,100,100,0,0,0,0,1    
+@n_IdAlmacen numeric(10,0),                          
+@f_CajaInicial float,    
+@f_CajaFinal float,     
+@n_IdUsuarioApertura numeric(10,0)    
+       
+         
+as                        
+declare @i_IdCaja int                                   
+set @i_IdCaja = (select isnull(max(i_IdCaja),0) from CajaHistorica) + 1                        
+insert into CajaHistorica             
+(i_IdCaja ,n_IdAlmacen ,d_Fecha,f_CajaInicial,f_CajaFinal,f_CajaReal,f_IngresoAdicional,f_SalidaAdicional,f_TotalVenta,b_Estado,n_IdUsuarioApertura,d_FechaApertura)          
+values(@i_IdCaja,@n_IdAlmacen,GETDATE(),@f_CajaInicial,@f_CajaFinal,0,0,0,0,1,@n_IdUsuarioApertura,GETDATE())    
+    
+select @i_IdCaja  
+go
+   
+  
+alter procedure Play_Pedido_CajaMovimiento  --1,100,100,0,0,0,0,1    
+@n_IdAlmacen numeric(10,0),
+@i_IdConceptoCaja int,  
+@c_TipoMovimiento char(1),  
+@f_Importe float,  
+@v_NroDocumento varchar(20),
+@n_IdUsuario numeric(10,0)
+as                        
+
+declare @i_IdCaja int
+set @i_IdCaja = (select i_IdCaja from CajaHistorica where n_IdAlmacen = @n_IdAlmacen and year(d_Fecha)=year(getdate()) and month(d_Fecha) = month(getdate()) and day(d_Fecha)= day(getdate()))
+
+--Obtener saldo actual de Caja Historica  
+declare @saldo float  
+set @saldo = (select f_CajaFinal from CajaHistorica where i_IdCaja = @i_IdCaja)  
+  
+
+--Registrar CajaMovimiento  
+if @c_TipoMovimiento = 'E'  
+begin  
+set @saldo = @saldo + @f_Importe  
+insert into CajaMovimiento values(@i_IdCaja,GETDATE(),@i_IdConceptoCaja,@f_Importe,'E',1,@v_NroDocumento,@n_IdUsuario)  
+end  
+else  
+begin  
+set @saldo = @saldo - @f_Importe  
+insert into CajaMovimiento values(@i_IdCaja,GETDATE(),@i_IdConceptoCaja,@f_Importe,'S',1,@v_NroDocumento,@n_IdUsuario)  
+end  
+--Actualizar CajaHistorica  
+if @c_TipoMovimiento = 'E'  
+begin  
+update dbo.CajaHistorica set f_CajaFinal = @saldo, f_TotalVenta = f_TotalVenta + @f_Importe where i_IdCaja = @i_IdCaja  
+end  
+else  
+begin  
+update dbo.CajaHistorica set f_CajaFinal = @saldo,f_TotalVenta = f_TotalVenta - @f_Importe where i_IdCaja = @i_IdCaja  
+end  
+go
+
+delete dbo.CajaMovimiento
+delete dbo.CajaHistorica

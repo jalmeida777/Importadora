@@ -57,7 +57,7 @@
                 </td>
                 </tr></table>
             </div>
-    <table width="100%" cellspacing="5" >
+    <table width="100%" cellspacing="5" id="tblConsulta" runat="server">
         <tr>
             <td height="10" width="20">
                 &nbsp;</td>
@@ -73,13 +73,24 @@
                 <table width="100%">
                     <tr>
                         <td>
-                            <table border="0" width="100%">
+                            <table border="0" width="100%" cellpadding="5">
                                 <tr>
                                     <td width="120">
-                            <asp:Label ID="Label2" runat="server" Text="Caja Inicial:" ForeColor="#4C4C4C"></asp:Label>
+                            <asp:Label ID="Label2" runat="server" Text="Caja Inicial:" ForeColor="#4C4C4C" 
+                                            Font-Names="Segoe UI Light" Font-Size="14pt"></asp:Label>
+                                    </td>
+                                    <td class="data" align="right" width="100">
+                            <asp:Label ID="lblCajaInicial" runat="server" Font-Bold="True" Font-Names="Segoe UI Light" 
+                                            Font-Size="14pt">0.00</asp:Label>
+                                    </td>
+                                    <td class="data" width="120">
+                            <asp:Label ID="Label34" runat="server" Text="Ventas:" 
+                                ForeColor="#4C4C4C" style="text-align: justify" Font-Names="Segoe UI Light" 
+                                            Font-Size="14pt"></asp:Label>
                                     </td>
                                     <td class="data">
-                            <asp:Label ID="lblCajaInicial" runat="server">0.00</asp:Label>
+                            <asp:Label ID="lblTotalVentas" runat="server" ForeColor="#006600" Font-Bold="True" 
+                                            Font-Names="Segoe UI Light" Font-Size="14pt">0.00</asp:Label>
                                     </td>
                                 </tr>
                             </table>
@@ -92,28 +103,39 @@
                     <tr>
                         <td>
                 <asp:GridView ID="gvReciboCaja" runat="server" AutoGenerateColumns="False" 
-                    CssClass="grid" DataKeyNames="i_IdCaja">
+                    CssClass="grid" DataKeyNames="i_IdCaja" ShowFooter="True">
                     <Columns>
-                        <asp:BoundField HeaderText="Documento" DataField="v_NroDocumento" >
-                        <ItemStyle Width="100px" />
+                        <asp:BoundField DataField="TipoDocumento" HeaderText="Documento" >
+                        <ItemStyle Width="100px" HorizontalAlign="Left" Font-Names="Segoe UI Light" 
+                            Font-Size="14pt" />
                         </asp:BoundField>
-                        <asp:BoundField DataField="d_FechaMovimiento" HeaderText="Fecha-Hora">
-                        <ItemStyle Width="100px" />
+                        <asp:BoundField HeaderText="Número" DataField="v_NroDocumento" >
+                        <ItemStyle Width="100px" HorizontalAlign="Left" Font-Names="Segoe UI Light" 
+                            Font-Size="14pt" />
                         </asp:BoundField>
-                        <asp:BoundField DataField="v_Descripcion" HeaderText="Descripcion" >
-                        <ItemStyle Width="100px" />
+                        <asp:BoundField DataField="d_FechaMovimiento" HeaderText="Hora">
+                        <ItemStyle Width="100px" Font-Names="Segoe UI Light" Font-Size="14pt" />
                         </asp:BoundField>
-                        <asp:BoundField DataField="f_Ingreso" HeaderText="Ingreso">
-                        <ItemStyle Width="100px" />
+                        <asp:BoundField HeaderText="Movimiento" DataField="c_TipoMovimiento">
+                        <FooterStyle Font-Bold="True" Font-Names="Segoe UI Light" 
+                            Font-Size="14pt" HorizontalAlign="Right" />
+                        <ItemStyle Width="100px" HorizontalAlign="Right" 
+                            Font-Names="Segoe UI Light" Font-Size="14pt" />
                         </asp:BoundField>
-                        <asp:BoundField HeaderText="Salida" DataField="f_Salida">
-                        <ItemStyle Width="100px" />
+                        <asp:BoundField DataField="f_Importe" HeaderText="Importe" 
+                            DataFormatString="{0:C}">
+                        <FooterStyle Font-Bold="True" Font-Names="Segoe UI Light" Font-Size="14pt" 
+                            HorizontalAlign="Right" />
+                        <ItemStyle Font-Names="Segoe UI Light" Font-Size="14pt" HorizontalAlign="Right" 
+                            Width="100px" />
                         </asp:BoundField>
-                        <asp:BoundField DataField="f_Saldo" HeaderText="Saldo">
-                        <ItemStyle Width="100px" />
+                        <asp:BoundField DataField="v_Usuario" HeaderText="Usuario">
+                        <ItemStyle Font-Names="Segoe UI Light" Font-Size="14pt" Width="100px" />
+                        </asp:BoundField>
+                        <asp:BoundField DataField="Concepto" HeaderText="Concepto">
+                        <ItemStyle Font-Names="Segoe UI Light" Font-Size="14pt" Width="100px" />
                         </asp:BoundField>
                     </Columns>
-                    <FooterStyle CssClass="footer" />
                 </asp:GridView>
                         </td>
                     </tr>
@@ -123,49 +145,55 @@
                     </tr>
                     <tr>
                         <td>
-                            <table border="0" width="100%">
+                            <table border="0" width="100%" cellpadding="5">
                                 <tr>
                                     <td width="120">
                             <asp:Label ID="Label29" runat="server" Text="Total Ingresos:" 
-                                ForeColor="#4C4C4C" style="text-align: justify"></asp:Label>
+                                ForeColor="#4C4C4C" style="text-align: justify" Font-Names="Segoe UI Light" 
+                                            Font-Size="14pt"></asp:Label>
+                                    </td>
+                                    <td class="data" align="right" width="100">
+                            <asp:Label ID="lblTotalIngresos" runat="server" ForeColor="#006600" Font-Bold="True" 
+                                            Font-Names="Segoe UI Light" Font-Size="14pt">0.00</asp:Label>
                                     </td>
                                     <td class="data">
-                            <asp:Label ID="lblTotalIngresos" runat="server" ForeColor="#339966">0.00</asp:Label>
-                                    </td>
+                                        &nbsp;</td>
                                 </tr>
                                 <tr>
                                     <td>
                             <asp:Label ID="Label30" runat="server" Text="Total Salidas:" 
-                                ForeColor="#4C4C4C"></asp:Label>
+                                ForeColor="#4C4C4C" Font-Names="Segoe UI Light" Font-Size="14pt"></asp:Label>
+                                    </td>
+                                    <td class="data" align="right">
+                            <asp:Label ID="lblTotalSalidas" runat="server" ForeColor="#CC0000" Font-Bold="True" 
+                                            Font-Names="Segoe UI Light" Font-Size="14pt">0.00</asp:Label>
                                     </td>
                                     <td class="data">
-                            <asp:Label ID="lblTotalSalidas" runat="server" ForeColor="#CC0000">0.00</asp:Label>
-                                    </td>
+                                        &nbsp;</td>
                                 </tr>
                                 <tr>
                                     <td>
-                            <asp:Label ID="Label31" runat="server" Text="Total Ventas:" 
-                                                ForeColor="#4C4C4C"></asp:Label>
+                            <asp:Label ID="Label28" runat="server" Text="Caja Final:" Font-Names="Segoe UI Light" 
+                                            Font-Size="14pt"></asp:Label>
+                                    </td>
+                                    <td class="data" align="right">
+                            <asp:Label ID="lblCajaFinal" runat="server" Font-Bold="True" Font-Names="Segoe UI Light" 
+                                            Font-Size="14pt">0.00</asp:Label>
                                     </td>
                                     <td class="data">
-                            <asp:Label ID="lblTotalVentas" runat="server">0.00</asp:Label>
-                                    </td>
+                                        &nbsp;</td>
                                 </tr>
                                 <tr>
                                     <td>
-                            <asp:Label ID="Label28" runat="server" Text="Caja Final:"></asp:Label>
+                            <asp:Label ID="Label32" runat="server" Text="Caja Real:" Font-Names="Segoe UI Light" 
+                                            Font-Size="14pt"></asp:Label>
+                                    </td>
+                                    <td class="data" align="right">
+                            <asp:Label ID="lblCajaReal" runat="server" Font-Bold="True" Font-Names="Segoe UI Light" 
+                                            Font-Size="14pt">0.00</asp:Label>
                                     </td>
                                     <td class="data">
-                            <asp:Label ID="lblCajaFinal" runat="server">0.00</asp:Label>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                            <asp:Label ID="Label32" runat="server" Text="Caja Real:"></asp:Label>
-                                    </td>
-                                    <td class="data">
-                            <asp:Label ID="lblCajaReal" runat="server">0.00</asp:Label>
-                                    </td>
+                                        &nbsp;</td>
                                 </tr>
                             </table>
                         </td>
