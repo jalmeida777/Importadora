@@ -127,6 +127,7 @@ public partial class CrearUsuario : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@v_RutaFoto", lblRuta.Text.Trim().ToUpper());
                     cmd.Parameters.AddWithValue("@b_Estado", chkEstado.Checked);
                     cmd.Parameters.AddWithValue("@v_Nombre", txtNombre.Text.Trim().ToUpper());
+                    cmd.Parameters.AddWithValue("@v_Email", txtEmail.Text.Trim().ToUpper());
                     conexion.Open();
                     cmd.ExecuteNonQuery();
                     conexion.Close();
@@ -181,6 +182,7 @@ public partial class CrearUsuario : System.Web.UI.Page
                         cmd.Parameters.AddWithValue("@v_RutaFoto", lblRuta.Text.Trim().ToUpper());
                         cmd.Parameters.AddWithValue("@b_Estado", chkEstado.Checked);
                         cmd.Parameters.AddWithValue("@v_Nombre", txtNombre.Text.Trim().ToUpper());
+                        cmd.Parameters.AddWithValue("@v_Email", txtEmail.Text.Trim().ToUpper());
                         conexion.Open();
                         cmd.ExecuteNonQuery();
                         conexion.Close();
@@ -243,6 +245,7 @@ public partial class CrearUsuario : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@v_RutaFoto", lblRuta.Text.Trim().ToUpper());
                     cmd.Parameters.AddWithValue("@b_Estado", chkEstado.Checked);
                     cmd.Parameters.AddWithValue("@v_Nombre", txtNombre.Text.Trim().ToUpper());
+                    cmd.Parameters.AddWithValue("@v_Email", txtEmail.Text.Trim().ToUpper());
                     conexion.Open();
                     n_IdUsuario = cmd.ExecuteScalar().ToString();
                     conexion.Close();

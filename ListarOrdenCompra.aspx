@@ -103,13 +103,6 @@
                         <asp:BoundField DataField="Usuario" HeaderText="Creado por">
                         <ItemStyle Width="150px" />
                         </asp:BoundField>
-                        <asp:BoundField HeaderText="SubTotal" DataField="f_SubTotal" 
-                            DataFormatString="{0:n2}">
-                        <ItemStyle HorizontalAlign="Right" Width="70px" />
-                        </asp:BoundField>
-                        <asp:BoundField HeaderText="IGV" DataField="f_IGV" DataFormatString="{0:n2}">
-                        <ItemStyle HorizontalAlign="Right" Width="70px" />
-                        </asp:BoundField>
                         <asp:BoundField HeaderText="Total" DataField="f_Total" 
                             DataFormatString="{0:n2}">
                         <ItemStyle HorizontalAlign="Right" Width="70px" />

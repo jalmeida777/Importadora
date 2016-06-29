@@ -41,24 +41,8 @@
 <div class="divBusqueda">
     <table width="100%" cellpadding="3" cellspacing="3">
         <tr>
-            <td colspan="5">
-                <h1 class="label">Productos</h1></td>
-        </tr>
-        <tr>
-            <td width="65" style="padding-left: 10px">
-                <asp:Label ID="Label1" runat="server" Text="Almacén:"></asp:Label>
-            </td>
-            <td width="205">
-                <asp:DropDownList ID="ddlAlmacen" runat="server" Width="200px" CssClass="combo">
-                </asp:DropDownList>
-            </td>
-            <td width="170">
-                <asp:CheckBox ID="chkStockCero" runat="server" Text="No mostrar stock cero" />
-            </td>
-            <td width="205">
-                &nbsp;</td>
             <td>
-                &nbsp;</td>
+                <h1 class="label">Productos</h1></td>
         </tr>
     </table>
     </div>
@@ -70,10 +54,6 @@
                 <asp:ImageButton ID="btnNuevo" runat="server" 
                     ImageUrl="~/images/btnNuevo_New.png" onclick="btnNuevo_Click" />
                 
-                </td>
-                <td width="95">
-                    <asp:ImageButton ID="btnConsultar" runat="server" 
-                        ImageUrl="~/images/btnBuscar_New.png" onclick="btnConsultar_Click" />
                 </td>
                 <td width="95">
                     <asp:ImageButton ID="btnImprimir" runat="server" 
@@ -110,10 +90,26 @@
         EnableCallbackCompression="False" EnableCallBacks="False" 
         EnableRowsCache="False" EnableTheming="False" EnableViewState="False">
             <Columns>
+                <dx:GridViewDataTextColumn FieldName="SOTANO" VisibleIndex="4" 
+                    Caption="Sótano" Width="100px">
+                    <Settings AllowAutoFilter="False" />
+                    <DataItemTemplate>
+                        <asp:LinkButton ID="lbSotano" runat="server" Text='<%# Bind("Sotano") %>'></asp:LinkButton>
+                        <asp:Label ID="lblIdSotano" runat="server" Text="1" Visible="False"></asp:Label>
+                    </DataItemTemplate>
+                    <HeaderStyle HorizontalAlign="Center" />
+                    <CellStyle Font-Bold="False" HorizontalAlign="Center">
+                    </CellStyle>
+                    <Settings AllowAutoFilter="False" />
+                    <CellStyle Font-Bold="False">
+                    </CellStyle>
+                </dx:GridViewDataTextColumn>
+   
                 <dx:GridViewDataTextColumn FieldName="v_CodigoInterno" VisibleIndex="0" 
                     Caption="Código" Width="60px">
                     <Settings AutoFilterCondition="Equals" AllowAutoFilter="True" 
                         AllowAutoFilterTextInputTimer="False" />
+                    <HeaderStyle HorizontalAlign="Center" />
                     <CellStyle HorizontalAlign="Center">
                     </CellStyle>
                 </dx:GridViewDataTextColumn>
@@ -126,6 +122,7 @@
                                 ImageUrl='<%# Bind("v_RutaImagen") %>' style="margin-right: 0px" Width="60px" />
                                 </a>
                     </DataItemTemplate>
+                                 <HeaderStyle HorizontalAlign="Center" />
                 </dx:GridViewDataTextColumn>
                 <dx:GridViewDataTextColumn VisibleIndex="2" 
                     Caption="Producto" FieldName="Producto">
@@ -135,31 +132,59 @@
                         <asp:LinkButton ID="lbProducto" runat="server" Text='<%# Bind("Producto") %>'></asp:LinkButton>
                     </DataItemTemplate>
                 </dx:GridViewDataTextColumn>
-                <dx:GridViewDataTextColumn FieldName="f_StockContable" VisibleIndex="3" 
-                    Caption="Stock" Width="60px">
-                    <Settings AllowAutoFilter="False" />
-                    <CellStyle Font-Bold="False">
-                    </CellStyle>
-                </dx:GridViewDataTextColumn>
-   
-                <dx:GridViewDataHyperLinkColumn Caption="Ver Kardex" VisibleIndex="6" 
-                    Width="100px">
-                    <Settings AllowSort="False" />
-                    <DataItemTemplate>
-                        <asp:LinkButton ID="LinkButton1" runat="server">Ver Kardex</asp:LinkButton>
-                    </DataItemTemplate>
-                    <HeaderStyle HorizontalAlign="Center" />
-                    <CellStyle HorizontalAlign="Center">
-                    </CellStyle>
-                </dx:GridViewDataHyperLinkColumn>
-                <dx:GridViewDataTextColumn Caption="Precio" FieldName="f_Precio" 
-                    VisibleIndex="4" Width="100px">
+                <dx:GridViewDataTextColumn FieldName="f_Precio" VisibleIndex="3" 
+                    Caption="Precio" Width="100px">
                     <PropertiesTextEdit DisplayFormatString="C">
                     </PropertiesTextEdit>
                     <Settings AllowAutoFilter="True" AllowAutoFilterTextInputTimer="False" 
                         AllowGroup="False" AllowHeaderFilter="False" AllowSort="True" 
                         AutoFilterCondition="Equals" />
+                    <HeaderStyle HorizontalAlign="Center" />
                     <CellStyle HorizontalAlign="Right">
+                    </CellStyle>
+                </dx:GridViewDataTextColumn>
+   
+                <dx:GridViewDataTextColumn Caption="Semi Sótano" FieldName="SEMISOTANO" 
+                    VisibleIndex="5" Width="100px">
+                    <Settings AllowAutoFilter="False" />
+                    <DataItemTemplate>
+                        <asp:LinkButton ID="lbSemiSotano" runat="server" 
+                            Text='<%# Bind("SemiSotano") %>'></asp:LinkButton>
+                        <asp:Label ID="lblIdSemiSotano" runat="server" Text="2" Visible="False"></asp:Label>
+                    </DataItemTemplate>
+                    <HeaderStyle HorizontalAlign="Center" />
+                    <CellStyle HorizontalAlign="Center">
+                    </CellStyle>
+                </dx:GridViewDataTextColumn>
+                <dx:GridViewDataTextColumn Caption="Tercer Piso" FieldName="TERCERPISO" 
+                    VisibleIndex="6" Width="100px">
+                    <Settings AllowAutoFilter="False" />
+                    <DataItemTemplate>
+                        <asp:LinkButton ID="lbTercerPiso" runat="server" 
+                            Text='<%# Bind("TercerPiso") %>'></asp:LinkButton>
+                        <asp:Label ID="lblIdTercerPiso" runat="server" Text="3" Visible="False"></asp:Label>
+                    </DataItemTemplate>
+                    <HeaderStyle HorizontalAlign="Center" />
+                    <CellStyle HorizontalAlign="Center">
+                    </CellStyle>
+                </dx:GridViewDataTextColumn>
+                <dx:GridViewDataTextColumn Caption="Full Tienda" FieldName="FULLTIENDA" 
+                    VisibleIndex="7" Width="100px">
+                    <Settings AllowAutoFilter="False" />
+                    <DataItemTemplate>
+                        <asp:LinkButton ID="lbFullTienda" runat="server" 
+                            Text='<%# Bind("FullTienda") %>'></asp:LinkButton>
+                        <asp:Label ID="lblIdFullTienda" runat="server" Text="4" Visible="False"></asp:Label>
+                    </DataItemTemplate>
+                    <HeaderStyle HorizontalAlign="Center" />
+                    <CellStyle HorizontalAlign="Center">
+                    </CellStyle>
+                </dx:GridViewDataTextColumn>
+                <dx:GridViewDataTextColumn Caption="Total" FieldName="TOTAL" VisibleIndex="9" 
+                    Width="100px">
+                    <Settings AllowAutoFilter="False" />
+                    <HeaderStyle HorizontalAlign="Center" />
+                    <CellStyle HorizontalAlign="Center">
                     </CellStyle>
                 </dx:GridViewDataTextColumn>
             </Columns>
@@ -198,13 +223,8 @@
         </dx:ASPxGridView>
         <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
             ConnectionString="<%$ ConnectionStrings:PlayConnectionString %>" 
-            SelectCommand="Play_Stock_Listar" SelectCommandType="StoredProcedure">
-            <SelectParameters>
-                <asp:ControlParameter ControlID="ddlAlmacen" Name="n_IdAlmacen" 
-                    PropertyName="SelectedValue" Type="Int32" />
-                <asp:ControlParameter ControlID="chkStockCero" Name="b_stockCero" 
-                    PropertyName="Checked" Type="Boolean" />
-            </SelectParameters>
+            SelectCommand="Play_StockGlobal_Listar" 
+        SelectCommandType="StoredProcedure">
         </asp:SqlDataSource>
 
     <dx:ASPxPopupControl ID="popup" runat="server" AllowDragging="True" 

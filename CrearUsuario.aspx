@@ -80,10 +80,11 @@
                             <td>
                                 <asp:TextBox ID="txtNombre" runat="server" CssClass="inputNormal" placeholder="NOMBRES Y APELLIDOS"
                     Width="300px" style="text-transform:uppercase" MaxLength="100" TabIndex="1"></asp:TextBox>
-                <asp:Label ID="Label16" runat="server" Font-Bold="True" ForeColor="#18AC85" 
-                        Text="*"></asp:Label>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
+                                    ControlToValidate="txtNombre" ErrorMessage="Campo obligatorio" Font-Bold="True" 
+                                    ForeColor="#18AC85" SetFocusOnError="True">*Campo obligatorio</asp:RequiredFieldValidator>
                             </td>
-                            <td colspan="3" rowspan="5" align="left" valign="top">
+                            <td colspan="3" rowspan="6" align="left" valign="top">
                                 <table class="style1">
                                     <tr>
                                         <td>
@@ -116,6 +117,23 @@
                                     </tr>
                                 </table>
 
+                            </td>
+                            <td width="20">
+                                &nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td height="10" width="20">
+                                &nbsp;</td>
+                            <td>
+                                <asp:Label ID="Label25" runat="server" Text="Email:"></asp:Label>
+                            </td>
+                            <td>
+                                <asp:TextBox ID="txtEmail" runat="server" CssClass="inputNormal" 
+                                    MaxLength="100" Width="300px"></asp:TextBox>
+                                <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
+                                    ControlToValidate="txtEmail" ErrorMessage="Email incorrecto" Font-Bold="True" 
+                                    ForeColor="#18AC85" SetFocusOnError="True" 
+                                    ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*">*Email Incorrecto</asp:RegularExpressionValidator>
                             </td>
                             <td width="20">
                                 &nbsp;</td>
@@ -157,7 +175,7 @@
                                         </td>
                                         <td>
                                             <asp:TextBox ID="txtPwd2" runat="server" CssClass="inputNormal" Width="100px" 
-                                                TextMode="Password" TabIndex="4"></asp:TextBox>
+                                                TextMode="Password" TabIndex="4" MaxLength="10"></asp:TextBox>
                                         </td>
                                     </tr>
                                 </table>

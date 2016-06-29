@@ -75,6 +75,9 @@
                         <asp:BoundField DataField="v_Nombre" HeaderText="Nombre">
                         <HeaderStyle HorizontalAlign="Center" />
                         </asp:BoundField>
+                        <asp:BoundField DataField="v_Email" HeaderText="Email">
+                        <ItemStyle Width="200px" />
+                        </asp:BoundField>
                         <asp:BoundField DataField="v_Usuario" HeaderText="Usuario">
                         <ItemStyle Width="80px" />
                         </asp:BoundField>
