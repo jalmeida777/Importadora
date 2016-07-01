@@ -221,7 +221,7 @@
                 <asp:Label ID="Label7" runat="server" Text="Moneda"></asp:Label>
             </td>
             <td style="padding-left: 5px">
-                <asp:Label ID="Label23" runat="server" Font-Bold="True" Text="Soles"></asp:Label>
+                <asp:Label ID="Label23" runat="server" Font-Bold="True" Text="Dolares"></asp:Label>
 
             </td>
             <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
@@ -369,49 +369,25 @@
             <td colspan="4">
                 <table border="0" cellpadding="5" cellspacing="0" width="100%">
                     <tr>
-                        <td rowspan="3" valign="top">
+                        <td valign="top">
                 <asp:TextBox ID="txtObservacion" runat="server" Height="80px" 
                     TextMode="MultiLine" Width="380px" placeholder="Comentarios"></asp:TextBox>
                         </td>
-                        <td align="right" width="100">
-                            <asp:Label ID="Label20" runat="server" Text="SubTotal:"></asp:Label>
-                        </td>
-                        <td align="right" width="20">
-                            <asp:Label ID="lblSigno1" runat="server" Text="S/."></asp:Label>
-                        </td>
-                        <td align="right" width="100">
-                            <asp:Label ID="lblSubTotal" runat="server"></asp:Label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="right">
-                            <asp:Label ID="Label21" runat="server" Text="I.G.V.:"></asp:Label>
-                        </td>
-                        <td align="right" width="20">
-                            <asp:Label ID="lblSigno2" runat="server" Text="S/."></asp:Label>
-                        </td>
-                        <td align="right">
-                            <asp:Label ID="lblIgv" runat="server"></asp:Label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="right" 
-                            style="border-top-style: solid; border-top-width: 1px; border-top-color: #999999">
+                        <td align="right" width="100" valign="top">
                             <asp:Label ID="Label22" runat="server" Font-Bold="True" Font-Size="12pt" 
                                 Text="Total:"></asp:Label>
                         </td>
-                        <td align="right" 
-                            style="border-top-style: solid; border-top-width: 1px; border-top-color: #999999" 
-                            width="20">
+                        <td align="right" width="20" valign="top">
                             <asp:Label ID="lblSigno3" runat="server" Font-Bold="True" Font-Size="12pt" 
-                                Text="S/."></asp:Label>
+                                Text="US$"></asp:Label>
                         </td>
-                        <td align="right" 
-                            style="border-top-style: solid; border-top-width: 1px; border-top-color: #999999">
+                        <td align="right" width="100" valign="top">
                             <asp:Label ID="lblTotal" runat="server" Font-Bold="True" Font-Size="12pt"></asp:Label>
                         </td>
+                        <td align="right" width="20" valign="top">
+                            &nbsp;</td>
                     </tr>
-                </table>
+                    </table>
             </td>
             <td>
                 &nbsp;</td>

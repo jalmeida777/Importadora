@@ -19,41 +19,8 @@ public partial class Procesos_ListarStockActual : System.Web.UI.Page
         {
             Response.Redirect("Login.aspx");
         }
-        if (Page.IsPostBack == false)
-        {
-            ListarSucursal();
-        }
     }
 
-    void ListarSucursal()
-    {
-        if (Session["dtAlmacenes"] != null)
-        {
-            DataTable dtAlmacen = new DataTable();
-            dtAlmacen = (DataTable)Session["dtAlmacenes"];
-            ddlAlmacen.DataSource = dtAlmacen;
-            ddlAlmacen.DataTextField = "v_Descripcion";
-            ddlAlmacen.DataValueField = "n_IdAlmacen";
-            ddlAlmacen.DataBind();
-            ddlAlmacen.SelectedIndex = 0;
-            if (dtAlmacen.Rows.Count >= 1)
-            {
-                ddlAlmacen.Enabled = true;
-            }
-            else
-            {
-                ddlAlmacen.Enabled = false;
-            }
-        }
-        else
-        {
-            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Su sesión ha caducado. Vuelva a ingresar al sistema.' });</script>", false);
-        }
-    }
-
-    protected void btnConsultar_Click(object sender, ImageClickEventArgs e)
-    {
-    }
 
     protected void btnSalir_Click(object sender, ImageClickEventArgs e)
     {
@@ -71,14 +38,33 @@ public partial class Procesos_ListarStockActual : System.Web.UI.Page
         {
             string n_IdProducto = e.GetValue("n_IdProducto").ToString();
 
-            LinkButton LinkButton1 = new LinkButton();
-            LinkButton1 = (LinkButton)ASPxGridView1.FindRowCellTemplateControl(e.VisibleIndex, (GridViewDataColumn)(ASPxGridView1.Columns[4]), "LinkButton1");
-
-            LinkButton1.PostBackUrl = "ListarKardex.aspx?n_IdProducto=" + n_IdProducto + "&n_IdAlmacen=" + ddlAlmacen.SelectedValue + "&origen=sucursal";
-
             LinkButton lbProducto = new LinkButton();
-            lbProducto = (LinkButton)ASPxGridView1.FindRowCellTemplateControl(e.VisibleIndex, (GridViewDataColumn)(ASPxGridView1.Columns[2]), "lbProducto");
+            lbProducto = (LinkButton)ASPxGridView1.FindRowCellTemplateControl(e.VisibleIndex, (GridViewDataColumn)(ASPxGridView1.Columns[3]), "lbProducto");
             lbProducto.PostBackUrl = "CrearProducto.aspx?n_IdProducto=" + n_IdProducto;
+
+            LinkButton lbSotano = new LinkButton();
+            lbSotano = (LinkButton)ASPxGridView1.FindRowCellTemplateControl(e.VisibleIndex, (GridViewDataColumn)(ASPxGridView1.Columns[0]), "lbSotano");
+            Label lblIdSotano = new Label();
+            lblIdSotano = (Label)ASPxGridView1.FindRowCellTemplateControl(e.VisibleIndex, (GridViewDataColumn)(ASPxGridView1.Columns[0]), "lblIdSotano");
+            lbSotano.PostBackUrl = "ListarKardex.aspx?n_IdProducto=" + n_IdProducto + "&n_IdAlmacen=" + lblIdSotano.Text;
+
+            LinkButton lbSemiSotano = new LinkButton();
+            lbSemiSotano = (LinkButton)ASPxGridView1.FindRowCellTemplateControl(e.VisibleIndex, (GridViewDataColumn)(ASPxGridView1.Columns[5]), "lbSemiSotano");
+            Label lblIdSemiSotano = new Label();
+            lblIdSemiSotano = (Label)ASPxGridView1.FindRowCellTemplateControl(e.VisibleIndex, (GridViewDataColumn)(ASPxGridView1.Columns[5]), "lblIdSemiSotano");
+            lbSemiSotano.PostBackUrl = "ListarKardex.aspx?n_IdProducto=" + n_IdProducto + "&n_IdAlmacen=" + lblIdSemiSotano.Text;
+
+            LinkButton lbTercerPiso = new LinkButton();
+            lbTercerPiso = (LinkButton)ASPxGridView1.FindRowCellTemplateControl(e.VisibleIndex, (GridViewDataColumn)(ASPxGridView1.Columns[6]), "lbTercerPiso");
+            Label lblIdTercerPiso = new Label();
+            lblIdTercerPiso = (Label)ASPxGridView1.FindRowCellTemplateControl(e.VisibleIndex, (GridViewDataColumn)(ASPxGridView1.Columns[6]), "lblIdTercerPiso");
+            lbTercerPiso.PostBackUrl = "ListarKardex.aspx?n_IdProducto=" + n_IdProducto + "&n_IdAlmacen=" + lblIdTercerPiso.Text;
+
+            LinkButton lbFullTienda = new LinkButton();
+            lbFullTienda = (LinkButton)ASPxGridView1.FindRowCellTemplateControl(e.VisibleIndex, (GridViewDataColumn)(ASPxGridView1.Columns[7]), "lbFullTienda");
+            Label lblIdFullTienda = new Label();
+            lblIdFullTienda = (Label)ASPxGridView1.FindRowCellTemplateControl(e.VisibleIndex, (GridViewDataColumn)(ASPxGridView1.Columns[7]), "lblIdFullTienda");
+            lbFullTienda.PostBackUrl = "ListarKardex.aspx?n_IdProducto=" + n_IdProducto + "&n_IdAlmacen=" + lblIdFullTienda.Text;
         }
     }
 
@@ -94,7 +80,6 @@ public partial class Procesos_ListarStockActual : System.Web.UI.Page
         ImagenGrande.ImageUrl = dt.Rows[0]["v_RutaImagen"].ToString();
     }
 
-
     protected void btnNotaIngreso_Click(object sender, ImageClickEventArgs e)
     {
         Response.Redirect("ListarNotaIngreso.aspx");
@@ -104,10 +89,12 @@ public partial class Procesos_ListarStockActual : System.Web.UI.Page
     {
         Response.Redirect("ListarNotaSalida.aspx");
     }
+
     protected void btnTraslado_Click(object sender, ImageClickEventArgs e)
     {
         Response.Redirect("ListarOrdenTrasladoInd.aspx");
     }
+
     protected void btnNuevo_Click(object sender, ImageClickEventArgs e)
     {
         Response.Redirect("CrearProducto.aspx");

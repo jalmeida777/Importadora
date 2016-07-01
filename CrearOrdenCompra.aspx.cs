@@ -46,8 +46,6 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                 txtFechaInicial.Text = DateTime.Parse(dt.Rows[0]["d_FechaEmision"].ToString()).ToShortDateString();
                 txtReferencia.Text = dt.Rows[0]["v_Referencia"].ToString();
                 txtObservacion.Text = dt.Rows[0]["t_Observacion"].ToString();
-                lblSubTotal.Text = decimal.Parse(dt.Rows[0]["f_SubTotal"].ToString()).ToString("N2");
-                lblIgv.Text = decimal.Parse(dt.Rows[0]["f_IGV"].ToString()).ToString("N2");
                 lblTotal.Text = decimal.Parse(dt.Rows[0]["f_Total"].ToString()).ToString("N2");
                 lblUsuarioRegistro.Text = dt.Rows[0]["Usuario"].ToString();
                 lblFechaRegistro.Text = dt.Rows[0]["d_FechaEmision"].ToString();
@@ -277,12 +275,10 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = "Play_OrdenCompra_Registrar";
                     cmd.Parameters.AddWithValue("@n_IdProveedor", hdnValue.Value);
-                    cmd.Parameters.AddWithValue("@n_IdMoneda", 1);
+                    cmd.Parameters.AddWithValue("@n_IdMoneda", 2);//Dolares
                     cmd.Parameters.AddWithValue("@d_FechaEmision", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
                     cmd.Parameters.AddWithValue("@v_Referencia", txtReferencia.Text.Trim().ToUpper());
                     cmd.Parameters.AddWithValue("@t_Observacion", txtObservacion.Text.Trim());
-                    cmd.Parameters.AddWithValue("@f_SubTotal", double.Parse(lblSubTotal.Text));
-                    cmd.Parameters.AddWithValue("@f_IGV", double.Parse(lblIgv.Text));
                     cmd.Parameters.AddWithValue("@f_Total", double.Parse(lblTotal.Text));
                     cmd.Parameters.AddWithValue("@n_IdUsuarioCreacion", n_IdUsuario);
                     cmd.Parameters.AddWithValue("@v_RutaArchivo", lbAdjunto.Text);
@@ -361,8 +357,6 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@d_FechaEmision", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
                     cmd.Parameters.AddWithValue("@v_Referencia", txtReferencia.Text.Trim().ToUpper());
                     cmd.Parameters.AddWithValue("@t_Observacion", txtObservacion.Text.Trim());
-                    cmd.Parameters.AddWithValue("@f_SubTotal", double.Parse(lblSubTotal.Text));
-                    cmd.Parameters.AddWithValue("@f_IGV", double.Parse(lblIgv.Text));
                     cmd.Parameters.AddWithValue("@f_Total", double.Parse(lblTotal.Text));
                     cmd.Parameters.AddWithValue("@v_RutaArchivo", lbAdjunto.Text);
                     cmd.ExecuteNonQuery();
@@ -458,8 +452,6 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         double CostoUnitario = 0;
         double TotalColumna1 = 0;
 
-        double SubTotal = 0;
-        double Igv = 0;
         double Total = 0;
 
         DataTable dt = new DataTable();
@@ -508,14 +500,9 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
 
             dt.Rows[i]["n_IdProducto"] = dt.Rows[i]["n_IdProducto"].ToString();
 
-            SubTotal = SubTotal + CostoTotal;
+            Total = Total + CostoTotal;
         }
 
-        Igv = SubTotal * 18 / 100;
-        Total = SubTotal + Igv;
-
-        lblSubTotal.Text = SubTotal.ToString("N2");
-        lblIgv.Text = Igv.ToString("N2");
         lblTotal.Text = Total.ToString("N2");
 
         Session["Detalle"] = dt;
