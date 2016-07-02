@@ -30,14 +30,14 @@
     <div class="toolbar">
         <table width="100%">
             <tr>
-                <td width="65">
-                    <asp:ImageButton ID="btnGuardar" runat="server" ImageUrl="~/images/Guardar.jpg" 
+                <td width="95">
+                    <asp:ImageButton ID="btnGuardar" runat="server" ImageUrl="~/images/btnGuardar_New.png" 
                     onclick="btnGuardar_Click" 
                         OnClientClick="if (confirm('Seguro de guardar?')) { btnGuardar.disabled = false; return true; } else { return false; }" 
                         Enabled="False" />
                 </td>
                 <td>
-                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
+                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/btnSalir_New.png" 
                         onclick="btnSalir_Click" />
                 </td>
             </tr>

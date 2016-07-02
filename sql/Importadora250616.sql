@@ -83,10 +83,10 @@ begin
       
 insert into OrdenCompra(i_IdOrdenCompra,n_IdProveedor,n_IdMoneda,d_FechaEmision,    
 v_NumeroOrdenCompra,v_Referencia,t_Observacion,f_Total,    
-n_IdUsuarioCreacion,d_FechaCreacion,i_IdOrdenCompraEstado,v_RutaArchivo)      
+n_IdUsuarioCreacion,d_FechaCreacion,i_IdOrdenCompraEstado,v_RutaArchivo,f_Saldo)      
 values(@i_IdOrdenCompra,@n_IdProveedor,@n_IdMoneda,@d_FechaEmision,    
 @v_NumeroOrdenCompra,@v_Referencia,@t_Observacion,@f_Total,    
-@n_IdUsuarioCreacion,getdate(),1,@v_RutaArchivo)      
+@n_IdUsuarioCreacion,getdate(),1,@v_RutaArchivo,@f_Total)      
       
 end        
 else        
@@ -112,7 +112,8 @@ d_FechaEmision = @d_FechaEmision,
 v_Referencia = @v_Referencia,  
 t_Observacion = @t_Observacion,  
 f_Total = @f_Total,  
-v_RutaArchivo = @v_RutaArchivo  
+v_RutaArchivo = @v_RutaArchivo,
+f_Saldo = @f_Total
 where i_IdOrdenCompra = @i_IdOrdenCompra  
 go
   
@@ -224,3 +225,57 @@ FROM         dbo.Usuario INNER JOIN
 where dbo.Usuario.v_Nombre like '%' + @nombre +'%'    
 and b_Estado = @b_Estado
 go
+
+  
+alter procedure Play_Producto_Listar_Imagenes_Venta --'','','',1           
+@categoria varchar(100),            
+@subcategoria varchar(100),            
+@producto varchar(200),        
+@n_IdAlmacen numeric(10,0),  
+@tipo char(1)  
+as           
+if @tipo = 'p'  
+begin   
+select pro.n_IdProducto,pro.v_Descripcion,pro.f_Precio,      
+'~/Productos/Redimensionada/' + convert(varchar,pro.n_IdProducto) + '.jpg' as 'v_RutaImagen',      
+stk.f_StockContable,  
+pro.v_CodigoInterno,
+pro.f_Costo
+from producto pro            
+inner join stock stk on pro.n_IdProducto = stk.n_IdProducto        
+left join dbo.Categoria cat on pro.n_IdCategoria = cat.n_IdCategoria            
+left join dbo.SubCategoria sub on pro.n_IdSubCategoria = sub.n_IdSubCategoria            
+where pro.b_Estado = 1            
+and isnull(cat.v_Descripcion,'') like '%' + @categoria + '%'            
+and isnull(sub.v_Descripcion,'') like '%' + @subcategoria + '%'            
+and pro.v_Descripcion like '%' + @producto + '%'          
+and stk.n_IdAlmacen = @n_IdAlmacen        
+and stk.f_StockContable > 0        
+order by pro.v_Descripcion      
+end  
+else  
+begin  
+select pro.n_IdProducto,pro.v_Descripcion,pro.f_Precio,      
+'~/Productos/Redimensionada/' + convert(varchar,pro.n_IdProducto) + '.jpg' as 'v_RutaImagen',      
+stk.f_StockContable,  
+pro.v_CodigoInterno,
+pro.f_Costo  
+from producto pro            
+inner join stock stk on pro.n_IdProducto = stk.n_IdProducto        
+left join dbo.Categoria cat on pro.n_IdCategoria = cat.n_IdCategoria            
+left join dbo.SubCategoria sub on pro.n_IdSubCategoria = sub.n_IdSubCategoria            
+where pro.b_Estado = 1            
+and isnull(cat.v_Descripcion,'') like '%' + @categoria + '%'            
+and isnull(sub.v_Descripcion,'') like '%' + @subcategoria + '%'            
+and pro.v_CodigoInterno = @producto  
+and stk.n_IdAlmacen = @n_IdAlmacen        
+and stk.f_StockContable > 0        
+order by pro.v_Descripcion    
+end  
+go
+
+alter table OrdenCompra
+add f_Saldo float
+go
+
+select * from ordenCompra

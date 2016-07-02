@@ -182,9 +182,11 @@
                             AllowAutoFilter="True" AllowAutoFilterTextInputTimer="False" AllowSort="True" />
                         <DataItemTemplate>
                             <asp:LinkButton ID="lbProducto" runat="server" 
-                                Text='<%# Bind("v_Descripcion") %>'></asp:LinkButton>
+                                Text='<%# Bind("v_Descripcion") %>' Font-Size="16pt"></asp:LinkButton>
                         </DataItemTemplate>
                         <HeaderStyle HorizontalAlign="Center" />
+                        <CellStyle Font-Size="16pt">
+                        </CellStyle>
                     </dx:GridViewDataTextColumn>
 
                                         <dx:GridViewDataTextColumn Caption="Categoría" FieldName="Categoria" 

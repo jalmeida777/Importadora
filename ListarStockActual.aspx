@@ -92,13 +92,13 @@
             <Columns>
                 <dx:GridViewDataTextColumn FieldName="SOTANO" VisibleIndex="4" 
                     Caption="Sótano" Width="100px">
-                    <Settings AllowAutoFilter="False" />
+                    <Settings AllowAutoFilter="False" AllowSort="True" />
                     <DataItemTemplate>
                         <asp:LinkButton ID="lbSotano" runat="server" Text='<%# Bind("Sotano") %>'></asp:LinkButton>
                         <asp:Label ID="lblIdSotano" runat="server" Text="1" Visible="False"></asp:Label>
                     </DataItemTemplate>
                     <HeaderStyle HorizontalAlign="Center" />
-                    <CellStyle Font-Bold="False" HorizontalAlign="Center">
+                    <CellStyle Font-Bold="False" HorizontalAlign="Center" Font-Size="12pt">
                     </CellStyle>
                     <Settings AllowAutoFilter="False" />
                     <CellStyle Font-Bold="False">
@@ -110,7 +110,7 @@
                     <Settings AutoFilterCondition="Equals" AllowAutoFilter="True" 
                         AllowAutoFilterTextInputTimer="False" />
                     <HeaderStyle HorizontalAlign="Center" />
-                    <CellStyle HorizontalAlign="Center">
+                    <CellStyle HorizontalAlign="Center" Font-Size="12pt">
                     </CellStyle>
                 </dx:GridViewDataTextColumn>
                              <dx:GridViewDataTextColumn ReadOnly="True" 
@@ -129,8 +129,12 @@
                     <Settings AutoFilterCondition="Contains" 
                         AllowAutoFilterTextInputTimer="False" AllowAutoFilter="True" />
                     <DataItemTemplate>
-                        <asp:LinkButton ID="lbProducto" runat="server" Text='<%# Bind("Producto") %>'></asp:LinkButton>
+                        <asp:LinkButton ID="lbProducto" runat="server" Text='<%# Bind("Producto") %>' 
+                            Font-Size="14pt"></asp:LinkButton>
                     </DataItemTemplate>
+                    <CellStyle>
+                        <Paddings PaddingLeft="10px" />
+                    </CellStyle>
                 </dx:GridViewDataTextColumn>
                 <dx:GridViewDataTextColumn FieldName="f_Precio" VisibleIndex="3" 
                     Caption="Precio" Width="100px">
@@ -140,51 +144,52 @@
                         AllowGroup="False" AllowHeaderFilter="False" AllowSort="True" 
                         AutoFilterCondition="Equals" />
                     <HeaderStyle HorizontalAlign="Center" />
-                    <CellStyle HorizontalAlign="Right">
+                    <CellStyle HorizontalAlign="Right" Font-Size="12pt">
+                        <Paddings PaddingRight="7px" />
                     </CellStyle>
                 </dx:GridViewDataTextColumn>
    
                 <dx:GridViewDataTextColumn Caption="Semi Sótano" FieldName="SEMISOTANO" 
                     VisibleIndex="5" Width="100px">
-                    <Settings AllowAutoFilter="False" />
+                    <Settings AllowAutoFilter="False" AllowSort="True" />
                     <DataItemTemplate>
                         <asp:LinkButton ID="lbSemiSotano" runat="server" 
                             Text='<%# Bind("SemiSotano") %>'></asp:LinkButton>
                         <asp:Label ID="lblIdSemiSotano" runat="server" Text="2" Visible="False"></asp:Label>
                     </DataItemTemplate>
                     <HeaderStyle HorizontalAlign="Center" />
-                    <CellStyle HorizontalAlign="Center">
+                    <CellStyle HorizontalAlign="Center" Font-Size="12pt">
                     </CellStyle>
                 </dx:GridViewDataTextColumn>
                 <dx:GridViewDataTextColumn Caption="Tercer Piso" FieldName="TERCERPISO" 
                     VisibleIndex="6" Width="100px">
-                    <Settings AllowAutoFilter="False" />
+                    <Settings AllowAutoFilter="False" AllowSort="True" />
                     <DataItemTemplate>
                         <asp:LinkButton ID="lbTercerPiso" runat="server" 
                             Text='<%# Bind("TercerPiso") %>'></asp:LinkButton>
                         <asp:Label ID="lblIdTercerPiso" runat="server" Text="3" Visible="False"></asp:Label>
                     </DataItemTemplate>
                     <HeaderStyle HorizontalAlign="Center" />
-                    <CellStyle HorizontalAlign="Center">
+                    <CellStyle HorizontalAlign="Center" Font-Size="12pt">
                     </CellStyle>
                 </dx:GridViewDataTextColumn>
                 <dx:GridViewDataTextColumn Caption="Full Tienda" FieldName="FULLTIENDA" 
                     VisibleIndex="7" Width="100px">
-                    <Settings AllowAutoFilter="False" />
+                    <Settings AllowAutoFilter="False" AllowSort="True" />
                     <DataItemTemplate>
                         <asp:LinkButton ID="lbFullTienda" runat="server" 
                             Text='<%# Bind("FullTienda") %>'></asp:LinkButton>
                         <asp:Label ID="lblIdFullTienda" runat="server" Text="4" Visible="False"></asp:Label>
                     </DataItemTemplate>
                     <HeaderStyle HorizontalAlign="Center" />
-                    <CellStyle HorizontalAlign="Center">
+                    <CellStyle HorizontalAlign="Center" Font-Size="12pt">
                     </CellStyle>
                 </dx:GridViewDataTextColumn>
                 <dx:GridViewDataTextColumn Caption="Total" FieldName="TOTAL" VisibleIndex="9" 
                     Width="100px">
                     <Settings AllowAutoFilter="False" />
                     <HeaderStyle HorizontalAlign="Center" />
-                    <CellStyle HorizontalAlign="Center">
+                    <CellStyle HorizontalAlign="Center" Font-Size="12pt">
                     </CellStyle>
                 </dx:GridViewDataTextColumn>
             </Columns>

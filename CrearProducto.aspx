@@ -16,6 +16,7 @@
 
     <script src="js/jquery.growl.js" type="text/javascript"></script>
 <link href="css/jquery.growl.css" rel="stylesheet" type="text/css" />
+    <link href="css/tabs.css" rel="stylesheet" type="text/css" />
 <style>
 .fa-3x
 {
@@ -229,35 +230,22 @@
         <tr>
             <td height="10" width="20">
                 &nbsp;</td>
-            <td width="90">
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td>
-                &nbsp;</td>
-            <td width="20">
-                &nbsp;</td>
-        </tr>
-        <tr>
-            <td height="10" width="20">
-                &nbsp;</td>
             <td colspan="5">
                 <cc1:TabContainer ID="TabContainer1" runat="server" ActiveTabIndex="0" 
-                    Width="100%">
+                    Width="100%" CssClass="MyTabStyle">
                     <cc1:TabPanel runat="server" HeaderText="Datos Generales" ID="TabPanel1">
                     <ContentTemplate>
                     <table width="100%">
                             <tr>
-            <td height="10" width="20">
-                &nbsp;</td>
-            <td>
-                    &nbsp;</td>
-            <td colspan="3">
-                    &nbsp;</td>
+            <td width="110">
+                    <asp:Label ID="Label22" runat="server" Text="Código Interno:"></asp:Label>
+                                </td>
+            <td colspan="2">
+                    <asp:TextBox ID="txtCodigoInterno" runat="server" CssClass="inputNormal" 
+                        MaxLength="20" Width="150px"></asp:TextBox>
+                    <asp:Label ID="Label23" runat="server" Font-Bold="True" Font-Size="10pt" 
+                        ForeColor="#18AC85" Text="*"></asp:Label>
+                                </td>
             <td rowspan="5" align="right">
 
                                     
@@ -273,28 +261,11 @@
             <td width="20">
                 &nbsp;</td>
         </tr>
-                            <tr>
-                                <td height="10" width="20">
-                                    &nbsp;</td>
-                                <td>
-                                    <asp:Label ID="Label22" runat="server" Text="Código Interno:"></asp:Label>
-                                </td>
-                                <td colspan="3">
-                                    <asp:TextBox ID="txtCodigoInterno" runat="server" CssClass="inputNormal" 
-                                        MaxLength="20" Width="150px"></asp:TextBox>
-                                    <asp:Label ID="Label23" runat="server" Font-Bold="True" Font-Size="10pt" 
-                                        ForeColor="#18AC85" Text="*"></asp:Label>
-                                </td>
-                                <td width="20">
-                                    &nbsp;</td>
-                            </tr>
         <tr>
-            <td height="10" width="20">
-                &nbsp;</td>
             <td>
                     <asp:Label ID="Label5" runat="server" Text="Presentación:"></asp:Label>
                 </td>
-            <td colspan="3">
+            <td colspan="2">
                     <asp:TextBox ID="txtPresentacion" runat="server" CssClass="inputNormal" placeholder="Presentación" style="text-transform:uppercase"
                         Width="300px"></asp:TextBox>
                 </td>
@@ -302,25 +273,10 @@
                 &nbsp;</td>
         </tr>
         <tr>
-            <td height="10" width="20">
-                &nbsp;</td>
-            <td>
-                    <asp:Label ID="Label6" runat="server" Text="Edad:"></asp:Label>
-                </td>
-            <td colspan="3">
-                    <asp:DropDownList ID="ddlEdad" runat="server" CssClass="combo" Width="150px">
-                    </asp:DropDownList>
-                </td>
-            <td width="20">
-                &nbsp;</td>
-        </tr>
-        <tr>
-            <td height="10" width="20">
-                &nbsp;</td>
             <td>
                     <asp:Label ID="Label18" runat="server" Text="Genero:"></asp:Label>
                 </td>
-            <td colspan="3">
+            <td colspan="2">
                     <asp:RadioButtonList ID="rblSexo" runat="server" RepeatDirection="Horizontal" 
                         Width="215px">
                         <asp:ListItem Selected="True" Value="O">Niño</asp:ListItem>
@@ -332,43 +288,21 @@
                 &nbsp;</td>
         </tr>
         <tr>
-            <td height="10" width="20">
-                &nbsp;</td>
             <td>
                     <asp:Label ID="Label19" runat="server" Text="Baterías:"></asp:Label>
                 </td>
             <td>
-                                <asp:DropDownList ID="ddlBateria" runat="server" AutoPostBack="True" 
-                                    CssClass="combo" onselectedindexchanged="ddlBateria_SelectedIndexChanged" 
+                                <asp:DropDownList ID="ddlBateria" runat="server" 
+                                    CssClass="combo" 
                                     Width="150px">
                                 </asp:DropDownList>
                             </td>
             <td>
-                                <asp:Label ID="Label20" runat="server" Text="Cantidad:"></asp:Label>
-                            </td>
-            <td>
-                                <asp:TextBox ID="txtCantidadBaterias" runat="server" CssClass="inputNormal" 
-                                    Enabled="False" Width="30px">0</asp:TextBox>
-                            </td>
-            <td align="right">
-                <table class="style1">
-                    <tr>
-                        <td align="right">
-                                <asp:FileUpload ID="fu1" runat="server" Width="130px" />
-                            </td>
-                        <td align="right">
-                            <asp:ImageButton ID="ibUpload" runat="server" ImageUrl="~/images/upload.png" 
-                                onclick="ibUpload_Click" style="height: 16px" />
-                        </td>
-                    </tr>
-                </table>
-            </td>
+                                &nbsp;</td>
             <td width="20">
                 &nbsp;</td>
         </tr>
         <tr>
-            <td height="10" width="20">
-                &nbsp;</td>
             <td>
                     <asp:Label ID="Label7" runat="server" Text="Precio S/.:"></asp:Label>
                 </td>
@@ -380,24 +314,39 @@
                         Text="*" Font-Size="10pt"></asp:Label>
                 </td>
             <td>
-                    <asp:Label ID="Label8" runat="server" Text="Costo US$.:" ></asp:Label>
-                </td>
-            <td>
-                    <asp:TextBox ID="txtCosto" runat="server" CssClass="inputNormalMoneda" 
-                        placeholder="Costo" onkeypress="return ValidaNumeros(event);" Width="50px">0</asp:TextBox>
-                    <asp:Label ID="Label25" runat="server" Font-Bold="True" Font-Size="10pt" 
-                        ForeColor="#18AC85" Text="*"></asp:Label>
-                </td>
-            <td>
-                    <asp:Label ID="Label1" runat="server" Text="Código:" Visible="False"></asp:Label>
-                    <asp:Label ID="lblCodigo" runat="server" Font-Bold="True" Visible="False"></asp:Label>
-                </td>
+                    &nbsp;</td>
             <td width="20">
                 &nbsp;</td>
         </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label ID="Label8" runat="server" Text="Costo US$.:"></asp:Label>
+                                </td>
+                                <td>
+                                    <asp:TextBox ID="txtCosto" runat="server" CssClass="inputNormalMoneda" 
+                                        onkeypress="return ValidaNumeros(event);" placeholder="Costo" Width="50px">0</asp:TextBox>
+                                    <asp:Label ID="Label25" runat="server" Font-Bold="True" Font-Size="10pt" 
+                                        ForeColor="#18AC85" Text="*"></asp:Label>
+                                </td>
+                                <td>
+                                    &nbsp;</td>
+                                <td>
+                                    <table class="style1">
+                                        <tr>
+                                            <td align="right">
+                                                <asp:FileUpload ID="fu1" runat="server" Width="130px" />
+                                            </td>
+                                            <td align="right">
+                                                <asp:ImageButton ID="ibUpload" runat="server" ImageUrl="~/images/upload.png" 
+                                                    OnClick="ibUpload_Click" style="height: 16px" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td width="20">
+                                    &nbsp;</td>
+                            </tr>
         <tr>
-            <td height="10" width="20">
-                &nbsp;</td>
             <td>
                     <asp:Label ID="Label9" runat="server" Text="Stock Mínimo:"></asp:Label>
                 </td>
@@ -411,67 +360,29 @@
             <td>
                 &nbsp;</td>
             <td>
-                &nbsp;</td>
-            <td>
-                    <asp:Label ID="lblRuta" runat="server" Visible="False"></asp:Label>
-                </td>
+                    &nbsp;</td>
             <td width="20">
                 &nbsp;</td>
         </tr>
         <tr>
-            <td height="10" width="20">
-                &nbsp;</td>
-            <td>
-                    <asp:Label ID="Label10" runat="server" Text="Marca:"></asp:Label>
-                </td>
-            <td>
-                    <asp:DropDownList ID="ddlMarca" runat="server" Width="150px" 
-                        AutoPostBack="True" onselectedindexchanged="ddlMarca_SelectedIndexChanged" 
-                        CssClass="combo">
-                    </asp:DropDownList>
-                </td>
-            <td>
-                    <asp:Label ID="Label11" runat="server" Text="Modelo:"></asp:Label>
-                </td>
-            <td>
-                    <asp:DropDownList ID="ddlModelo" runat="server" Width="150px" CssClass="combo" 
-                        Enabled="False">
-                    </asp:DropDownList>
-                </td>
-            <td>
-                    <asp:Label ID="lblExtension" runat="server" Visible="False"></asp:Label>
-                </td>
-            <td width="20">
-                &nbsp;</td>
-        </tr>
-        <tr>
-            <td height="10" width="20">
-                &nbsp;</td>
             <td>
                     <asp:Label ID="Label12" runat="server" Text="Familia:"></asp:Label>
                 </td>
             <td>
                     <asp:DropDownList ID="ddlCategoria" runat="server" Width="150px" 
-                        AutoPostBack="True" 
-                        onselectedindexchanged="ddlCategoria_SelectedIndexChanged" CssClass="combo">
+                        CssClass="combo">
                     </asp:DropDownList>
                 </td>
             <td>
-                    <asp:Label ID="Label13" runat="server" Text="Sub Familia:"></asp:Label>
-                </td>
+                    &nbsp;</td>
             <td>
-                    <asp:DropDownList ID="ddlSubCategoria" runat="server" Width="150px" 
-                        CssClass="combo" Enabled="False">
-                    </asp:DropDownList>
-                </td>
-            <td>
-                &nbsp;</td>
+                <asp:Label ID="Label1" runat="server" Text="Código:" Visible="False"></asp:Label>
+                <asp:Label ID="lblCodigo" runat="server" Font-Bold="True" Visible="False"></asp:Label>
+            </td>
             <td width="20">
                 &nbsp;</td>
         </tr>
         <tr>
-            <td height="10" width="20">
-                &nbsp;</td>
             <td>
                     <asp:Label ID="Label14" runat="server" Text="Proveedor:"></asp:Label>
                 </td>
@@ -481,32 +392,26 @@
                     </asp:DropDownList>
                 </td>
             <td>
-                    <asp:Label ID="Label3" runat="server" Text="Estado:"></asp:Label>
-                </td>
+                    &nbsp;</td>
             <td>
-                    <asp:CheckBox ID="chkEstado" runat="server" Checked="True" Text="Habilitado" />
-                </td>
-            <td>
-                &nbsp;</td>
+                <asp:Label ID="lblRuta" runat="server" Visible="False"></asp:Label>
+                <asp:Label ID="lblExtension" runat="server" Visible="False"></asp:Label>
+            </td>
             <td width="20">
                 &nbsp;</td>
         </tr>
 
                             <tr>
-                                <td height="10" width="20">
-                                    &nbsp;</td>
                                 <td>
-                                    &nbsp;</td>
-                                <td>
-                                    &nbsp;</td>
-                                <td>
-                                    &nbsp;</td>
-                                <td>
-                                    &nbsp;</td>
-                                <td align="right">
-                                    <asp:Label ID="Label17" runat="server" Font-Bold="False" Font-Size="10pt" 
-                                        ForeColor="#18AC85" Text="* Campos obligatorios"></asp:Label>
+                                    <asp:Label ID="Label3" runat="server" Text="Estado:"></asp:Label>
                                 </td>
+                                <td>
+                                    <asp:CheckBox ID="chkEstado" runat="server" Checked="True" Text="Habilitado" />
+                                </td>
+                                <td>
+                                    &nbsp;</td>
+                                <td>
+                                    &nbsp;</td>
                                 <td width="20">
                                     &nbsp;</td>
                             </tr>

@@ -339,13 +339,28 @@ padding: 0px;
     vertical-align: middle;
 }
         
+    .costo
+{
+    padding: 1px 3px 4px 3px;
+    background-color: #00CC99;
+    height: 15px;
+    right: 8px;
+    top: 31px;
+    color: #FFFFFF;
+    float: right;
+    position: absolute;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
     .stock
 {
     padding: 1px 3px 4px 3px;
     background-color: #FF9966;
     height: 15px;
     right: 8px;
-    top: 31px;
+    top: 56px;
     color: #FFFFFF;
     float: right;
     position: absolute;

@@ -22,16 +22,17 @@
     <div class="toolbar">
         <table width="100%">
             <tr>
-                <td width="65">
+                <td width="95">
                     <asp:ImageButton ID="btnGuardar" runat="server" 
-                                ImageUrl="~/images/Guardar.jpg" onclick="btnGuardar_Click" />
+                                ImageUrl="~/images/btnGuardar_New.png" 
+                        onclick="btnGuardar_Click" />
                     <cc1:ConfirmButtonExtender ID="btnGuardar_ConfirmButtonExtender" runat="server" 
                                 ConfirmText="¿Seguro de guardar los datos?" Enabled="True" 
                                 TargetControlID="btnGuardar">
                     </cc1:ConfirmButtonExtender>
                 </td>
                 <td width="65">
-                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
+                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/btnSalir_New.png" 
                                 onclick="btnSalir_Click" />
                 </td>
                 <td>

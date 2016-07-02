@@ -29,6 +29,7 @@ public partial class CrearUsuario : System.Web.UI.Page
                 txtNombre.Text = dt.Rows[0]["v_Nombre"].ToString();
                 txtUsuario.Text = dt.Rows[0]["v_Usuario"].ToString();
                 txtPwd.Text = dt.Rows[0]["v_Pwd"].ToString();
+                txtEmail.Text = dt.Rows[0]["v_Email"].ToString();
 
                 if (dt.Rows[0]["v_RutaFoto"].ToString().Trim() == "")
                 {

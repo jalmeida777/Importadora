@@ -96,7 +96,7 @@ public partial class ListarNotaSalida : System.Web.UI.Page
 
     protected void btnSalir_Click(object sender, ImageClickEventArgs e)
     {
-        Response.Redirect("Principal.aspx");
+        Response.Redirect("ListarStockActual.aspx");
     }
 
     protected void gvNotaSalida_RowDataBound(object sender, GridViewRowEventArgs e)

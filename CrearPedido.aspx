@@ -783,13 +783,13 @@
             <td style="padding-left: 5px">
                 <table border="0" cellpadding="0" cellspacing="0" width="100%">
                     <tr>
-                        <td width="65">
+                        <td width="95">
                             <asp:ImageButton ID="btnGuardarCliente" runat="server" 
-                                ImageUrl="~/images/Guardar.jpg" onclick="btnGuardarCliente_Click" />
+                                ImageUrl="~/images/btnGuardar_New.png" onclick="btnGuardarCliente_Click" />
                         </td>
                         <td>
                             <asp:ImageButton ID="btnSalirCliente" runat="server" 
-                                ImageUrl="~/images/Salir.jpg" onclick="btnSalirCliente_Click" />
+                                ImageUrl="~/images/btnSalir_New.png" onclick="btnSalirCliente_Click" />
                         </td>
                     </tr>
                 </table>
@@ -918,6 +918,10 @@
                                                                     <div class="precio">
                                                                         <asp:Label ID="lblPrecio" runat="server" Font-Bold="True" Font-Size="8pt" 
                                                                             ForeColor="White" Text='<%# String.Format("{0:C}", Eval("f_Precio") ) %>'></asp:Label>
+                                                                    </div>
+                                                                    <div class="costo">
+                                                                        <asp:Label ID="lblCosto" runat="server" Font-Bold="True" Font-Size="8pt"
+                                                                        ForeColor="White" Text='<%# "US$ " + String.Format("{0:N}",Eval("f_Costo")) %>'></asp:Label>
                                                                     </div>
                                                                     <div class="stock">
                                                                         <asp:Label ID="lblStock" runat="server" Font-Bold="True" Font-Size="8pt" 

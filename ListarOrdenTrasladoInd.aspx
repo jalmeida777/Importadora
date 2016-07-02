@@ -65,16 +65,18 @@
             <div class="toolbar">
                 <table width="100%">
                     <tr>
-                        <td width="65">
-                            <asp:ImageButton ID="btnConsultar" runat="server" 
-                                ImageUrl="~/images/Buscar.jpg" onclick="btnConsultar_Click" ToolTip="Buscar" />
+                        <td width="95">
+                            <asp:ImageButton ID="btnNuevo" runat="server" 
+                                ImageUrl="~/images/btnNuevo_New.png" onclick="btnNuevo_Click" 
+                                ToolTip="Nuevo" />
                         </td>
-                        <td width="65">
-                            <asp:ImageButton ID="btnNuevo" runat="server" ImageUrl="~/images/Nuevo.jpg" 
-                                onclick="btnNuevo_Click" ToolTip="Nuevo" />
+                        <td width="95">
+                            <asp:ImageButton ID="btnConsultar" runat="server" 
+                                ImageUrl="~/images/btnBuscar_New.png" onclick="btnConsultar_Click" 
+                                ToolTip="Buscar" />
                         </td>
                         <td>
-                            <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
+                            <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/btnSalir_New.png" 
                                 onclick="btnSalir_Click" />
                         </td>
                     </tr>

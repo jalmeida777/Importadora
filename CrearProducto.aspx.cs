@@ -21,12 +21,8 @@ public partial class CrearProducto : System.Web.UI.Page
         if (Page.IsPostBack == false)
         {
 
-            ListarMarcas();
-            ddlModelo.Items.Insert(0, "SELECCIONAR");
             ListarCategoria();
-            ddlSubCategoria.Items.Insert(0, "SELECCIONAR");
             ListarProveedor();
-            ListarEdad();
             ListarBaterias();
             
 
@@ -56,16 +52,11 @@ public partial class CrearProducto : System.Web.UI.Page
                 txtStockMinimo.Text = int.Parse(dt.Rows[0]["f_StockMinimo"].ToString()).ToString();
                 rblSexo.SelectedValue = dt.Rows[0]["c_Sexo"].ToString();
 
-                if (dt.Rows[0]["n_IdEdad"].ToString() != "") { ddlEdad.SelectedValue = dt.Rows[0]["n_IdEdad"].ToString(); }
                 if (dt.Rows[0]["n_IdProveedor"].ToString() != "") { ddlProveedor.SelectedValue = dt.Rows[0]["n_IdProveedor"].ToString(); }
-                if (dt.Rows[0]["n_IdMarca"].ToString() != "") { ddlMarca.SelectedValue = dt.Rows[0]["n_IdMarca"].ToString(); ddlMarca_SelectedIndexChanged(null, null); }
-                if (dt.Rows[0]["n_IdModelo"].ToString() != "") { ddlModelo.SelectedValue = dt.Rows[0]["n_IdModelo"].ToString(); }
-                if (dt.Rows[0]["n_IdCategoria"].ToString() != "") { ddlCategoria.SelectedValue = dt.Rows[0]["n_IdCategoria"].ToString(); ddlCategoria_SelectedIndexChanged(null, null); }
-                if (dt.Rows[0]["n_IdSubCategoria"].ToString() != "") { ddlSubCategoria.SelectedValue = dt.Rows[0]["n_IdSubCategoria"].ToString(); }
+                if (dt.Rows[0]["n_IdCategoria"].ToString() != "") { ddlCategoria.SelectedValue = dt.Rows[0]["n_IdCategoria"].ToString(); }
                 chkEstado.Checked = bool.Parse(dt.Rows[0]["b_Estado"].ToString());
 
-                if (dt.Rows[0]["n_IdPilas"].ToString() != "") { ddlBateria.SelectedValue = dt.Rows[0]["n_IdPilas"].ToString(); ddlBateria_SelectedIndexChanged(null, null); }
-                txtCantidadBaterias.Text = dt.Rows[0]["i_CantidadPilas"].ToString();
+                if (dt.Rows[0]["n_IdPilas"].ToString() != "") { ddlBateria.SelectedValue = dt.Rows[0]["n_IdPilas"].ToString(); }
                 txtCodigoInterno.Text = dt.Rows[0]["v_CodigoInterno"].ToString();
 
                 ListarStock();
@@ -79,19 +70,6 @@ public partial class CrearProducto : System.Web.UI.Page
                 txtStockMinimo.Text = "0";
             }
         }
-    }
-
-    void ListarMarcas() 
-    {
-        DataTable dt = new System.Data.DataTable();
-        SqlDataAdapter da = new SqlDataAdapter("Play_Marca_Combo", conexion);
-        da.Fill(dt);
-        ddlMarca.DataSource = dt;
-        ddlMarca.DataTextField = "v_DescripcionMarca";
-        ddlMarca.DataValueField = "n_IdMarca";
-        ddlMarca.DataBind();
-        ddlMarca.Items.Insert(0, "SELECCIONAR");
-        ddlMarca.SelectedIndex = 0;
     }
 
     void ListarProveedor() 
@@ -118,63 +96,6 @@ public partial class CrearProducto : System.Web.UI.Page
         ddlCategoria.DataBind();
         ddlCategoria.Items.Insert(0, "SELECCIONAR");
         ddlCategoria.SelectedIndex = 0;
-    }
-
-    void ListarEdad() 
-    {
-        DataTable dt = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter("Play_Edad_Combo", conexion);
-        da.Fill(dt);
-        ddlEdad.DataSource = dt;
-        ddlEdad.DataTextField = "v_Descripcion";
-        ddlEdad.DataValueField = "n_IdEdad";
-        ddlEdad.DataBind();
-        ddlEdad.Items.Insert(0, "SELECCIONAR");
-        ddlEdad.SelectedIndex = 0;
-    }
-
-    void ListarModelos() 
-    {
-        if (ddlMarca.SelectedIndex > 0)
-        {
-            string n_IdMarca = ddlMarca.SelectedValue.ToString();
-            DataTable dt = new DataTable();
-            SqlDataAdapter da = new SqlDataAdapter("Play_Modelo_Combo " + n_IdMarca, conexion);
-            da.Fill(dt);
-            ddlModelo.DataSource = dt;
-            ddlModelo.DataTextField = "v_DescripcionModelo";
-            ddlModelo.DataValueField = "n_IdModelo";
-            ddlModelo.DataBind();
-            ddlModelo.Items.Insert(0, "SELECCIONAR");
-            ddlModelo.Enabled = true;
-        }
-        else 
-        {
-            ddlModelo.SelectedIndex = 0;
-            ddlModelo.Enabled = false;
-        }
-    }
-
-    void ListarSubCategorias() 
-    {
-        if (ddlCategoria.SelectedIndex > 0)
-        {
-            string n_IdCategoria = ddlCategoria.SelectedValue.ToString();
-            DataTable dt = new DataTable();
-            SqlDataAdapter da = new SqlDataAdapter("Play_SubCategoria_Combo " + n_IdCategoria, conexion);
-            da.Fill(dt);
-            ddlSubCategoria.DataSource = dt;
-            ddlSubCategoria.DataTextField = "v_Descripcion";
-            ddlSubCategoria.DataValueField = "n_IdSubCategoria";
-            ddlSubCategoria.DataBind();
-            ddlSubCategoria.Items.Insert(0, "SELECCIONAR");
-            ddlSubCategoria.Enabled = true;
-        }
-        else 
-        {
-            ddlSubCategoria.SelectedIndex = 0;
-            ddlSubCategoria.Enabled = false;
-        }
     }
 
     void ListarBaterias() 
@@ -290,20 +211,20 @@ public partial class CrearProducto : System.Web.UI.Page
                 cmd.CommandText = "Play_Producto_Insertar";
                 cmd.Parameters.AddWithValue("@v_Descripcion", txtDescripcion.Text.Trim().ToUpper());
                 cmd.Parameters.AddWithValue("@v_Presentacion", txtPresentacion.Text.Trim().ToUpper());
-                if (ddlEdad.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdEdad", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdEdad", ddlEdad.SelectedValue.ToString()); }
+                cmd.Parameters.AddWithValue("@n_IdEdad", DBNull.Value);
                 cmd.Parameters.AddWithValue("@c_Sexo", rblSexo.SelectedValue);
                 cmd.Parameters.AddWithValue("@v_RutaImagen", lblRuta.Text.Trim().ToUpper());
                 cmd.Parameters.AddWithValue("@f_Precio", txtPrecio.Text);
                 cmd.Parameters.AddWithValue("@f_Costo", txtCosto.Text);
                 cmd.Parameters.AddWithValue("@f_StockMinimo", int.Parse(txtStockMinimo.Text));
                 if (ddlProveedor.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdProveedor", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdProveedor", ddlProveedor.SelectedValue.ToString()); }
-                if (ddlMarca.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdMarca", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdMarca", ddlMarca.SelectedValue.ToString()); }
-                if (ddlModelo.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdModelo", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdModelo", ddlModelo.SelectedValue.ToString()); }
+                cmd.Parameters.AddWithValue("@n_IdMarca", DBNull.Value);
+                cmd.Parameters.AddWithValue("@n_IdModelo", DBNull.Value);
                 if (ddlCategoria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdCategoria", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdCategoria", ddlCategoria.SelectedValue.ToString()); }
-                if (ddlSubCategoria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdSubCategoria", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdSubCategoria", ddlSubCategoria.SelectedValue.ToString()); }
+                cmd.Parameters.AddWithValue("@n_IdSubCategoria", DBNull.Value);
                 cmd.Parameters.AddWithValue("@b_Estado", chkEstado.Checked);
                 if (ddlBateria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdPilas", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdPilas", ddlBateria.SelectedValue); }
-                cmd.Parameters.AddWithValue("@i_CantidadPilas", txtCantidadBaterias.Text);
+                cmd.Parameters.AddWithValue("@i_CantidadPilas", 0);
                 cmd.Parameters.AddWithValue("@v_CodigoInterno", txtCodigoInterno.Text);
                 conexion.Open();
                 resultado = cmd.ExecuteScalar().ToString();
@@ -364,20 +285,20 @@ public partial class CrearProducto : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@n_IdProducto", lblCodigo.Text.Trim());
                 cmd.Parameters.AddWithValue("@v_Descripcion", txtDescripcion.Text.Trim().ToUpper());
                 cmd.Parameters.AddWithValue("@v_Presentacion", txtPresentacion.Text.Trim().ToUpper());
-                if (ddlEdad.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdEdad", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdEdad", ddlEdad.SelectedValue.ToString()); }
+                cmd.Parameters.AddWithValue("@n_IdEdad", DBNull.Value);
                 cmd.Parameters.AddWithValue("@c_Sexo", rblSexo.SelectedValue);
                 cmd.Parameters.AddWithValue("@v_RutaImagen", lblRuta.Text.Trim().ToUpper());
                 cmd.Parameters.AddWithValue("@f_Precio", txtPrecio.Text);
                 cmd.Parameters.AddWithValue("@f_Costo", txtCosto.Text);
                 cmd.Parameters.AddWithValue("@f_StockMinimo", int.Parse(txtStockMinimo.Text));
                 if (ddlProveedor.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdProveedor", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdProveedor", ddlProveedor.SelectedValue.ToString()); }
-                if (ddlMarca.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdMarca", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdMarca", ddlMarca.SelectedValue.ToString()); }
-                if (ddlModelo.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdModelo", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdModelo", ddlModelo.SelectedValue.ToString()); }
+                cmd.Parameters.AddWithValue("@n_IdMarca", DBNull.Value);
+                cmd.Parameters.AddWithValue("@n_IdModelo", DBNull.Value);
                 if (ddlCategoria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdCategoria", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdCategoria", ddlCategoria.SelectedValue.ToString()); }
-                if (ddlSubCategoria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdSubCategoria", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdSubCategoria", ddlSubCategoria.SelectedValue.ToString()); }
+                cmd.Parameters.AddWithValue("@n_IdSubCategoria", DBNull.Value);
                 cmd.Parameters.AddWithValue("@b_Estado", chkEstado.Checked);
                 if (ddlBateria.SelectedIndex == 0) { cmd.Parameters.AddWithValue("@n_IdPilas", DBNull.Value); } else { cmd.Parameters.AddWithValue("@n_IdPilas", ddlBateria.SelectedValue); }
-                cmd.Parameters.AddWithValue("@i_CantidadPilas", txtCantidadBaterias.Text);
+                cmd.Parameters.AddWithValue("@i_CantidadPilas", 0);
                 cmd.Parameters.AddWithValue("@v_CodigoInterno", txtCodigoInterno.Text);
                 conexion.Open();
                 resultado = cmd.ExecuteScalar().ToString();
@@ -410,16 +331,6 @@ public partial class CrearProducto : System.Web.UI.Page
     protected void btnSalir_Click(object sender, ImageClickEventArgs e)
     {
         Response.Redirect("ListarStockActual.aspx");
-    }
-
-    protected void ddlMarca_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        ListarModelos();
-    }
-
-    protected void ddlCategoria_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        ListarSubCategorias();
     }
 
     protected void ibUpload_Click(object sender, ImageClickEventArgs e)
@@ -464,21 +375,6 @@ public partial class CrearProducto : System.Web.UI.Page
             {
                 ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.error({ message: '" + ex.Message + "' });</script>", false);
             }
-        }
-    }
-
-    protected void ddlBateria_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        if (ddlBateria.SelectedIndex == 0)
-        {
-            txtCantidadBaterias.Text = "0";
-            txtCantidadBaterias.Enabled = false;
-        }
-        else 
-        {
-            txtCantidadBaterias.Text = "0";
-            txtCantidadBaterias.Enabled = true;
-            txtCantidadBaterias.Focus();
         }
     }
 
@@ -616,19 +512,14 @@ public partial class CrearProducto : System.Web.UI.Page
         ibAtras.Enabled = false;
         ibSiguiente.Enabled = false;
         txtPresentacion.Enabled = false;
-        ddlEdad.Enabled = false;
         rblSexo.Enabled = false;
         ddlBateria.Enabled = false;
-        txtCantidadBaterias.Enabled = false;
         txtPrecio.Enabled = false;
         txtCosto.Enabled = false;
         fu1.Enabled = false;
         ibUpload.Enabled = false;
         txtStockMinimo.Enabled = false;
-        ddlMarca.Enabled = false;
-        ddlModelo.Enabled = false;
         ddlCategoria.Enabled = false;
-        ddlSubCategoria.Enabled = false;
         ddlProveedor.Enabled = false;
         chkEstado.Enabled = false;
         TabContainer1.Enabled = false;

@@ -20,16 +20,17 @@
     <div class="toolbar">
         <table width="100%">
             <tr>
-                <td width="65">
+                <td width="95">
                     <asp:ImageButton ID="btnGuardar" runat="server" 
-                                ImageUrl="~/images/Guardar.jpg" onclick="btnGuardar_Click" />
+                                ImageUrl="~/images/btnGuardar_New.png" 
+                        onclick="btnGuardar_Click" />
                     <cc1:ConfirmButtonExtender ID="btnGuardar_ConfirmButtonExtender" runat="server" 
                                 ConfirmText="¿Seguro de guardar los datos?" Enabled="True" 
                                 TargetControlID="btnGuardar">
                     </cc1:ConfirmButtonExtender>
                 </td>
-                <td width="65">
-                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
+                <td width="100">
+                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/btnSalir_New.png" 
                                 onclick="btnSalir_Click" />
                 </td>
                 <td>
@@ -129,7 +130,7 @@
                             </td>
                             <td>
                                 <asp:TextBox ID="txtEmail" runat="server" CssClass="inputNormal" 
-                                    MaxLength="100" Width="300px"></asp:TextBox>
+                                    MaxLength="100" Width="300px" placeholder="Email"></asp:TextBox>
                                 <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" 
                                     ControlToValidate="txtEmail" ErrorMessage="Email incorrecto" Font-Bold="True" 
                                     ForeColor="#18AC85" SetFocusOnError="True" 
@@ -147,8 +148,9 @@
                             <td>
                                 <asp:TextBox ID="txtUsuario" runat="server" CssClass="inputNormal" placeholder="USUARIO"
                     Width="100px" style="text-transform:uppercase" MaxLength="30" TabIndex="2"></asp:TextBox>
-                <asp:Label ID="Label20" runat="server" Font-Bold="True" ForeColor="#18AC85" 
-                        Text="*"></asp:Label>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
+                                    ControlToValidate="txtUsuario" ErrorMessage="*" Font-Bold="True" 
+                                    ForeColor="#18AC85">*Campo obligatorio</asp:RequiredFieldValidator>
                                 <asp:LinkButton ID="lbContraseña" runat="server" Font-Underline="True" 
                                     ForeColor="Blue" onclick="lbContraseña_Click" Visible="False">Cambiar Contraseña</asp:LinkButton>
                             </td>

@@ -1400,7 +1400,7 @@ public partial class CrearPedido : System.Web.UI.Page
         }
         else 
         {
-            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'No se encontró tipo de cambio para el día de hoy' });</script>", false);
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'No se encontró la caja aperturada para el día de hoy' });</script>", false);
             BloquearTodo();
         }
     }

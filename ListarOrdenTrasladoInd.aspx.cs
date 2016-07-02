@@ -31,7 +31,7 @@ public partial class ListarOrdenTrasladoInd : System.Web.UI.Page
     }
     protected void btnSalir_Click(object sender, ImageClickEventArgs e)
     {
-        Response.Redirect("Principal.aspx");
+        Response.Redirect("ListarStockActual.aspx");
     }
     protected void gvDocumento_BeforePerformDataSelect(object sender, EventArgs e)
     {

@@ -36,15 +36,15 @@
 
             </div>
                 <div class="toolbar">
-            <table width="100%"><tr><td width="65">
+            <table width="100%"><tr><td width="95">
                 
                 <asp:ImageButton ID="btnConsultar" runat="server" 
-                    ImageUrl="~/images/Buscar.jpg" onclick="btnConsultar_Click" />
+                    ImageUrl="~/images/btnBuscar_New.png" onclick="btnConsultar_Click" />
                 
                 </td>
                 <td width="65">
                   
-                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
+                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/btnSalir_New.png" 
                         onclick="btnSalir_Click" />
                   
                 </td>

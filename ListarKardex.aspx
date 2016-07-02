@@ -12,14 +12,14 @@
                     </td>
                 </tr>
                 <tr>
-                    <td width="90" class="label">
+                    <td width="70" style="padding-left: 10px">
                        
                 <asp:Label ID="Label1" runat="server" Text="Almacén:"></asp:Label>
                        
                     </td>
                     <td>
                         
-                <asp:Label ID="lblAlmacen" runat="server"></asp:Label>
+                <asp:Label ID="lblAlmacen" runat="server" Font-Bold="True"></asp:Label>
                         
                     </td>
                     <td align="right" width="70">
@@ -28,14 +28,14 @@
                         &nbsp;</td>
                 </tr>
                 <tr>
-                    <td width="90" class="label">
+                    <td width="70" style="padding-left: 10px">
                        
                 <asp:Label ID="Label2" runat="server" Text="Producto:"></asp:Label>
                        
                     </td>
                     <td>
                         
-                <asp:Label ID="lblProducto" runat="server"></asp:Label>
+                <asp:Label ID="lblProducto" runat="server" Font-Bold="True"></asp:Label>
                         
                     </td>
                     <td align="right" width="70">
@@ -51,7 +51,7 @@
  <div class="toolbar">
             <table width="100%"><tr><td width="65">
                
-                                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
+                                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/btnSalir_New.png" 
                                         onclick="btnSalir_Click" />
                         
                 </td>

@@ -87,21 +87,22 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
 
                 <div class="toolbar">
-            <table width="100%"><tr><td width="65">
+            <table width="100%"><tr><td width="95">
                 
-                <asp:ImageButton ID="btnGuardar" runat="server" ImageUrl="~/images/Guardar.jpg" 
-                    onclick="btnGuardar_Click" OnClientClick="if (confirm('Seguro de guardar?')) { btnGuardar.disabled = false; return true; } else { return false; }" />
-                
-                </td>
-                <td width="65">
-                  
-                    <asp:ImageButton ID="btnNuevo" runat="server" ImageUrl="~/images/Nuevo.jpg" 
+                    <asp:ImageButton ID="btnNuevo" runat="server" ImageUrl="~/images/btnNuevo_New.png" 
                         onclick="btnNuevo_Click" />
                   
                 </td>
+                <td width="95">
+                  
+                <asp:ImageButton ID="btnGuardar" runat="server" ImageUrl="~/images/btnGuardar_New.png" 
+                    onclick="btnGuardar_Click" 
+                        OnClientClick="if (confirm('Seguro de guardar?')) { btnGuardar.disabled = false; return true; } else { return false; }" />
+                
+                </td>
                 <td>
                    
-                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
+                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/btnSalir_New.png" 
                         onclick="btnSalir_Click" />
                    
                 </td>
@@ -438,7 +439,7 @@
             </StylesEditors>
         </dx1:ASPxGridView>
                     <asp:ImageButton ID="btnSalirBusqueda" runat="server" 
-                        ImageUrl="~/images/Salir.jpg" onclick="btnSalirBusqueda_Click" />
+                        ImageUrl="~/images/btnSalir_New.png" onclick="btnSalirBusqueda_Click" />
 </div></td>
             <td width="15%">
                 &nbsp;</td>
