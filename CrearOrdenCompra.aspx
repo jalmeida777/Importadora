@@ -184,6 +184,8 @@
             <td style="padding-left: 5px">
                 <asp:TextBox ID="txtProveedor" runat="server" CssClass="inputNormal" 
                     Width="200px" AutoPostBack="True"></asp:TextBox>
+                <asp:Label ID="Label56" runat="server" Font-Bold="True" ForeColor="#18AC85" 
+                        Text="*"></asp:Label>
                 &nbsp;<cc1:AutoCompleteExtender ID="txtProveedor_AutoCompleteExtender" runat="server" 
                     CompletionInterval="100" CompletionListCssClass="AutoExtender" 
                     CompletionListHighlightedItemCssClass="AutoExtenderHighlight" 
@@ -270,6 +272,27 @@
         <tr>
             <td>
                 &nbsp;</td>
+            <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
+                <asp:Label ID="Label57" runat="server" Text="Condición de pago"></asp:Label>
+            </td>
+            <td style="padding-left: 5px">
+                <asp:RadioButtonList ID="rblCondicion" runat="server" 
+                    RepeatDirection="Horizontal">
+                    <asp:ListItem Selected="True" Value="1">CONTADO</asp:ListItem>
+                    <asp:ListItem Value="2">CREDITO</asp:ListItem>
+                </asp:RadioButtonList>
+
+            </td>
+            <td style="border-right-style: solid; border-right-width: 1px; border-right-color: #339933">
+                &nbsp;</td>
+            <td style="padding-left: 5px">
+                &nbsp;</td>
+            <td style="padding-left: 5px">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td>
+                &nbsp;</td>
             <td colspan="4" 
                 style="border-bottom-style: solid; border-bottom-width: 1px; border-bottom-color: #CCCCCC;">
                 &nbsp;</td>
@@ -329,7 +352,7 @@
                         <asp:BoundField DataField="Saldo" HeaderText="Saldo">
                         <ItemStyle HorizontalAlign="Right" Width="50px" />
                         </asp:BoundField>
-                        <asp:TemplateField HeaderText="Costo Unidad S/.">
+                        <asp:TemplateField HeaderText="Costo Unidad US$">
                             <ItemTemplate>
                                 <asp:TextBox ID="txtCostoUnidad" runat="server" AutoPostBack="True" 
                                     CssClass="inputNormalMoneda" ontextchanged="txtCostoUnidad_TextChanged" 
@@ -341,7 +364,7 @@
                             <ItemStyle HorizontalAlign="Right" Width="100px" />
                         </asp:TemplateField>
 
-                        <asp:BoundField HeaderText="Costo Total S/." DataField="CostoTotal" 
+                        <asp:BoundField HeaderText="Costo Total US$" DataField="CostoTotal" 
                             DataFormatString="{0:n2}">
                         <FooterStyle HorizontalAlign="Right" />
                         <ItemStyle Width="100px" HorizontalAlign="Right" />
@@ -369,13 +392,13 @@
             <td colspan="4">
                 <table border="0" cellpadding="5" cellspacing="0" width="100%">
                     <tr>
-                        <td valign="top">
+                        <td valign="top" rowspan="3">
                 <asp:TextBox ID="txtObservacion" runat="server" Height="80px" 
                     TextMode="MultiLine" Width="380px" placeholder="Comentarios"></asp:TextBox>
                         </td>
                         <td align="right" width="100" valign="top">
                             <asp:Label ID="Label22" runat="server" Font-Bold="True" Font-Size="12pt" 
-                                Text="Total:"></asp:Label>
+                                Text="Total"></asp:Label>
                         </td>
                         <td align="right" width="20" valign="top">
                             <asp:Label ID="lblSigno3" runat="server" Font-Bold="True" Font-Size="12pt" 
@@ -384,8 +407,35 @@
                         <td align="right" width="100" valign="top">
                             <asp:Label ID="lblTotal" runat="server" Font-Bold="True" Font-Size="12pt"></asp:Label>
                         </td>
-                        <td align="right" width="20" valign="top">
+                        <td align="right" width="20" valign="top" rowspan="3">
                             &nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td align="right" width="100" valign="top">
+                            <asp:Label ID="Label58" runat="server" Font-Bold="True" Font-Size="12pt" 
+                                Text="Adelanto"></asp:Label>
+                        </td>
+                        <td align="right" width="20" valign="top">
+                            <asp:Label ID="lblSigno4" runat="server" Font-Bold="True" Font-Size="12pt" 
+                                Text="US$"></asp:Label>
+                        </td>
+                        <td align="right" width="100" valign="top">
+                            <asp:TextBox ID="txtAdelanto" runat="server" CssClass="inputNormalMoneda" 
+                                Width="80px" AutoPostBack="True" ontextchanged="txtAdelanto_TextChanged" onkeypress="return ValidaNumeros(event);">0.00</asp:TextBox>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right" width="100" valign="top">
+                            <asp:Label ID="Label59" runat="server" Font-Bold="True" Font-Size="12pt" 
+                                Text="Saldo"></asp:Label>
+                        </td>
+                        <td align="right" width="20" valign="top">
+                            <asp:Label ID="lblSigno5" runat="server" Font-Bold="True" Font-Size="12pt" 
+                                Text="US$"></asp:Label>
+                        </td>
+                        <td align="right" width="100" valign="top">
+                            <asp:Label ID="lblSaldo" runat="server" Font-Bold="True" Font-Size="12pt"></asp:Label>
+                        </td>
                     </tr>
                     </table>
             </td>
@@ -916,7 +966,7 @@
             <td __designer:mapid="163">
                 <table cellpadding="0" cellspacing="0" class="style1">
                     <tr>
-                        <td width="65">
+                        <td width="95">
                             <asp:ImageButton ID="btnGuardarProducto" runat="server" 
                                 ImageUrl="~/images/btnGuardar_New.png" onclick="btnGuardarProducto_Click" 
                                 Width="95px" />

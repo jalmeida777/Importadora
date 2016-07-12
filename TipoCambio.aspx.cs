@@ -44,11 +44,9 @@ public partial class TipoCambio : System.Web.UI.Page
 
             if (existe == true)
             {
-                txtTipoCambio.Text = dt.Rows[0]["f_TC"].ToString();
-                txtTipoCambioPlay.Text = dt.Rows[0]["f_TCPlay"].ToString();
-                txtTipoCambio.Enabled = false;
-                txtTipoCambioPlay.Enabled = false;
-                btnGuardar.Enabled = false;
+                txtTipoCambio.Text = decimal.Parse(dt.Rows[0]["f_TC"].ToString()).ToString("N2");
+                //txtTipoCambio.Enabled = false;
+                //btnGuardar.Enabled = false;
             }
             else 
             {
@@ -75,18 +73,15 @@ public partial class TipoCambio : System.Web.UI.Page
 
                 if (existe == true)
                 {
-                    txtTipoCambio.Text = dt2.Rows[0]["f_TC"].ToString();
-                    txtTipoCambioPlay.Text = dt2.Rows[0]["f_TCPlay"].ToString();
+                    txtTipoCambio.Text = decimal.Parse(dt2.Rows[0]["f_TC"].ToString()).ToString("N2");
                     txtTipoCambio.Enabled = true;
-                    txtTipoCambioPlay.Enabled = true;
                     btnGuardar.Enabled = true;
+
                 }
                 else
                 {
                     txtTipoCambio.Text = "0.00";
-                    txtTipoCambioPlay.Text = "0.00";
                     txtTipoCambio.Enabled = true;
-                    txtTipoCambioPlay.Enabled = true;
                     btnGuardar.Enabled = true;
                     txtTipoCambio.Focus();
                 }
@@ -103,12 +98,7 @@ public partial class TipoCambio : System.Web.UI.Page
             txtTipoCambio.Focus();
             return;
         }
-        if (txtTipoCambioPlay.Text.Trim() == "") 
-        {
-            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Debe ingresar el tipo de cambio play' });</script>", false);
-            txtTipoCambioPlay.Focus();
-            return;
-        }
+
         //Validar que no registre ceros
 
         if (double.Parse(txtTipoCambio.Text.Trim()) == 0) 
@@ -118,12 +108,6 @@ public partial class TipoCambio : System.Web.UI.Page
             return;
         }
 
-        if (double.Parse(txtTipoCambioPlay.Text.Trim()) == 0)
-        {
-            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'El tipo de cambio play debe ser mayor a cero' });</script>", false);
-            txtTipoCambioPlay.Focus();
-            return;
-        }
 
         int año = DateTime.Now.Year;
         int mes = DateTime.Now.Month;
@@ -152,40 +136,48 @@ public partial class TipoCambio : System.Web.UI.Page
 
         if (existe == true)
         {
-            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Ya existe el tipo de cambio para el " + DateTime.Now.ToShortDateString() + "' });</script>", false);
-            return;
-        }
-
-        
-        try 
-	    {	        
-		    SqlCommand cmd = new SqlCommand();
+            //ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Ya existe el tipo de cambio para el " + DateTime.Now.ToShortDateString() + "' });</script>", false);
+            //return;
+            //Actualizar tipo de cambio
+            SqlCommand cmd = new SqlCommand();
             cmd.Connection = conexion;
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandText = "Play_TC_Registrar";
+            cmd.CommandText = "Play_TC_Actualizar";
             cmd.Parameters.AddWithValue("@i_Anio", año);
             cmd.Parameters.AddWithValue("@i_Mes", mes);
             cmd.Parameters.AddWithValue("@i_Dia", dia);
             cmd.Parameters.AddWithValue("@f_TC", txtTipoCambio.Text.Trim());
-            cmd.Parameters.AddWithValue("@f_TCPlay", txtTipoCambioPlay.Text.Trim());
             conexion.Open();
             cmd.ExecuteNonQuery();
             conexion.Close();
 
-            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Tipo de Cambio Registrado' });</script>", false);
-            DataTable dtUsuario = new DataTable();
-            dtUsuario = (DataTable)Session["dtUsuario"];
-            dtUsuario.Rows[0]["f_TC"] = double.Parse(txtTipoCambio.Text.Trim());
-            dtUsuario.Rows[0]["f_TCPlay"] = double.Parse(txtTipoCambioPlay.Text.Trim());
-            Session["dtUsuario"] = dtUsuario;
-            string Usuario = dtUsuario.Rows[0]["v_Usuario"].ToString();
-            FormsAuthentication.RedirectFromLoginPage(Usuario, false);
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Tipo de Cambio actualizado' });</script>", false);
         }
-        catch (Exception ex)
+        else
         {
-            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.error({ message: '" + ex.Message + "' });</script>", false);
-        }
 
+
+            try
+            {
+                SqlCommand cmd = new SqlCommand();
+                cmd.Connection = conexion;
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandText = "Play_TC_Registrar";
+                cmd.Parameters.AddWithValue("@i_Anio", año);
+                cmd.Parameters.AddWithValue("@i_Mes", mes);
+                cmd.Parameters.AddWithValue("@i_Dia", dia);
+                cmd.Parameters.AddWithValue("@f_TC", txtTipoCambio.Text.Trim());
+                conexion.Open();
+                cmd.ExecuteNonQuery();
+                conexion.Close();
+
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Tipo de Cambio Registrado' });</script>", false);
+            }
+            catch (Exception ex)
+            {
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.error({ message: '" + ex.Message + "' });</script>", false);
+            }
+        }
     }
 
     protected void btnSalir_Click(object sender, ImageClickEventArgs e)

@@ -107,7 +107,7 @@
    
                 <dx:GridViewDataTextColumn FieldName="v_CodigoInterno" VisibleIndex="0" 
                     Caption="Código" Width="60px">
-                    <Settings AutoFilterCondition="Equals" AllowAutoFilter="True" 
+                    <Settings AutoFilterCondition="BeginsWith" AllowAutoFilter="True" 
                         AllowAutoFilterTextInputTimer="False" />
                     <HeaderStyle HorizontalAlign="Center" />
                     <CellStyle HorizontalAlign="Center" Font-Size="12pt">

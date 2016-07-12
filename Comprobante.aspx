@@ -72,7 +72,9 @@
                         HasToggleGroupTreeButton="False" HasViewList="False" HasZoomFactorList="False" 
                         PrintMode="ActiveX" ReportSourceID="CrystalReportSource1" 
                         ReuseParameterValuesOnRefresh="True" 
-                        ToolbarImagesFolderUrl="../images/toolbar/" />
+                        ToolbarImagesFolderUrl="../images/toolbar/" 
+        HasCrystalLogo="False" HasExportButton="False" 
+        HasPageNavigationButtons="False" />
 
     </asp:Content>
 

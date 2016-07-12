@@ -43,6 +43,10 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                 txtReferencia.Text = dt.Rows[0]["v_Referencia"].ToString();
                 txtObservacion.Text = dt.Rows[0]["t_Observacion"].ToString();
                 lblTotal.Text = decimal.Parse(dt.Rows[0]["f_Total"].ToString()).ToString("N2");
+                lblSaldo.Text = decimal.Parse(dt.Rows[0]["f_Saldo"].ToString()).ToString("N2");
+                rblCondicion.SelectedValue = dt.Rows[0]["n_IdCodicionPago"].ToString();
+                txtAdelanto.Text = decimal.Parse(dt.Rows[0]["f_Adelanto"].ToString()).ToString("N2");
+
                 lblUsuarioRegistro.Text = dt.Rows[0]["Usuario"].ToString();
                 lblFechaRegistro.Text = dt.Rows[0]["d_FechaEmision"].ToString();
                 if (dt.Rows[0]["v_RutaFoto"].ToString().Trim() != "")
@@ -208,6 +212,9 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@f_Total", double.Parse(lblTotal.Text));
                     cmd.Parameters.AddWithValue("@n_IdUsuarioCreacion", n_IdUsuario);
                     cmd.Parameters.AddWithValue("@v_RutaArchivo", lbAdjunto.Text);
+                    cmd.Parameters.AddWithValue("@f_Saldo", lblSaldo.Text);
+                    cmd.Parameters.AddWithValue("@n_IdCodicionPago", rblCondicion.SelectedValue);
+                    cmd.Parameters.AddWithValue("@f_Adelanto", txtAdelanto.Text);
 
                     string i_IdOrdenCompra = cmd.ExecuteScalar().ToString();
                     hfIdOrdenCompra.Value = i_IdOrdenCompra;
@@ -285,6 +292,9 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@t_Observacion", txtObservacion.Text.Trim());
                     cmd.Parameters.AddWithValue("@f_Total", double.Parse(lblTotal.Text));
                     cmd.Parameters.AddWithValue("@v_RutaArchivo", lbAdjunto.Text);
+                    cmd.Parameters.AddWithValue("@f_Saldo", lblSaldo.Text);
+                    cmd.Parameters.AddWithValue("@n_IdCodicionPago", rblCondicion.SelectedValue);
+                    cmd.Parameters.AddWithValue("@f_Adelanto", txtAdelanto.Text);
                     cmd.ExecuteNonQuery();
                     cmd.Dispose();
 
@@ -430,6 +440,8 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
         }
 
         lblTotal.Text = Total.ToString("N2");
+        txtAdelanto.Text = "0.00";
+        lblSaldo.Text = Total.ToString("N2");
 
         Session["Detalle"] = dt;
 
@@ -1096,5 +1108,25 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
             string i_IdOrdenCompra = hfIdOrdenCompra.Value;
             Response.Redirect("CrearNotaIngreso.aspx?i_IdOrdenCompra=" + i_IdOrdenCompra);
         }
+    }
+    protected void txtAdelanto_TextChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            decimal total = 0;
+            total = decimal.Parse(lblTotal.Text);
+
+            decimal adelanto = 0;
+            adelanto = decimal.Parse(txtAdelanto.Text);
+
+            decimal saldo = 0;
+            saldo = total - adelanto;
+            lblSaldo.Text = saldo.ToString();
+        }
+        catch (Exception)
+        {
+            
+        }
+
     }
 }

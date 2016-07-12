@@ -265,7 +265,8 @@
                         <asp:TemplateField HeaderText="Producto">
                             <ItemTemplate>
                                 <asp:TextBox ID="txtProducto" runat="server" Width="300px" 
-                                    CssClass="inputNormal" Text='<%# Bind("Producto") %>' placeholder="Ingrese Producto"></asp:TextBox>
+                                    CssClass="inputNormal" Text='<%# Bind("Producto") %>' 
+                                    placeholder="Ingrese Producto" AutoPostBack="True"></asp:TextBox>
                                 <asp:HiddenField ID="hfIdProducto" runat="server" 
                                     Value='<%# Bind("n_IdProducto") %>' 
                                     onvaluechanged="hfIdProducto_ValueChanged" />
@@ -291,7 +292,7 @@
                             <ItemTemplate>
                                 <asp:TextBox ID="txtCantidad" runat="server" Width="100px" 
                                     CssClass="inputNormalMoneda" Text='<%# Bind("Cantidad") %>' 
-                                    onkeypress="return ValidaEntero(event);"></asp:TextBox>
+                                    onkeypress="return ValidaEntero(event);" AutoPostBack="True"></asp:TextBox>
                             </ItemTemplate>
                             <EditItemTemplate>
                                 <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>

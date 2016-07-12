@@ -19,6 +19,14 @@ public partial class ListarPedidos : System.Web.UI.Page
             txtFechaInicial.Text = DateTime.Now.ToShortDateString();
             txtFechaFinal.Text = DateTime.Now.ToShortDateString();
             ListarSucursal();
+            if (ddlAlmacen.SelectedIndex == 0)
+            {
+                lblSucursal.Text = "%";
+            }
+            else
+            {
+                lblSucursal.Text = ddlAlmacen.SelectedItem.Text;
+            }
             Listar();
         }
     }
@@ -31,6 +39,14 @@ public partial class ListarPedidos : System.Web.UI.Page
             string FechaFinal = DateTime.Parse(txtFechaFinal.Text).Year.ToString("0000") + DateTime.Parse(txtFechaFinal.Text).Month.ToString("00") + DateTime.Parse(txtFechaFinal.Text).Day.ToString("00");
             lblFechaInicial.Text = FechaInicial;
             lblFechaFinal.Text = FechaFinal;
+            if (ddlAlmacen.SelectedIndex == 0)
+            {
+                lblSucursal.Text = "%";
+            }
+            else
+            {
+                lblSucursal.Text = ddlAlmacen.SelectedItem.Text;
+            }
         }
         catch (Exception)
         {
@@ -48,16 +64,16 @@ public partial class ListarPedidos : System.Web.UI.Page
             ddlAlmacen.DataTextField = "v_Descripcion";
             ddlAlmacen.DataValueField = "n_IdAlmacen";
             ddlAlmacen.DataBind();
-            //ddlAlmacen.Items.Insert(0, "TODOS");
+            ddlAlmacen.Items.Insert(0, "TODOS");
             ddlAlmacen.SelectedIndex = 0;
-            if (dtAlmacen.Rows.Count >= 1)
-            {
-                ddlAlmacen.Enabled = true;
-            }
-            else
-            {
-                ddlAlmacen.Enabled = false;
-            }
+            //if (dtAlmacen.Rows.Count >= 1)
+            //{
+            //    ddlAlmacen.Enabled = true;
+            //}
+            //else
+            //{
+            //    ddlAlmacen.Enabled = false;
+            //}
         }
         else
         {

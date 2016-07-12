@@ -62,6 +62,8 @@
                         <asp:Label ID="lblFechaInicial" runat="server" Visible="False"></asp:Label>
                         <asp:Label ID="lblFechaFinal" runat="server" Visible="False"></asp:Label>
                         
+                        <asp:Label ID="lblSucursal" runat="server" Visible="False"></asp:Label>
+                        
                     </td>
                 </tr>
             </table>
@@ -133,6 +135,9 @@
                         <dx:GridViewDataTextColumn Caption="Descuento" FieldName="f_Descuento" 
                             VisibleIndex="7" Width="100px">
                             <PropertiesTextEdit DisplayFormatString="{0:C}"></PropertiesTextEdit>
+                        </dx:GridViewDataTextColumn>
+                        <dx:GridViewDataTextColumn Caption="Sucursal" FieldName="Sucursal" 
+                            VisibleIndex="9" Width="80px">
                         </dx:GridViewDataTextColumn>
                     </Columns>
                     <SettingsBehavior AutoFilterRowInputDelay="0" />
@@ -236,8 +241,8 @@
                             PropertyName="Text" Type="String" />
                         <asp:ControlParameter ControlID="chkHabilitado" Name="b_Estado" 
                             PropertyName="Checked" Type="Boolean" />
-                        <asp:ControlParameter ControlID="ddlAlmacen" Name="n_IdAlmacen" 
-                            PropertyName="SelectedValue" Type="Decimal" />
+                        <asp:ControlParameter ControlID="lblSucursal" Name="v_Descripcion" 
+                            PropertyName="Text" Type="String" />
                     </SelectParameters>
                 </asp:SqlDataSource>
                 <asp:SqlDataSource ID="SqlDataSource2" runat="server" 

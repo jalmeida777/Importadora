@@ -20,10 +20,18 @@ public partial class Plantilla : System.Web.UI.MasterPage
             litMenu.Text = Session["MenuHTML"].ToString();
         }
         else { ListarMenu(); }
-       
+        MostrarTipoCambio();
     }
 
-
+    void MostrarTipoCambio() 
+    {
+        if (Session["dtUsuario"] != null) 
+        {
+            DataTable dtUsuario = new DataTable();
+            dtUsuario = (DataTable)Session["dtUsuario"];
+            lblTC.Text = decimal.Parse(dtUsuario.Rows[0]["f_TC"].ToString()).ToString("N2");
+        }
+    }
 
     protected void ListarMenu()
     {

@@ -284,7 +284,8 @@
                         <asp:TemplateField HeaderText="Cantidad">
                             <ItemTemplate>
                                 <asp:TextBox ID="txtCantidad" runat="server" Width="100px" 
-                                    CssClass="inputNormalMoneda" Text='<%# Bind("Cantidad") %>' onkeypress="return ValidaEntero(event);"></asp:TextBox>
+                                    CssClass="inputNormalMoneda" Text='<%# Bind("Cantidad") %>' 
+                                    onkeypress="return ValidaEntero(event);" AutoPostBack="True"></asp:TextBox>
                             </ItemTemplate>
                             <EditItemTemplate>
                                 <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>

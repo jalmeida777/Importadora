@@ -278,4 +278,52 @@ alter table OrdenCompra
 add f_Saldo float
 go
 
-select * from ordenCompra
+alter table TC
+drop column f_TCPlay
+go
+
+
+alter procedure Play_TC_Registrar  
+@i_Anio int,  
+@i_Mes int,  
+@i_Dia int,  
+@f_TC float
+as  
+insert into TC values(@i_Anio,@i_Mes,@i_Dia,@f_TC)  
+go
+
+alter procedure Play_TC_UltimoTC_Select  
+as  
+select top 1 i_Anio,i_Mes,i_Dia,f_TC from TC order by i_Anio desc,i_Mes desc ,i_Dia desc
+go
+
+alter procedure Play_TC_Existencia  
+@i_Anio int,  
+@i_Mes int,  
+@i_Dia int  
+as  
+select f_TC from tc where i_Anio = @i_Anio and i_Mes = @i_Mes and i_Dia = @i_Dia  
+go
+
+sp_helptext Play_Usuario_Select
+
+alter procedure Play_Usuario_Select      
+@v_Usuario varchar(30),      
+@v_Pwd varchar(10)      
+as      
+declare @f_TC float
+if exists(select f_TC from TC where i_Anio = year(getdate()) and i_Mes = month(getdate()) and i_Dia = day(getdate()))
+begin
+set @f_TC = (select f_TC from TC where i_Anio = year(getdate()) and i_Mes = month(getdate()) and i_Dia = day(getdate()))
+end
+else
+begin
+set @f_TC = (select top 1 isnull(f_TC,0) from TC order by i_Anio desc, i_Mes desc, i_Dia desc)
+end
+
+select usu.n_IdUsuario,usu.i_IdRol,rl.v_Nombrerol,usu.v_Usuario,usu.v_RutaFoto,@f_TC as 'f_TC'  
+from Usuario usu      
+inner join Rol rl on usu.i_IdRol = rl.i_IdRol      
+where v_Usuario = @v_Usuario and v_Pwd = @v_Pwd      
+and b_Estado = 1 
+go

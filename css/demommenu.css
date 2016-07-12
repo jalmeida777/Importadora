@@ -23,6 +23,18 @@ nav:not(.mm-menu)
 	display: none;
 }
 
+.loginleft
+{
+    float: left;
+    text-align: right;
+    top: 0;
+    right: 220px;
+    position: fixed;
+    vertical-align: middle;
+    color: #FFFFFF;
+    padding-top: 10px;
+}
+
 .login
 {
     float: left;

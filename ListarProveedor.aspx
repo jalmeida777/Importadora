@@ -9,12 +9,12 @@
             <table width="100%" cellpadding="3" cellspacing="3">
                 <tr>
                     <td colspan="2">
-                        <h1 class="label">
+                        <h1>
                             Administración de Proveedores</h1>
                     </td>
                 </tr>
                 <tr>
-                    <td width="55" class="label">
+                    <td width="55">
                         <asp:Label ID="Label2" runat="server" Text="Buscar:"></asp:Label>
                     </td>
                     <td>
@@ -41,21 +41,21 @@
             </div>
 
                 <div class="toolbar">
-            <table width="100%"><tr><td width="65">
+            <table width="100%"><tr><td width="96">
                 
                 <asp:ImageButton ID="btnConsultar" runat="server" 
-                    ImageUrl="~/images/Buscar.jpg" onclick="btnConsultar_Click" />
+                    ImageUrl="~/images/btnBuscar_New.png" onclick="btnConsultar_Click" />
                 
                 </td>
-                <td width="65">
+                <td width="96">
                   
-                    <asp:ImageButton ID="btnNuevo" runat="server" ImageUrl="~/images/Nuevo.jpg" 
+                    <asp:ImageButton ID="btnNuevo" runat="server" ImageUrl="~/images/btnNuevo_New.png" 
                         onclick="btnNuevo_Click" />
                   
                 </td>
                 <td>
                    
-                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/Salir.jpg" 
+                    <asp:ImageButton ID="btnSalir" runat="server" ImageUrl="~/images/btnSalir_New.png" 
                         onclick="btnSalir_Click" />
                    
                 </td>

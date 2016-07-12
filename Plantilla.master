@@ -45,7 +45,10 @@
 			<div class="header">
 				<a href="#menu"></a>
 			</div>
-
+            <div class="loginleft">
+                <asp:Label ID="Label1" runat="server" Text="TC:" Font-Bold="True"></asp:Label>
+                <asp:Label ID="lblTC" runat="server" Font-Bold="True"></asp:Label>
+            </div>
             <div class="login">
                 <asp:LoginName ID="LoginName1" runat="server" ForeColor="White" 
                     Font-Bold="True" />
