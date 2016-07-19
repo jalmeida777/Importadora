@@ -104,6 +104,15 @@
                         ImageUrl="~/images/btnDespachar_New.png" onclick="btnDespachar_Click" />
                    
                 </td>
+                <td align="left" width="95">
+                   
+                    <asp:ImageButton ID="btnAnular" runat="server" 
+                        ImageUrl="~/images/btnAnular_New.png" 
+                        
+                        onclientclick="if (confirm('Seguro de anular?')) { btnAnular.disabled = false; return true; } else { return false; }" 
+                        onclick="btnAnular_Click" />
+                   
+                </td>
                 <td align="left">
                    
                     <asp:ImageButton ID="btnSalir" runat="server" 

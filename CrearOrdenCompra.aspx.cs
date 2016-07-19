@@ -1109,6 +1109,7 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
             Response.Redirect("CrearNotaIngreso.aspx?i_IdOrdenCompra=" + i_IdOrdenCompra);
         }
     }
+
     protected void txtAdelanto_TextChanged(object sender, EventArgs e)
     {
         try
@@ -1128,5 +1129,42 @@ public partial class CrearOrdenCompra : System.Web.UI.Page
             
         }
 
+    }
+
+    protected void btnAnular_Click(object sender, ImageClickEventArgs e)
+    {
+        if (Request.QueryString["i_IdOrdenCompra"] != null)
+        {
+            string i_IdOrdenCompra = Request.QueryString["i_IdOrdenCompra"].ToString();
+            hfIdOrdenCompra.Value = i_IdOrdenCompra;
+            //Verificar que no halla notas de ingreso enlazadas
+            DataTable dt = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter("select * from ordencompradocumento where i_IdOrdenCompra = " + i_IdOrdenCompra, conexion);
+            da.Fill(dt);
+            if (dt.Rows.Count > 0)
+            {
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Aun hay notas de ingreso enlazadas a la orden de compra.' });</script>", false);
+                return;
+            }
+            else
+            {
+                //anular la orden de compra
+                SqlCommand cmd8 = new SqlCommand();
+                cmd8.Connection = conexion;
+                cmd8.CommandType = CommandType.StoredProcedure;
+                cmd8.CommandText = "Play_OrdenCompra_Anulado";
+                cmd8.Parameters.AddWithValue("@i_IdOrdenCompra", i_IdOrdenCompra);
+                conexion.Open();
+                cmd8.ExecuteNonQuery();
+                conexion.Close();
+                cmd8.Dispose();
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Orden de compra anulada satisfactoriamente.' });</script>", false);
+                btnAnular.Enabled = false;
+                btnDespachar.Enabled = false;
+                btnGuardar.Enabled = false;
+                BloquearOrdenCompra();
+
+            }
+        }
     }
 }
