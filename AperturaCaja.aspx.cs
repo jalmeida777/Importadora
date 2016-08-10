@@ -23,10 +23,10 @@ public partial class AperturaCaja : System.Web.UI.Page
 
     void ListarSucursal()
     {
-        if (Session["dtAlmacenes"] != null)
+        if (Session["dtCajas"] != null)
         {
             DataTable dtAlmacen = new DataTable();
-            dtAlmacen = (DataTable)Session["dtAlmacenes"];
+            dtAlmacen = (DataTable)Session["dtCajas"];
             ddlTienda.DataSource = dtAlmacen;
             ddlTienda.DataTextField = "v_Descripcion";
             ddlTienda.DataValueField = "n_IdAlmacen";

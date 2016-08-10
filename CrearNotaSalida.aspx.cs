@@ -12,10 +12,67 @@ using System.IO;
 public partial class CrearNotaSalida : System.Web.UI.Page
 {
     SqlConnection conexion = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
+    private void LoadDatosNotaSalida()
+    {
+        string n_IdNotaSalida = Request.QueryString["n_IdNotaSalida"];
 
+        hddfNotaSalida.Value = n_IdNotaSalida;
+
+        SqlDataAdapter da = new SqlDataAdapter("Play_NotaSalida_Seleccionar " + n_IdNotaSalida, conexion);
+        DataTable dt = new DataTable();
+        da.Fill(dt);
+        ddlAlmacen.SelectedValue = dt.Rows[0]["n_IdAlmacen"].ToString();
+        ddlTipoMovimiento.SelectedValue = dt.Rows[0]["n_IdMotivoTraslado"].ToString();
+        txtFechaInicial.Text = DateTime.Parse(dt.Rows[0]["d_FechaEmision"].ToString()).ToShortDateString();
+        txtReferencia.Text = dt.Rows[0]["v_Referencia"].ToString();
+        txtObservacion.Text = dt.Rows[0]["t_Observacion"].ToString();
+        lblNumero.Text = dt.Rows[0]["v_NumeroNotaSalida"].ToString();
+        int Estado = int.Parse(dt.Rows[0]["n_IdNotaSalidaEstado"].ToString());
+        if (Estado == 1)
+        {
+            lblEstado.Text = "Pendiente";
+            lblEstado.ForeColor = System.Drawing.Color.Green;
+            ibAnular.Visible = true;
+            ibtnDespachar.Visible = true;
+        }
+        else if (Estado == 2)
+        {
+            lblEstado.Text = "Terminado";
+            lblEstado.ForeColor = System.Drawing.Color.Green;
+            ibAnular.Visible = false;
+            ibtnDespachar.Visible = false;
+        }
+        else if (Estado == 3)
+        {
+            lblEstado.Text = "Anulado";
+            lblEstado.ForeColor = System.Drawing.Color.Red;
+            Label1.ForeColor = System.Drawing.Color.Red;
+            lblNumero.ForeColor = System.Drawing.Color.Red;
+            ibAnular.Visible = false;
+            ibtnDespachar.Visible = false;
+        }
+
+        lblUsuarioRegistro.Text = dt.Rows[0]["UsuarioRegistra"].ToString();
+        lblFechaRegistro.Text = dt.Rows[0]["d_FechaCreacion"].ToString();
+        if (dt.Rows[0]["UsuarioFotoRegistra"].ToString().Trim() != "")
+        {
+            ibUsuarioRegistro.ImageUrl = dt.Rows[0]["UsuarioFotoRegistra"].ToString();
+        }
+        else
+        {
+            ibUsuarioRegistro.ImageUrl = "~/images/face.jpg";
+        }
+
+        SqlDataAdapter daDetalle = new SqlDataAdapter("Play_NotaSalidaDetalle_Seleccionar " + n_IdNotaSalida, conexion);
+        DataTable dtDetalle = new DataTable();
+        daDetalle.Fill(dtDetalle);
+        gv.DataSource = dtDetalle;
+        gv.DataBind();
+        BloquearNotaSalida();
+    }
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Page.IsPostBack == false) 
+        if (Page.IsPostBack == false)
         {
             ListarAlmacen();
             ListarMotivo();
@@ -26,51 +83,9 @@ public partial class CrearNotaSalida : System.Web.UI.Page
 
             if (Request.QueryString["n_IdNotaSalida"] != null)
             {
-                string n_IdNotaSalida = Request.QueryString["n_IdNotaSalida"];
-                SqlDataAdapter da = new SqlDataAdapter("Play_NotaSalida_Seleccionar " + n_IdNotaSalida, conexion);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                ddlAlmacen.SelectedValue = dt.Rows[0]["n_IdAlmacen"].ToString();
-                ddlTipoMovimiento.SelectedValue = dt.Rows[0]["n_IdMotivoTraslado"].ToString();
-                txtFechaInicial.Text = DateTime.Parse(dt.Rows[0]["d_FechaEmision"].ToString()).ToShortDateString();
-                txtReferencia.Text = dt.Rows[0]["v_Referencia"].ToString();
-                txtObservacion.Text = dt.Rows[0]["t_Observacion"].ToString();
-                lblNumero.Text = dt.Rows[0]["v_NumeroNotaSalida"].ToString();
-                bool Estado = bool.Parse(dt.Rows[0]["b_Estado"].ToString());
-                if (Estado == true)
-                {
-                    lblEstado.Text = "Activo";
-                    lblEstado.ForeColor = System.Drawing.Color.Green;
-                    ibAnular.Visible = true;
-                }
-                else
-                {
-                    lblEstado.Text = "Anulado";
-                    lblEstado.ForeColor = System.Drawing.Color.Red;
-                    Label1.ForeColor = System.Drawing.Color.Red;
-                    lblNumero.ForeColor = System.Drawing.Color.Red;
-                    ibAnular.Visible = false;
-                }
-
-                lblUsuarioRegistro.Text = dt.Rows[0]["UsuarioRegistra"].ToString();
-                lblFechaRegistro.Text = dt.Rows[0]["d_FechaCreacion"].ToString();
-                if (dt.Rows[0]["UsuarioFotoRegistra"].ToString().Trim() != "")
-                {
-                    ibUsuarioRegistro.ImageUrl = dt.Rows[0]["UsuarioFotoRegistra"].ToString();
-                }
-                else
-                {
-                    ibUsuarioRegistro.ImageUrl = "~/images/face.jpg";
-                }
-
-                SqlDataAdapter daDetalle = new SqlDataAdapter("Play_NotaSalidaDetalle_Seleccionar " + n_IdNotaSalida, conexion);
-                DataTable dtDetalle = new DataTable();
-                daDetalle.Fill(dtDetalle);
-                gv.DataSource = dtDetalle;
-                gv.DataBind();
-                BloquearNotaSalida();
+                LoadDatosNotaSalida();
             }
-            
+
         }
     }
 
@@ -160,7 +175,7 @@ public partial class CrearNotaSalida : System.Web.UI.Page
         }
     }
 
-    void BloquearNotaSalida() 
+    void BloquearNotaSalida()
     {
         btnGuardar.Enabled = false;
         ddlAlmacen.Enabled = false;
@@ -376,7 +391,7 @@ public partial class CrearNotaSalida : System.Web.UI.Page
             dt.Rows[i]["Producto"] = tPro.Text.Trim();
             dt.Rows[i]["Cantidad"] = tCan.Text.Trim();
         }
-        
+
         //Mostrar los datos y fila nueva
         DataRow dr;
         dr = dt.NewRow();
@@ -390,7 +405,7 @@ public partial class CrearNotaSalida : System.Web.UI.Page
         gv.DataSource = dt;
         gv.DataBind();
     }
-    
+
     protected void gv_RowDeleting(object sender, GridViewDeleteEventArgs e)
     {
         try
@@ -500,4 +515,166 @@ public partial class CrearNotaSalida : System.Web.UI.Page
     }
 
 
+    protected void ibtnDespachar_Click(object sender, ImageClickEventArgs e)
+    {
+        if (hddfNotaSalida.Value == "0")
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'La Nota de Salida no existe' });</script>", false);
+        }
+
+        string n_IdNotaSalida = hddfNotaSalida.Value;
+
+        TextBox tPro = new TextBox();
+        TextBox tCan = new TextBox();
+        HiddenField hf = new HiddenField();
+
+        DataTable dt = new DataTable();
+        dt = (DataTable)Session["Detalle"];
+
+        while (dt.Rows.Count < gv.Rows.Count)
+        {
+            //Mostrar los datos y fila nueva
+            DataRow dr;
+            dr = dt.NewRow();
+            dr["n_IdProducto"] = 0;
+            dr["Producto"] = "";
+            dr["Cantidad"] = "0";
+            dt.Rows.Add(dr);
+        }
+
+
+        //Pasar de la grilla a la tabla
+        for (int i = 0; i < gv.Rows.Count; i++)
+        {
+            hf = (HiddenField)gv.Rows[i].FindControl("hfIdProducto");
+            tPro = (TextBox)gv.Rows[i].Cells[0].FindControl("txtProducto");
+            tCan = (TextBox)gv.Rows[i].Cells[1].FindControl("txtCantidad");
+            dt.Rows[i]["n_IdProducto"] = hf.Value;
+            dt.Rows[i]["Producto"] = tPro.Text.Trim();
+            dt.Rows[i]["Cantidad"] = tCan.Text.Trim();
+        }
+
+        if (Session["dtUsuario"] != null)
+        {
+            DataTable dtUsuario = new DataTable();
+            dtUsuario = (DataTable)Session["dtUsuario"];
+            string n_IdUsuario = dtUsuario.Rows[0]["n_IdUsuario"].ToString();
+
+            string numero;
+
+            SqlTransaction tran;
+            SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
+            cn.Open();
+            tran = cn.BeginTransaction();
+
+            try
+            {
+                SqlCommand cmd0 = new SqlCommand();
+                cmd0.Connection = cn;
+                cmd0.Transaction = tran;
+                cmd0.CommandType = CommandType.Text;
+                cmd0.CommandText = "select v_NumeroNotaSalida from NotaSalida where n_IdNotaSalida = " + n_IdNotaSalida;
+                numero = cmd0.ExecuteScalar().ToString();
+
+
+                int stockContable = 0;
+
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    //Obtener el id del producto por su nombre
+                    string n_IdProducto = "";
+
+                    n_IdProducto = dt.Rows[i]["n_IdProducto"].ToString();
+
+                    //validar el stock antes de guardar 
+                    SqlCommand cmdStockContable = new SqlCommand();
+                    cmdStockContable.Connection = cn;
+                    cmdStockContable.Transaction = tran;
+                    cmdStockContable.CommandType = CommandType.Text;
+                    cmdStockContable.CommandText = "select f_StockContable from stock where n_IdProducto = " + dt.Rows[i]["n_IdProducto"].ToString() + " and n_IdAlmacen = " + ddlAlmacen.SelectedValue;
+                    stockContable = int.Parse(cmdStockContable.ExecuteScalar().ToString());
+
+                    if (stockContable < int.Parse(dt.Rows[i]["Cantidad"].ToString()))
+                    {
+                        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'No hay stock suficiente' });</script>", false);
+                        tran.Rollback();
+                        cn.Close();
+                        return;
+                    }
+
+
+                    //Restar Stock
+                    SqlCommand cmd3 = new SqlCommand();
+                    cmd3.Connection = cn;
+                    cmd3.Transaction = tran;
+                    cmd3.CommandType = CommandType.StoredProcedure;
+                    cmd3.CommandText = "Play_Stock_Restar_Actualizar";
+                    cmd3.Parameters.AddWithValue("@n_IdAlmacen", ddlAlmacen.SelectedValue);
+                    cmd3.Parameters.AddWithValue("@n_IdProducto", n_IdProducto);
+                    cmd3.Parameters.AddWithValue("@f_Cantidad", dt.Rows[i]["Cantidad"].ToString());
+                    cmd3.ExecuteNonQuery();
+                    cmd3.Dispose();
+
+                    //Registrar Kardex
+                    SqlCommand cmd4 = new SqlCommand();
+                    cmd4.Connection = cn;
+                    cmd4.Transaction = tran;
+                    cmd4.CommandType = CommandType.StoredProcedure;
+                    cmd4.CommandText = "Play_Kardex_Insertar";
+                    cmd4.Parameters.AddWithValue("@d_FechaMovimiento", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
+                    cmd4.Parameters.AddWithValue("@c_TipoMovimiento", "S");
+                    cmd4.Parameters.AddWithValue("@i_IdMotivoTraslado", ddlTipoMovimiento.SelectedValue);
+                    cmd4.Parameters.AddWithValue("@n_IdProducto", n_IdProducto);
+                    cmd4.Parameters.AddWithValue("@n_IdAlmacen", ddlAlmacen.SelectedValue);
+                    cmd4.Parameters.AddWithValue("@f_Cantidad", dt.Rows[i]["Cantidad"].ToString());
+                    cmd4.Parameters.AddWithValue("@n_IdTipoDocumento", 9);
+                    cmd4.Parameters.AddWithValue("@v_NumeroDocumento", numero);
+                    cmd4.Parameters.AddWithValue("@n_IdCliente", DBNull.Value);
+                    cmd4.Parameters.AddWithValue("@n_IdProveedor", DBNull.Value);
+                    cmd4.ExecuteNonQuery();
+                    cmd4.Dispose();
+                }
+
+
+
+                SqlCommand cmdActualizaEstado = new SqlCommand();
+                cmdActualizaEstado.Connection = cn;
+                cmdActualizaEstado.Transaction = tran;
+                cmdActualizaEstado.CommandType = CommandType.StoredProcedure;
+                cmdActualizaEstado.CommandText = "Play_NotaSalida_Actualizar_Estado";
+                cmdActualizaEstado.Parameters.AddWithValue("@n_IdNotaSalida", n_IdNotaSalida);
+                cmdActualizaEstado.Parameters.AddWithValue("@n_IdNotaSalidaEstado", 2);
+                cmdActualizaEstado.ExecuteNonQuery();
+
+                //Actualizar Correlativos
+                SqlCommand cmd5 = new SqlCommand();
+                cmd5.Connection = cn;
+                cmd5.Transaction = tran;
+                cmd5.CommandType = CommandType.StoredProcedure;
+                cmd5.CommandText = "Play_Correlativo_Aumentar";
+                cmd5.Parameters.AddWithValue("@n_IdTipoDocumento", 9);
+                cmd5.Parameters.AddWithValue("@n_IdAlmacen", ddlAlmacen.SelectedValue);
+                cmd5.ExecuteNonQuery();
+
+                tran.Commit();
+                lblNumero.Text = numero;
+
+                LoadDatosNotaSalida();
+
+
+
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Nota de Salida - Despacho Satisfactoriamente' });</script>", false);
+            }
+            catch (Exception ex)
+            {
+                tran.Rollback();
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.error({ message: '" + ex.Message + "' });</script>", false);
+            }
+            finally
+            {
+                cn.Close();
+            }
+        }
+
+    }
 }

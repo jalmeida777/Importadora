@@ -56,7 +56,7 @@
                     </td>
                     <td>
                         
-                        <asp:CheckBox ID="chkHabilitado" runat="server" Checked="True" 
+                        <asp:CheckBox ID="chkHabilitado" runat="server" Checked="True" Visible="false"
                             Font-Bold="False" Text="Habilitados" />
                         
                         <asp:Label ID="lblFechaInicial" runat="server" Visible="False"></asp:Label>
@@ -139,6 +139,9 @@
                         <dx:GridViewDataTextColumn Caption="Sucursal" FieldName="Sucursal" 
                             VisibleIndex="9" Width="80px">
                         </dx:GridViewDataTextColumn>
+                        <dx:GridViewDataTextColumn Caption="Estado" FieldName="v_PedidoEstado" 
+                            VisibleIndex="10" Width="80px">
+                        </dx:GridViewDataTextColumn>
                     </Columns>
                     <SettingsBehavior AutoFilterRowInputDelay="0" />
                     <SettingsPager PageSize="5" ShowDefaultImages="False">
@@ -184,15 +187,18 @@
                                         VisibleIndex="0" Width="80px">
                                     </dx:GridViewDataTextColumn>
                                     <dx:GridViewDataTextColumn Caption="Precio Unitario S/." 
-                                        FieldName="f_PrecioUnitario" VisibleIndex="3" Width="100px">
+                                        FieldName="f_PrecioUnitario" VisibleIndex="4" Width="100px">
                                         <PropertiesTextEdit DisplayFormatString="{0:C}"></PropertiesTextEdit>
                                     </dx:GridViewDataTextColumn>
                                     <dx:GridViewDataTextColumn Caption="Precio Total S/." FieldName="f_PrecioTotal" 
-                                        VisibleIndex="4" Width="100px">
+                                        VisibleIndex="5" Width="100px">
                                         <PropertiesTextEdit DisplayFormatString="{0:C}"></PropertiesTextEdit>
                                     </dx:GridViewDataTextColumn>
-                                    <dx:GridViewDataTextColumn Caption="Producto" FieldName="Producto" 
+                                    <dx:GridViewDataTextColumn Caption="Almacen" FieldName="Almacen" 
                                         VisibleIndex="2">
+                                    </dx:GridViewDataTextColumn>
+                                    <dx:GridViewDataTextColumn Caption="Producto" FieldName="Producto" 
+                                        VisibleIndex="3">
                                     </dx:GridViewDataTextColumn>
                                     <dx:GridViewDataTextColumn Caption="Código" FieldName="Codigo" VisibleIndex="1" 
                                         Width="80px">
@@ -239,8 +245,7 @@
                             PropertyName="Text" Type="String" />
                         <asp:ControlParameter ControlID="lblFechaFinal" Name="FechaFin" 
                             PropertyName="Text" Type="String" />
-                        <asp:ControlParameter ControlID="chkHabilitado" Name="b_Estado" 
-                            PropertyName="Checked" Type="Boolean" />
+                        <asp:Parameter DefaultValue="0" Name="n_IdPedidoEstado" Type="Decimal" />
                         <asp:ControlParameter ControlID="lblSucursal" Name="v_Descripcion" 
                             PropertyName="Text" Type="String" />
                     </SelectParameters>

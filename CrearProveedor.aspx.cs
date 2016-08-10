@@ -87,7 +87,8 @@ public partial class CrearProveedor : System.Web.UI.Page
                 n_IdProveedor = cmd.ExecuteScalar().ToString();
                 conexion.Close();
                 lblCodigo.Text = n_IdProveedor;
-                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Proveedor registrado.' });</script>", false);
+                //ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Proveedor registrado.' });</script>", false);
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>window.parent.CerrarDialog('proveedores'," + n_IdProveedor.ToString() + ");</script>", false);
             }
         }
         catch (Exception ex)

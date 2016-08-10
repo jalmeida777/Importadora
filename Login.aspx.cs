@@ -58,6 +58,15 @@ public partial class Login : System.Web.UI.Page
                     ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'No hay sucursales vinculadas con su usuario' });</script>", false);
                     return;
                 }
+                //Guardar cajas permitidos al usuario
+                DataTable dtCajas = new DataTable();
+                SqlDataAdapter daCajas = new SqlDataAdapter("Importadora_UsuarioCaja_Combo " + n_IdUsuario, conexion);
+                daCajas.Fill(dtCajas);
+                if (dtCajas.Rows.Count > 0)
+                {
+                    Session["dtCajas"] = dtCajas;
+                }
+
                 //Obtener Parámetros del sistema
                 DataTable dtParametro = new DataTable();
                 SqlDataAdapter daParametro = new SqlDataAdapter("select f_Igv, b_PedidoMueveStock from parametros", conexion);

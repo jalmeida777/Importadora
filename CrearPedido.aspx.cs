@@ -12,6 +12,106 @@ public partial class CrearPedido : System.Web.UI.Page
 {
     SqlConnection conexion = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
 
+    private void LoadDatosPedido()
+    {
+        string n_IdPedido = Request.QueryString["n_IdPedido"];
+        hddfPedido.Value = n_IdPedido;
+        //Ver Cabecera del Pedido
+        SqlDataAdapter daPedido = new SqlDataAdapter("Play_Pedido_Seleccionar " + n_IdPedido, conexion);
+        DataTable dtPedido = new DataTable();
+        daPedido.Fill(dtPedido);
+
+        lblNumeroPedido.Text = dtPedido.Rows[0]["v_NumeroPedido"].ToString();
+        lblIdPedido.Text = n_IdPedido;
+        hdnValue.Value = dtPedido.Rows[0]["n_IdCliente"].ToString();
+        txtCliente.Text = dtPedido.Rows[0]["v_Nombre"].ToString();
+        txtFechaInicial.Text = DateTime.Parse(dtPedido.Rows[0]["d_FechaEmision"].ToString()).ToShortDateString();
+        ddlFormaPago.SelectedValue = dtPedido.Rows[0]["n_IdFormaPago"].ToString();
+        ddlMoneda.SelectedValue = dtPedido.Rows[0]["n_IdMoneda"].ToString();
+        ddlMoneda_SelectedIndexChanged(null, null);
+        ddlTienda.SelectedValue = dtPedido.Rows[0]["n_IdAlmacen"].ToString();
+        lblSubTotal.Text = decimal.Parse(dtPedido.Rows[0]["f_SubTotal"].ToString()).ToString("N2");
+        lblTotal.Text = decimal.Parse(dtPedido.Rows[0]["f_Total"].ToString()).ToString("N2");
+        txtPago.Text = decimal.Parse(dtPedido.Rows[0]["f_Pago"].ToString()).ToString("N2");
+        lblVuelto.Text = decimal.Parse(dtPedido.Rows[0]["f_Vuelto"].ToString()).ToString("N2");
+        txtObservacion.Text = dtPedido.Rows[0]["t_Obs"].ToString();
+        int Estado = int.Parse(dtPedido.Rows[0]["n_IdPedidoEstado"].ToString());
+
+        lblUsuarioRegistro.Text = dtPedido.Rows[0]["UsuarioRegistra"].ToString();
+        lblFechaRegistro.Text = dtPedido.Rows[0]["d_FechaRegistra"].ToString();
+        if (dtPedido.Rows[0]["UsuarioFotoRegistra"].ToString().Trim() != "")
+        {
+            ibUsuarioRegistro.ImageUrl = dtPedido.Rows[0]["UsuarioFotoRegistra"].ToString();
+        }
+        else
+        {
+            ibUsuarioRegistro.ImageUrl = "~/images/face.jpg";
+        }
+
+        txtDescuento.Text = decimal.Parse(dtPedido.Rows[0]["f_Descuento"].ToString()).ToString("N2");
+
+        ibEstablecerSucursal_Click(null, null);
+
+        //lnkAgregarProducto.Visible = false;
+        txtDescuento.Enabled = false;
+
+        //Ver Detalle del Pedido
+        //SqlDataAdapter daDetPedido = new SqlDataAdapter("Play_DetPedido_Listar " + n_IdPedido, conexion);
+        SqlDataAdapter daDetPedido = new SqlDataAdapter("Play_DetPedido_ListarEdit " + n_IdPedido, conexion);
+
+        DataTable dtDetPedido = new DataTable();
+        daDetPedido.Fill(dtDetPedido);
+        //Freddy
+
+
+        Session["Detalle"] = dtDetPedido;
+
+        gv.DataSource = dtDetPedido;
+        gv.DataBind();
+        //gv.Columns[1].Visible = false;
+
+        if (hdnValue.Value.Trim() != "")
+        {
+            btnCliente.Visible = true;
+            btnCliente.Enabled = true;
+        }
+
+
+        string n_IdUsuarioVendedor = dtPedido.Rows[0]["n_IdUsuarioVendedor"].ToString();
+        if (n_IdUsuarioVendedor != "")
+        {
+            ddlVendedor.SelectedValue = n_IdUsuarioVendedor;
+        }
+
+
+        ibtnDespachar.Enabled = true;
+
+        btnAnular.Enabled = true;
+        btnAnular.Enabled = true;
+        lblNumeroPedido.Visible = true;
+        lnkAgregarProducto.Enabled = true;
+        Label1.Text = "Pedido N° ";
+        BloquearPedido();
+
+        if (Estado == 2)  // Está anulado
+        {
+            Label1.ForeColor = System.Drawing.Color.Red;
+            lblNumeroPedido.ForeColor = System.Drawing.Color.Red;
+            btnCliente.Visible = false;
+            gv.Columns[6].Visible = false;
+            lnkAgregarProducto.Visible = false;
+            ibtnDespachar.Enabled = false;
+            BloquearTodo();
+        }
+
+        if (Estado == 3 || Estado == 4)
+        {
+            ibtnDespachar.Enabled = false;
+            lnkAgregarProducto.Visible = false;
+        }
+
+    }
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Page.IsPostBack == false)
@@ -25,93 +125,15 @@ public partial class CrearPedido : System.Web.UI.Page
             ListarDistrito();
             if (ddlTienda.Items.Count == 0) { BloquearTodo(); return; }
             ListarMoneda();
-            ListarCategoria();
+            //ListarCategoria();
             InicializarGrilla();
-            ListarProductos("", "", "", ddlTienda.SelectedValue,"p");
+            ListarProductos("", "p");
 
             if (Request.QueryString["n_IdPedido"] != null)
             {
-                string n_IdPedido = Request.QueryString["n_IdPedido"];
-                //Ver Cabecera del Pedido
-                SqlDataAdapter daPedido = new SqlDataAdapter("Play_Pedido_Seleccionar " + n_IdPedido, conexion);
-                DataTable dtPedido = new DataTable();
-                daPedido.Fill(dtPedido);
-
-                lblNumeroPedido.Text = dtPedido.Rows[0]["v_NumeroPedido"].ToString();
-                lblIdPedido.Text = n_IdPedido;
-                hdnValue.Value = dtPedido.Rows[0]["n_IdCliente"].ToString();
-                txtCliente.Text = dtPedido.Rows[0]["v_Nombre"].ToString();
-                txtFechaInicial.Text = DateTime.Parse(dtPedido.Rows[0]["d_FechaEmision"].ToString()).ToShortDateString();
-                ddlFormaPago.SelectedValue = dtPedido.Rows[0]["n_IdFormaPago"].ToString();
-                ddlMoneda.SelectedValue = dtPedido.Rows[0]["n_IdMoneda"].ToString();
-                ddlMoneda_SelectedIndexChanged(null, null);
-                ddlTienda.SelectedValue = dtPedido.Rows[0]["n_IdAlmacen"].ToString();
-                lblSubTotal.Text = decimal.Parse(dtPedido.Rows[0]["f_SubTotal"].ToString()).ToString("N2");
-                lblTotal.Text = decimal.Parse(dtPedido.Rows[0]["f_Total"].ToString()).ToString("N2");
-                txtPago.Text = decimal.Parse(dtPedido.Rows[0]["f_Pago"].ToString()).ToString("N2");
-                lblVuelto.Text = decimal.Parse(dtPedido.Rows[0]["f_Vuelto"].ToString()).ToString("N2");
-                txtObservacion.Text = dtPedido.Rows[0]["t_Obs"].ToString();
-                bool Estado = bool.Parse(dtPedido.Rows[0]["b_EstadoPedido"].ToString());
-                lblUsuarioRegistro.Text = dtPedido.Rows[0]["UsuarioRegistra"].ToString();
-                lblFechaRegistro.Text = dtPedido.Rows[0]["d_FechaRegistra"].ToString();
-                if (dtPedido.Rows[0]["UsuarioFotoRegistra"].ToString().Trim() != "")
-                {
-                    ibUsuarioRegistro.ImageUrl = dtPedido.Rows[0]["UsuarioFotoRegistra"].ToString();
-                }
-                else
-                {
-                    ibUsuarioRegistro.ImageUrl = "~/images/face.jpg";
-                }
-
-                txtDescuento.Text = decimal.Parse(dtPedido.Rows[0]["f_Descuento"].ToString()).ToString("N2");
-
-                ibEstablecerSucursal_Click(null, null);
-
-                lnkAgregarProducto.Visible = false;
-                txtDescuento.Enabled = false;
-
-                //Ver Detalle del Pedido
-                SqlDataAdapter daDetPedido = new SqlDataAdapter("Play_DetPedido_Listar " + n_IdPedido, conexion);
-                DataTable dtDetPedido = new DataTable();
-                daDetPedido.Fill(dtDetPedido);
-                Session["Detalle"] = dtDetPedido;
-                gv.DataSource = dtDetPedido;
-                gv.DataBind();
-                gv.Columns[1].Visible = false;
-
-                if (hdnValue.Value.Trim() != "")
-                {
-                    btnCliente.Visible = true;
-                    btnCliente.Enabled = true;
-                }
-
-
-                string n_IdUsuarioVendedor = dtPedido.Rows[0]["n_IdUsuarioVendedor"].ToString();
-                if (n_IdUsuarioVendedor != "")
-                {
-                    ddlVendedor.SelectedValue = n_IdUsuarioVendedor;
-                }
-
-
-
-                btnAnular.Enabled = true;
-                btnAnular.Enabled = true;
-                lblNumeroPedido.Visible = true;
-                lnkAgregarProducto.Enabled = true;
-                Label1.Text = "Pedido N° ";
-                BloquearPedido();
-
-                if (Estado == false)  // Está anulado
-                {
-                    Label1.ForeColor = System.Drawing.Color.Red;
-                    lblNumeroPedido.ForeColor = System.Drawing.Color.Red;
-                    btnCliente.Visible = false;
-                    gv.Columns[6].Visible = false;
-                    lnkAgregarProducto.Visible = false;
-                    BloquearTodo();
-                }
+                LoadDatosPedido();
             }
-            
+
         }
     }
 
@@ -141,67 +163,74 @@ public partial class CrearPedido : System.Web.UI.Page
         ddlMoneda_SelectedIndexChanged(null, null);
     }
 
-    void ListarCategoria()
+    //void ListarCategoria()
+    //{
+    //    DataTable dt = new DataTable();
+    //    SqlDataAdapter da = new SqlDataAdapter("Play_Categoria_Combo", conexion);
+    //    da.Fill(dt);
+
+    //    MenuItem mnuNewMenuItem;
+    //    string v_Descripcion;
+    //    string n_IdCategoria;
+    //    for (int i = 0; i < dt.Rows.Count; i++)
+    //    {
+    //        v_Descripcion = dt.Rows[i]["v_Descripcion"].ToString();
+    //        n_IdCategoria = dt.Rows[i]["n_IdCategoria"].ToString();
+    //        mnuNewMenuItem = new MenuItem(v_Descripcion, n_IdCategoria);
+    //        MenuFamilia.Items.Add(mnuNewMenuItem);
+    //    }
+
+    //}
+
+    //void ListarSubCategorias()
+    //{
+    //    MenuSubFamilia.Items.Clear();
+    //    string n_IdCategoria = MenuFamilia.SelectedItem.Value;
+    //    DataTable dt = new DataTable();
+    //    SqlDataAdapter da = new SqlDataAdapter("Play_SubCategoria_Combo " + n_IdCategoria, conexion);
+    //    da.Fill(dt);
+
+    //    MenuItem mnuNewMenuItem;
+    //    string v_Descripcion;
+    //    string n_IdSubCategoria;
+    //    for (int i = 0; i < dt.Rows.Count; i++)
+    //    {
+    //        v_Descripcion = dt.Rows[i]["v_Descripcion"].ToString();
+    //        n_IdSubCategoria = dt.Rows[i]["n_IdSubCategoria"].ToString();
+    //        mnuNewMenuItem = new MenuItem(v_Descripcion, n_IdSubCategoria);
+    //        MenuSubFamilia.Items.Add(mnuNewMenuItem);
+    //    }
+    //}
+
+    void ListarProductos(string Busqueda, string tipo)
     {
+        string descripcion = tipo.ToUpper() == "P" ? Busqueda : "";
+        string codigo = tipo.ToUpper() == "C" ? Busqueda : "";
+
         DataTable dt = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter("Play_Categoria_Combo", conexion);
+        SqlDataAdapter da = new SqlDataAdapter("Play_StockGlobal_Filtrar '" + descripcion + "','" + codigo + "'", conexion);
         da.Fill(dt);
-
-        MenuItem mnuNewMenuItem;
-        string v_Descripcion;
-        string n_IdCategoria;
-        for (int i = 0; i < dt.Rows.Count; i++)
-        {
-            v_Descripcion = dt.Rows[i]["v_Descripcion"].ToString();
-            n_IdCategoria = dt.Rows[i]["n_IdCategoria"].ToString();
-            mnuNewMenuItem = new MenuItem(v_Descripcion, n_IdCategoria);
-            MenuFamilia.Items.Add(mnuNewMenuItem);
-        }
-
-    }
-
-    void ListarSubCategorias()
-    {
-        MenuSubFamilia.Items.Clear();
-        string n_IdCategoria = MenuFamilia.SelectedItem.Value;
-        DataTable dt = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter("Play_SubCategoria_Combo " + n_IdCategoria, conexion);
-        da.Fill(dt);
-
-        MenuItem mnuNewMenuItem;
-        string v_Descripcion;
-        string n_IdSubCategoria;
-        for (int i = 0; i < dt.Rows.Count; i++)
-        {
-            v_Descripcion = dt.Rows[i]["v_Descripcion"].ToString();
-            n_IdSubCategoria = dt.Rows[i]["n_IdSubCategoria"].ToString();
-            mnuNewMenuItem = new MenuItem(v_Descripcion, n_IdSubCategoria);
-            MenuSubFamilia.Items.Add(mnuNewMenuItem);
-        }
-    }
-
-    void ListarProductos(string Familia, string SubFamilia, string Busqueda, string IdAlmacen, string tipo)
-    {
-        DataTable dt = new DataTable();
-        SqlDataAdapter da = new SqlDataAdapter("Play_Producto_Listar_Imagenes_Venta '" + Familia + "','" + SubFamilia + "','" + Busqueda + "'," + IdAlmacen + ",'" + tipo + "'", conexion);
-        da.Fill(dt);
-        if (tipo == "P")
+        if ((tipo.ToUpper() == "P") || (tipo.ToUpper() == "C" && dt.Rows.Count > 1))
         {
             gvProductos.DataSource = dt;
             gvProductos.DataBind();
         }
-        else if(tipo == "C" && dt.Rows.Count == 1)
+        else if (tipo.ToUpper() == "C" && dt.Rows.Count == 1)
         {
             string n_IdProducto = dt.Rows[0]["n_IdProducto"].ToString();
-            string Descripcion  = dt.Rows[0]["v_Descripcion"].ToString();
+            string Descripcion = dt.Rows[0]["v_Descripcion"].ToString();
             string Precio = dt.Rows[0]["f_Precio"].ToString();
             string Codigo = dt.Rows[0]["v_CodigoInterno"].ToString();
-            string stock = dt.Rows[0]["f_StockContable"].ToString();
-            agregarProducto(n_IdProducto, Descripcion, Precio, Codigo, stock);
+            string stockSotano = dt.Rows[0]["Sotano"].ToString();
+            string stockSemiSotano = dt.Rows[0]["SemiSotano"].ToString();
+            string stockTercerPiso = dt.Rows[0]["TercerPiso"].ToString();
+            string stockFullTienda = dt.Rows[0]["FullTienda"].ToString();
+
+            agregarProducto(n_IdProducto, Descripcion, Precio, Codigo, stockSotano, stockSemiSotano, stockTercerPiso, stockFullTienda);
         }
     }
 
-    void ListarSucursal() 
+    void ListarSucursal()
     {
         if (Session["dtAlmacenes"] != null)
         {
@@ -221,14 +250,14 @@ public partial class CrearPedido : System.Web.UI.Page
                 ddlTienda.Enabled = false;
             }
         }
-        else 
+        else
         {
             ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Su sesión ha caducado. Vuelva a ingresar al sistema.' });</script>", false);
             BloquearTodo();
         }
     }
 
-    void ListarUsuariosVendedores() 
+    void ListarUsuariosVendedores()
     {
         try
         {
@@ -249,7 +278,7 @@ public partial class CrearPedido : System.Web.UI.Page
         }
         catch (Exception)
         {
-            
+
         }
 
     }
@@ -257,17 +286,154 @@ public partial class CrearPedido : System.Web.UI.Page
     void InicializarGrilla()
     {
         DataTable dt = new DataTable();
-        dt.Columns.Add("i_Cantidad", typeof(int));
+
+        dt.Columns.Add("i_CantidadSotano", typeof(int));
+        dt.Columns.Add("i_CantidadSemiSotano", typeof(int));
+        dt.Columns.Add("i_CantidadTercerPiso", typeof(int));
+        dt.Columns.Add("i_CantidadFullTienda", typeof(int));
+
         dt.Columns.Add("Producto", typeof(String));
         dt.Columns.Add("f_PrecioUnitario", typeof(Double));
         dt.Columns.Add("f_PrecioTotal", typeof(Double));
         dt.Columns.Add("n_IdProducto");
         dt.Columns.Add("Codigo", typeof(String));
-        dt.Columns.Add("Stock", typeof(int));
+        dt.Columns.Add("StockSotano", typeof(int));
+        dt.Columns.Add("StockSemiSotano", typeof(int));
+        dt.Columns.Add("StockTercerPiso", typeof(int));
+        dt.Columns.Add("StockFullTienda", typeof(int));
+        dt.Columns.Add("StockTotal", typeof(int));
 
         Session["Detalle"] = dt;
         gv.DataSource = dt;
         gv.DataBind();
+    }
+
+    private void GuardarDetalle(ref SqlConnection cn, ref SqlTransaction tran, DataRow fila, ref string n_IdPedido)
+    {
+        int stockContable = 0;
+
+        //validar el stock antes de guardar 
+        SqlCommand cmdStockContable = new SqlCommand();
+        cmdStockContable.Connection = cn;
+        cmdStockContable.Transaction = tran;
+        cmdStockContable.CommandType = CommandType.Text;
+        cmdStockContable.CommandText = "select SUM(f_StockContable)f_StockContable from stock where n_IdProducto = " + fila["n_IdProducto"].ToString() + " and n_IdAlmacen IN ( 1,2,3,4 )";
+        stockContable = int.Parse(cmdStockContable.ExecuteScalar().ToString());
+
+        int cantidadSotano = int.Parse(fila["i_CantidadSotano"].ToString());
+        int cantidadSemiSotano = int.Parse(fila["i_CantidadSemiSotano"].ToString());
+        int cantidadTercerPiso = int.Parse(fila["i_CantidadTercerPiso"].ToString());
+        int cantidadFullTienda = int.Parse(fila["i_CantidadFullTienda"].ToString());
+        int cantidadTotal = cantidadSotano + cantidadSemiSotano + cantidadTercerPiso + cantidadFullTienda;
+
+        if (stockContable < cantidadTotal)
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'No hay stock suficiente' });</script>", false);
+            tran.Rollback();
+            cn.Close();
+            return;
+        }
+
+        SqlCommand cmdDetalle = new SqlCommand();
+        SqlCommand cmdStock = new SqlCommand();
+        SqlCommand cmdKardex = new SqlCommand();
+
+        if (cantidadSotano > 0)
+        {
+            //Insertamos detalle del pedido para almacen 1
+            cmdDetalle = new SqlCommand();
+            cmdDetalle.Connection = cn;
+            cmdDetalle.Transaction = tran;
+            cmdDetalle.CommandType = CommandType.StoredProcedure;
+            cmdDetalle.CommandText = "Play_DetPedido_Registrar";
+            cmdDetalle.Parameters.AddWithValue("@n_IdPedido", n_IdPedido);
+            cmdDetalle.Parameters.AddWithValue("@n_IdProducto", fila["n_IdProducto"].ToString());
+
+            cmdDetalle.Parameters.AddWithValue("@i_Cantidad", cantidadSotano);
+            cmdDetalle.Parameters.AddWithValue("@n_IdAlmacen", 1);
+
+            cmdDetalle.Parameters.AddWithValue("@f_PrecioUnitario", fila["f_PrecioUnitario"].ToString());
+
+            double precioTotal = double.Parse(fila["f_PrecioUnitario"].ToString()) * cantidadSotano;
+
+            cmdDetalle.Parameters.AddWithValue("@f_PrecioTotal", precioTotal);
+            cmdDetalle.ExecuteNonQuery();
+            cmdDetalle.Dispose();
+        }
+
+        if (cantidadSemiSotano > 0)
+        {
+            //Insertamos detalle del pedido para almacen 2
+            cmdDetalle = new SqlCommand();
+            cmdDetalle.Connection = cn;
+            cmdDetalle.Transaction = tran;
+            cmdDetalle.CommandType = CommandType.StoredProcedure;
+            cmdDetalle.CommandText = "Play_DetPedido_Registrar";
+            cmdDetalle.Parameters.AddWithValue("@n_IdPedido", n_IdPedido);
+            cmdDetalle.Parameters.AddWithValue("@n_IdProducto", fila["n_IdProducto"].ToString());
+
+            cmdDetalle.Parameters.AddWithValue("@i_Cantidad", cantidadSemiSotano);
+            cmdDetalle.Parameters.AddWithValue("@n_IdAlmacen", 2);
+
+            cmdDetalle.Parameters.AddWithValue("@f_PrecioUnitario", fila["f_PrecioUnitario"].ToString());
+
+            double precioTotal = double.Parse(fila["f_PrecioUnitario"].ToString()) * cantidadSemiSotano;
+
+            cmdDetalle.Parameters.AddWithValue("@f_PrecioTotal", precioTotal);
+            cmdDetalle.ExecuteNonQuery();
+            cmdDetalle.Dispose();
+
+        }
+
+
+        if (cantidadTercerPiso > 0)
+        {
+            //Insertamos detalle del pedido para almacen 3
+            cmdDetalle = new SqlCommand();
+            cmdDetalle.Connection = cn;
+            cmdDetalle.Transaction = tran;
+            cmdDetalle.CommandType = CommandType.StoredProcedure;
+            cmdDetalle.CommandText = "Play_DetPedido_Registrar";
+            cmdDetalle.Parameters.AddWithValue("@n_IdPedido", n_IdPedido);
+            cmdDetalle.Parameters.AddWithValue("@n_IdProducto", fila["n_IdProducto"].ToString());
+
+            cmdDetalle.Parameters.AddWithValue("@i_Cantidad", cantidadTercerPiso);
+            cmdDetalle.Parameters.AddWithValue("@n_IdAlmacen", 3);
+
+            cmdDetalle.Parameters.AddWithValue("@f_PrecioUnitario", fila["f_PrecioUnitario"].ToString());
+
+            double precioTotal = double.Parse(fila["f_PrecioUnitario"].ToString()) * cantidadTercerPiso;
+
+            cmdDetalle.Parameters.AddWithValue("@f_PrecioTotal", precioTotal);
+            cmdDetalle.ExecuteNonQuery();
+            cmdDetalle.Dispose();
+
+        }
+
+
+        if (cantidadFullTienda > 0)
+        {
+            //Insertamos detalle del pedido para almacen 3
+            cmdDetalle = new SqlCommand();
+            cmdDetalle.Connection = cn;
+            cmdDetalle.Transaction = tran;
+            cmdDetalle.CommandType = CommandType.StoredProcedure;
+            cmdDetalle.CommandText = "Play_DetPedido_Registrar";
+            cmdDetalle.Parameters.AddWithValue("@n_IdPedido", n_IdPedido);
+            cmdDetalle.Parameters.AddWithValue("@n_IdProducto", fila["n_IdProducto"].ToString());
+
+            cmdDetalle.Parameters.AddWithValue("@i_Cantidad", cantidadFullTienda);
+            cmdDetalle.Parameters.AddWithValue("@n_IdAlmacen", 4);
+
+            cmdDetalle.Parameters.AddWithValue("@f_PrecioUnitario", fila["f_PrecioUnitario"].ToString());
+
+            double precioTotal = double.Parse(fila["f_PrecioUnitario"].ToString()) * cantidadFullTienda;
+
+            cmdDetalle.Parameters.AddWithValue("@f_PrecioTotal", precioTotal);
+            cmdDetalle.ExecuteNonQuery();
+            cmdDetalle.Dispose();
+
+        }
     }
 
     protected void btnGuardar_Click(object sender, ImageClickEventArgs e)
@@ -283,13 +449,13 @@ public partial class CrearPedido : System.Web.UI.Page
                 return;
             }
         }
-        else 
+        else
         {
             ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Su sesión ha caducado. Vuelva a ingresar al sistema.' });</script>", false);
             return;
         }
 
-        if (txtPago.Text.Trim() == "") 
+        if (txtPago.Text.Trim() == "")
         {
             ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Debe ingresar el monto Pagó con...' });</script>", false);
             txtPago.Focus();
@@ -311,7 +477,7 @@ public partial class CrearPedido : System.Web.UI.Page
             {
                 string n_IdPedido = "";
 
-                if (Request.QueryString["n_IdPedido"] != null) 
+                if (Request.QueryString["n_IdPedido"] != null)
                 {
                     //Si el pedido aun no tiene comprobante
                     n_IdPedido = Request.QueryString["n_IdPedido"].ToString();
@@ -333,16 +499,16 @@ public partial class CrearPedido : System.Web.UI.Page
 
                     cmdPedido.Parameters.AddWithValue("@n_IdFormaPago", ddlFormaPago.SelectedValue);
 
-                    cmdPedido.Parameters.AddWithValue("@f_SubTotal", lblSubTotal.Text);
+                    cmdPedido.Parameters.AddWithValue("@f_SubTotal", lblSubTotal.Text.Replace(",", ""));
                     cmdPedido.Parameters.AddWithValue("@f_Impuesto", 0);
-                    cmdPedido.Parameters.AddWithValue("@f_Total", lblTotal.Text);
-                    cmdPedido.Parameters.AddWithValue("@f_Pago", txtPago.Text);
-                    cmdPedido.Parameters.AddWithValue("@f_Vuelto", lblVuelto.Text);
+                    cmdPedido.Parameters.AddWithValue("@f_Total", lblTotal.Text.Replace(",", ""));
+                    cmdPedido.Parameters.AddWithValue("@f_Pago", txtPago.Text.Replace(",", ""));
+                    cmdPedido.Parameters.AddWithValue("@f_Vuelto", lblVuelto.Text.Replace(",", ""));
                     cmdPedido.Parameters.AddWithValue("@t_Obs", txtObservacion.Text);
                     cmdPedido.Parameters.AddWithValue("@n_IdUsuarioModifica", n_IdUsuario);
 
                     cmdPedido.Parameters.AddWithValue("@d_FechaEmision", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
-                    if (ddlVendedor.SelectedIndex == 0) 
+                    if (ddlVendedor.SelectedIndex == 0)
                     {
                         cmdPedido.Parameters.AddWithValue("@n_IdUsuarioVendedor", DBNull.Value);
                     }
@@ -355,7 +521,22 @@ public partial class CrearPedido : System.Web.UI.Page
                     cmdPedido.ExecuteNonQuery();
                     cmdPedido.Dispose();
 
-                    
+                    //Eliminamos los registros existentes del detalle 
+                    SqlCommand cmdEliminaDetalle = new SqlCommand();
+                    cmdEliminaDetalle.Connection = cn;
+                    cmdEliminaDetalle.Transaction = tran;
+                    cmdEliminaDetalle.CommandType = CommandType.StoredProcedure;
+                    cmdEliminaDetalle.CommandText = "Play_DetPedido_Eliminar";
+                    cmdEliminaDetalle.Parameters.AddWithValue("@n_IdPedido", n_IdPedido);
+                    cmdEliminaDetalle.ExecuteNonQuery();
+                    cmdEliminaDetalle.Dispose();
+
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        GuardarDetalle(ref cn, ref tran, dt.Rows[i], ref n_IdPedido);
+                    }
+
+
                     tran.Commit();
                     BloquearTodo();
                     ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Pedido Actualizado Satisfactoriamente' });</script>", false);
@@ -386,15 +567,15 @@ public partial class CrearPedido : System.Web.UI.Page
 
                     cmd.Parameters.AddWithValue("@d_FechaEmision", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
 
-                    cmd.Parameters.AddWithValue("@f_SubTotal", lblSubTotal.Text);
+                    cmd.Parameters.AddWithValue("@f_SubTotal", lblSubTotal.Text.Replace(",", ""));
                     cmd.Parameters.AddWithValue("@f_Impuesto", 0);
-                    cmd.Parameters.AddWithValue("@f_Total", lblTotal.Text);
-                    cmd.Parameters.AddWithValue("@f_Pago", txtPago.Text);
-                    cmd.Parameters.AddWithValue("@f_Vuelto", lblVuelto.Text);
+                    cmd.Parameters.AddWithValue("@f_Total", lblTotal.Text.Replace(",", ""));
+                    cmd.Parameters.AddWithValue("@f_Pago", txtPago.Text.Replace(",", ""));
+                    cmd.Parameters.AddWithValue("@f_Vuelto", lblVuelto.Text.Replace(",", ""));
                     cmd.Parameters.AddWithValue("@t_Obs", txtObservacion.Text);
                     cmd.Parameters.AddWithValue("@n_IdUsuarioRegistra", n_IdUsuario);
 
-                    if (ddlVendedor.SelectedIndex == 0) 
+                    if (ddlVendedor.SelectedIndex == 0)
                     {
                         cmd.Parameters.AddWithValue("@n_IdUsuarioVendedor", DBNull.Value);
                     }
@@ -402,10 +583,10 @@ public partial class CrearPedido : System.Web.UI.Page
                     {
                         cmd.Parameters.AddWithValue("@n_IdUsuarioVendedor", ddlVendedor.SelectedValue);
                     }
-                    cmd.Parameters.AddWithValue("@f_Descuento", txtDescuento.Text);
+                    cmd.Parameters.AddWithValue("@f_Descuento", txtDescuento.Text.Replace(",", ""));
 
                     n_IdPedido = cmd.ExecuteScalar().ToString();
-                    
+
                     cmd.Dispose();
 
                     if (n_IdPedido.Trim() == "0")
@@ -426,92 +607,10 @@ public partial class CrearPedido : System.Web.UI.Page
                     NumeroPedido = cmd0.ExecuteScalar().ToString();
                     cmd0.Dispose();
 
-                    int stockContable = 0;
-
                     for (int i = 0; i < dt.Rows.Count; i++)
                     {
-                        //validar el stock antes de guardar 
-                        SqlCommand cmdStockContable = new SqlCommand();
-                        cmdStockContable.Connection = cn;
-                        cmdStockContable.Transaction = tran;
-                        cmdStockContable.CommandType = CommandType.Text;
-                        cmdStockContable.CommandText = "select f_StockContable from stock where n_IdProducto = " + dt.Rows[i]["n_IdProducto"].ToString() + " and n_IdAlmacen = " + ddlTienda.SelectedValue;
-                        stockContable = int.Parse(cmdStockContable.ExecuteScalar().ToString());
-
-                        if (stockContable < int.Parse(dt.Rows[i]["i_Cantidad"].ToString()))
-                        {
-                            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'No hay stock suficiente' });</script>", false);
-                            tran.Rollback();
-                            cn.Close();
-                            return;
-                        }
-
-                        SqlCommand cmdDetalle = new SqlCommand();
-                        cmdDetalle.Connection = cn;
-                        cmdDetalle.Transaction = tran;
-                        cmdDetalle.CommandType = CommandType.StoredProcedure;
-                        cmdDetalle.CommandText = "Play_DetPedido_Registrar";
-                        cmdDetalle.Parameters.AddWithValue("@n_IdPedido", n_IdPedido);
-                        cmdDetalle.Parameters.AddWithValue("@n_IdProducto", dt.Rows[i]["n_IdProducto"].ToString());
-                        cmdDetalle.Parameters.AddWithValue("@i_Cantidad", dt.Rows[i]["i_Cantidad"].ToString());
-                        cmdDetalle.Parameters.AddWithValue("@f_PrecioUnitario", dt.Rows[i]["f_PrecioUnitario"].ToString());
-                        cmdDetalle.Parameters.AddWithValue("@f_PrecioTotal", dt.Rows[i]["f_PrecioTotal"].ToString());
-                        cmdDetalle.ExecuteNonQuery();
-                        cmdDetalle.Dispose();
-
-                        //Actualizar el Stock Restar
-                        SqlCommand cmdStock = new SqlCommand();
-                        cmdStock.Connection = cn;
-                        cmdStock.Transaction = tran;
-                        cmdStock.CommandType = CommandType.StoredProcedure;
-                        cmdStock.CommandText = "Play_Stock_Restar_Actualizar";
-                        cmdStock.Parameters.AddWithValue("@n_IdAlmacen", ddlTienda.SelectedValue);
-                        cmdStock.Parameters.AddWithValue("@n_IdProducto", dt.Rows[i]["n_IdProducto"].ToString());
-                        cmdStock.Parameters.AddWithValue("@f_Cantidad", dt.Rows[i]["i_Cantidad"].ToString());
-                        cmdStock.ExecuteNonQuery();
-                        cmdStock.Dispose();
-
-                        //Registrar Kardex
-                        SqlCommand cmdKardex = new SqlCommand();
-                        cmdKardex.Connection = cn;
-                        cmdKardex.Transaction = tran;
-                        cmdKardex.CommandType = CommandType.StoredProcedure;
-                        cmdKardex.CommandText = "Play_Kardex_Insertar";
-                        cmdKardex.Parameters.AddWithValue("@d_FechaMovimiento", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
-                        cmdKardex.Parameters.AddWithValue("@c_TipoMovimiento", "S");
-                        cmdKardex.Parameters.AddWithValue("@i_IdMotivoTraslado", 1);
-                        cmdKardex.Parameters.AddWithValue("@n_IdProducto", dt.Rows[i]["n_IdProducto"].ToString());
-                        cmdKardex.Parameters.AddWithValue("@n_IdAlmacen", ddlTienda.SelectedValue);
-                        cmdKardex.Parameters.AddWithValue("@f_Cantidad", int.Parse(dt.Rows[i]["i_Cantidad"].ToString()));
-                        cmdKardex.Parameters.AddWithValue("@n_IdTipoDocumento", 1);//Pedido
-                        cmdKardex.Parameters.AddWithValue("@v_NumeroDocumento", NumeroPedido);
-                        if (hdnValue.Value.Trim() == "")
-                        {
-                            cmdKardex.Parameters.AddWithValue("@n_IdCliente", DBNull.Value);
-                        }
-                        else
-                        {
-                            cmdKardex.Parameters.AddWithValue("@n_IdCliente", hdnValue.Value);
-                        }
-                        cmdKardex.Parameters.AddWithValue("@n_IdProveedor", DBNull.Value);
-                        cmdKardex.ExecuteNonQuery();
-                        cmdKardex.Dispose();
+                        GuardarDetalle(ref cn, ref tran, dt.Rows[i], ref n_IdPedido);
                     }
-
-                    //Registra Movimiento de Caja Chica
-                    SqlCommand cmdCaja = new SqlCommand();
-                    cmdCaja.Connection = cn;
-                    cmdCaja.Transaction = tran;
-                    cmdCaja.CommandType = CommandType.StoredProcedure;
-                    cmdCaja.CommandText = "Play_Pedido_CajaMovimiento";
-                    cmdCaja.Parameters.AddWithValue("@n_IdAlmacen", ddlTienda.SelectedValue);
-                    cmdCaja.Parameters.AddWithValue("@i_IdConceptoCaja", "1");//Venta
-                    cmdCaja.Parameters.AddWithValue("@c_TipoMovimiento", "E");
-                    cmdCaja.Parameters.AddWithValue("@f_Importe", lblTotal.Text);
-                    cmdCaja.Parameters.AddWithValue("@v_NroDocumento", NumeroPedido);
-                    cmdCaja.Parameters.AddWithValue("@n_IdUsuario", n_IdUsuario);
-                    cmdCaja.ExecuteNonQuery();
-                    cmdCaja.Dispose();
 
                     //Actualizar Correlativo del Pedido
                     SqlCommand cmd5 = new SqlCommand();
@@ -524,20 +623,7 @@ public partial class CrearPedido : System.Web.UI.Page
                     cmd5.ExecuteNonQuery();
                     cmd5.Dispose();
 
-                    //Aumentar Puntos del Cliente
-                    if (hdnValue.Value.Trim() != "")
-                    {
-                        int Puntos = Convert.ToInt32(Math.Floor(Convert.ToDouble(lblTotal.Text)));
-                        SqlCommand cmd6 = new SqlCommand();
-                        cmd6.Connection = cn;
-                        cmd6.Transaction = tran;
-                        cmd6.CommandType = CommandType.StoredProcedure;
-                        cmd6.CommandText = "POI_Cliente_AumentarPuntos";
-                        cmd6.Parameters.AddWithValue("@n_IdCliente", hdnValue.Value);
-                        cmd6.Parameters.AddWithValue("@Cantidad", Puntos);
-                        cmd6.ExecuteNonQuery();
-                        cmd6.Dispose();
-                    }
+
 
                     tran.Commit();
                     lblIdPedido.Text = n_IdPedido;
@@ -569,18 +655,18 @@ public partial class CrearPedido : System.Web.UI.Page
 
     }
 
-    void BloquearPedido() 
+    void BloquearPedido()
     {
         ddlTienda.Enabled = false;
         btnAnular.Enabled = true;
         btnImprimir.Enabled = true;
         btnImprimir.Enabled = true;
         ibEstablecerSucursal.Visible = false;
-        gv.Enabled = false;
+        //gv.Enabled = false;
         txtPago.Enabled = false;
     }
 
-    void BloquearTodo() 
+    void BloquearTodo()
     {
         txtCliente.Enabled = false;
         txtFechaInicial.Enabled = false;
@@ -602,7 +688,7 @@ public partial class CrearPedido : System.Web.UI.Page
 
     protected void btnNuevo_Click(object sender, ImageClickEventArgs e)
     {
-            Response.Redirect("CrearPedido.aspx");
+        Response.Redirect("CrearPedido.aspx");
     }
 
     protected void btnSalir_Click(object sender, ImageClickEventArgs e)
@@ -613,7 +699,7 @@ public partial class CrearPedido : System.Web.UI.Page
 
     protected void lnkAgregarProducto_Click(object sender, EventArgs e)
     {
-        ListarProductos("", "", "", ddlTienda.SelectedValue, rblTipo.SelectedItem.Value);
+        ListarProductos("", rblTipo.SelectedItem.Value);
         panelProductos.Visible = true;
         tblGeneral.Visible = false;
         toolbar.Visible = false;
@@ -629,46 +715,112 @@ public partial class CrearPedido : System.Web.UI.Page
 
             if (Session["Detalle"] != null)
             {
-                double Cantidad = 0;
+                double CantidadSotano = 0;
+                double CantidadSemiSotano = 0;
+                double CantidadTercerPiso = 0;
+                double CantidadFullTienda = 0;
+                double CantidadTotal = 0;
+
                 double f_TC = 1;
                 double PrecioSoles = 0;
                 double Precio = 0;
                 double PrecioTotal = 0;
                 double SubTotal = 0;
                 double Total = 0;
-                int stock = 0;
+                int stockSotano = 0;
+                int stockSemiSotano = 0;
+                int stockTercerPiso = 0;
+                int stockFullTienda = 0;
+                int stockTotal = 0;
 
                 DataTable dt = new DataTable();
                 dt = (DataTable)Session["Detalle"];
 
                 for (int i = 0; i < gv.Rows.Count; i++)
                 {
-                    TextBox txtCantidad = (TextBox)gv.Rows[i].FindControl("txtCantidad");
-                    Label lblStock = (Label)gv.Rows[i].FindControl("lblStock");
-                    stock = int.Parse(lblStock.Text);
+                    TextBox txtCantidadSotano = (TextBox)gv.Rows[i].Cells[2].FindControl("txtCantidadSotano");
+                    TextBox txtCantidadSemiSotano = (TextBox)gv.Rows[i].Cells[3].FindControl("txtCantidadSemiSotano");
+                    TextBox txtCantidadTercerPiso = (TextBox)gv.Rows[i].Cells[4].FindControl("txtCantidadTercerPiso");
+                    TextBox txtCantidadFullTienda = (TextBox)gv.Rows[i].Cells[5].FindControl("txtCantidadFullTienda");
 
-                    if (txtCantidad.Text.Trim() == "")
+                    CantidadSotano = int.Parse(txtCantidadSotano.Text);
+                    CantidadSemiSotano = int.Parse(txtCantidadSemiSotano.Text);
+                    CantidadTercerPiso = int.Parse(txtCantidadTercerPiso.Text);
+                    CantidadFullTienda = int.Parse(txtCantidadFullTienda.Text);
+
+                    Label lblStockSotano = (Label)gv.Rows[i].Cells[2].FindControl("lblStockSotano");
+                    Label lblStockSemiSotano = (Label)gv.Rows[i].Cells[3].FindControl("lblStockSemiSotano");
+                    Label lblStockTercerPiso = (Label)gv.Rows[i].Cells[4].FindControl("lblStockTercerPiso");
+                    Label lblStockFullTienda = (Label)gv.Rows[i].Cells[5].FindControl("lblStockFullTienda");
+                    TextBox txtPrecio = (TextBox)gv.Rows[i].Cells[7].FindControl("txtPrecio");
+
+                    stockSotano = int.Parse(lblStockSotano.Text);
+                    stockSemiSotano = int.Parse(lblStockSemiSotano.Text);
+                    stockTercerPiso = int.Parse(lblStockTercerPiso.Text);
+                    stockFullTienda = int.Parse(lblStockFullTienda.Text);
+
+                    CantidadTotal = CantidadSotano + CantidadSemiSotano + CantidadTercerPiso + CantidadFullTienda;
+                    stockTotal = stockSotano + stockSemiSotano + stockTercerPiso + stockFullTienda;
+
+                    #region ValidarCantidadVacio
+                    //Sotano
+                    if (txtCantidadSotano.Text.Trim() == "")
                     {
-                        Cantidad = 1;
-                        txtCantidad.Text = "1";
+                        CantidadSotano = 0;
+                        txtCantidadSotano.Text = "0";
                     }
                     else
                     {
-                        Cantidad = double.Parse(txtCantidad.Text.Trim());
+                        CantidadSotano = double.Parse(txtCantidadSotano.Text.Trim());
+                    }
+                    //SemiSotano
+                    if (txtCantidadSemiSotano.Text.Trim() == "")
+                    {
+                        CantidadSemiSotano = 0;
+                        txtCantidadSemiSotano.Text = "0";
+                    }
+                    else
+                    {
+                        CantidadSemiSotano = double.Parse(txtCantidadSemiSotano.Text.Trim());
+                    }
+                    //Tercer Piso
+                    if (txtCantidadTercerPiso.Text.Trim() == "")
+                    {
+                        CantidadTercerPiso = 0;
+                        txtCantidadTercerPiso.Text = "0";
+                    }
+                    else
+                    {
+                        CantidadTercerPiso = double.Parse(txtCantidadTercerPiso.Text.Trim());
                     }
 
-                    if (Cantidad <= 0)
+                    //Full Tienda
+                    if (txtCantidadFullTienda.Text.Trim() == "")
                     {
-                        Cantidad = 1;
+                        CantidadFullTienda = 0;
+                        txtCantidadFullTienda.Text = "0";
                     }
+                    else
+                    {
+                        CantidadFullTienda = double.Parse(txtCantidadFullTienda.Text.Trim());
+                    }
+                    #endregion
+
+                    //if (Cantidad <= 0)
+                    //{
+                    //    Cantidad = 1;
+                    //}
 
                     //Validar que la cantidad sea menor o igual al stock
-                    if (Cantidad > stock)
-                    {
-                        txtCantidad.Text = stock.ToString();
-                        Cantidad = stock;
-                        return;
-                    }
+
+                    //No puede pasar porque el RangeValidator no dejara hacer el postBack
+
+                    //if (CantidadTotal > stockTotal)
+                    //{
+                    //    txtCantidad.Text = stockTotal.ToString();
+                    //    Cantidad = stockTotal;
+                    //    return;
+                    //}
 
                     f_TC = 1;
 
@@ -708,10 +860,14 @@ public partial class CrearPedido : System.Web.UI.Page
                         }
                     }
 
-                    dt.Rows[i]["i_Cantidad"] = Cantidad;
+                    dt.Rows[i]["i_CantidadSotano"] = CantidadSotano;
+                    dt.Rows[i]["i_CantidadSemiSotano"] = CantidadSemiSotano;
+                    dt.Rows[i]["i_CantidadTercerPiso"] = CantidadTercerPiso;
+                    dt.Rows[i]["i_CantidadFullTienda"] = CantidadFullTienda;
+
                     dt.Rows[i]["Producto"] = dt.Rows[i]["Producto"].ToString();
                     //PrecioSoles = double.Parse(dt.Rows[i]["f_PrecioUnitario"].ToString());
-                    TextBox txtPrecio = (TextBox)gv.Rows[i].FindControl("txtPrecio");
+
                     PrecioSoles = double.Parse(txtPrecio.Text);
                     if (ddlMoneda.SelectedItem.Text.Trim() == "DOLARES")
                     {
@@ -724,7 +880,7 @@ public partial class CrearPedido : System.Web.UI.Page
                         dt.Rows[i]["f_PrecioUnitario"] = Precio;
                     }
 
-                    PrecioTotal = Cantidad * Precio;
+                    PrecioTotal = CantidadTotal * Precio;
 
                     dt.Rows[i]["f_PrecioTotal"] = PrecioTotal;
 
@@ -786,7 +942,7 @@ public partial class CrearPedido : System.Web.UI.Page
 
             }
         }
-        else 
+        else
         {
             ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Su sesión ha caducado. Vuelva a ingresar al sistema.' });</script>", false);
             BloquearTodo();
@@ -795,21 +951,21 @@ public partial class CrearPedido : System.Web.UI.Page
 
     protected void ibTodos_Click(object sender, ImageClickEventArgs e)
     {
-        ListarProductos("", "", "", ddlTienda.SelectedValue,rblTipo.SelectedItem.Value);
+        ListarProductos("", rblTipo.SelectedItem.Value);
     }
 
-    protected void MenuFamilia_MenuItemClick(object sender, MenuEventArgs e)
-    {
-        ListarSubCategorias();
-        string Familia = MenuFamilia.SelectedItem.Text;
-        string Busqueda = txtBuscar.Text.Trim();
-        ListarProductos(Familia, "", Busqueda, ddlTienda.SelectedValue, rblTipo.SelectedItem.Value);
-    }
+    //protected void MenuFamilia_MenuItemClick(object sender, MenuEventArgs e)
+    //{
+    //    ListarSubCategorias();
+    //    string Familia = MenuFamilia.SelectedItem.Text;
+    //    string Busqueda = txtBuscar.Text.Trim();
+    //    ListarProductos(Familia, "", Busqueda, ddlTienda.SelectedValue, rblTipo.SelectedItem.Value);
+    //}
 
     protected void txtBuscar_TextChanged(object sender, EventArgs e)
     {
         string Busqueda = txtBuscar.Text.Trim();
-        ListarProductos("", "", Busqueda, ddlTienda.SelectedValue, rblTipo.SelectedItem.Value);
+        ListarProductos(Busqueda, rblTipo.SelectedItem.Value);
         txtBuscar.Focus();
     }
 
@@ -820,16 +976,18 @@ public partial class CrearPedido : System.Web.UI.Page
         toolbar.Visible = true;
     }
 
-    protected void MenuSubFamilia_MenuItemClick(object sender, MenuEventArgs e)
-    {
-        string Familia = MenuFamilia.SelectedItem.Text;
-        string SubFamilia = MenuSubFamilia.SelectedItem.Text;
-        string Busqueda = txtBuscar.Text.Trim();
-        ListarProductos(Familia, SubFamilia, Busqueda, ddlTienda.SelectedValue, rblTipo.SelectedItem.Value);
-    }
+    //protected void MenuSubFamilia_MenuItemClick(object sender, MenuEventArgs e)
+    //{
+    //    string Familia = MenuFamilia.SelectedItem.Text;
+    //    string SubFamilia = MenuSubFamilia.SelectedItem.Text;
+    //    string Busqueda = txtBuscar.Text.Trim();
+    //    ListarProductos(Familia, SubFamilia, Busqueda, ddlTienda.SelectedValue, rblTipo.SelectedItem.Value);
+    //}
 
-    void agregarProducto(string n_IdProducto, string Descripcion, string Precio, string Codigo, string Stock) 
+    void agregarProducto(string n_IdProducto, string Descripcion, string Precio, string Codigo, string StockSotano, string StockSemiSotano, string StockTercerPiso, string StockFullTienda)
     {
+
+        int stockTotal = int.Parse(StockSotano) + int.Parse(StockSemiSotano) + int.Parse(StockTercerPiso) + int.Parse(StockFullTienda);
 
         //Validar que el producto exista
         DataTable dt = new DataTable();
@@ -855,22 +1013,33 @@ public partial class CrearPedido : System.Web.UI.Page
             DataRow dr;
             dr = dt.NewRow();
 
-            dr["i_Cantidad"] = "1";
+            dr["i_CantidadSotano"] = "0";
+            dr["i_CantidadSemiSotano"] = "0";
+            dr["i_CantidadTercerPiso"] = "0";
+            dr["i_CantidadFullTienda"] = "0";
+
             dr["Producto"] = Descripcion;
             dr["f_PrecioUnitario"] = Precio;
-            dr["f_PrecioTotal"] = Precio;
+            dr["f_PrecioTotal"] = 0;
             dr["n_IdProducto"] = n_IdProducto;
             dr["Codigo"] = Codigo;
-            dr["Stock"] = Stock;
-
+            dr["StockSotano"] = StockSotano;
+            dr["StockSemiSotano"] = StockSemiSotano;
+            dr["StockTercerPiso"] = StockTercerPiso;
+            dr["StockFullTienda"] = StockFullTienda;
+            dr["StockTotal"] = stockTotal;
             dt.Rows.Add(dr);
 
         }
         else if (encontrado == true)
         {
-            int cantidad = int.Parse(dt.Rows[filaEncontrada]["i_Cantidad"].ToString());
-            cantidad = cantidad + 1;
-            dt.Rows[filaEncontrada]["i_Cantidad"] = cantidad;
+            //int cantidad = int.Parse(dt.Rows[filaEncontrada]["i_Cantidad"].ToString());
+            //cantidad = cantidad + 1;
+            //dt.Rows[filaEncontrada]["i_Cantidad"] = cantidad;
+
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Producto ya ha sido agregado' });</script>", false);
+
+            return;
         }
 
         Session["Detalle"] = dt;
@@ -882,79 +1051,79 @@ public partial class CrearPedido : System.Web.UI.Page
         toolbar.Visible = true;
     }
 
-    protected void gvProductos_ItemCommand(object source, DataListCommandEventArgs e)
-    {
-        if (Session["Detalle"] != null)
-        {
-            if (e.CommandName == "AgregarProducto")
-            {
-                string n_IdProducto = gvProductos.DataKeys[e.Item.ItemIndex].ToString();
-                Label lblDescripcion = (Label)gvProductos.Items[e.Item.ItemIndex].FindControl("lblDescripcion");
-                string Descripcion = lblDescripcion.Text;
-                Label lblPrecio = (Label)gvProductos.Items[e.Item.ItemIndex].FindControl("lblPrecio2");
-                double Precio = double.Parse(lblPrecio.Text);
-                Label lblStock = (Label)gvProductos.Items[e.Item.ItemIndex].FindControl("lblStock");
-                int Stock = int.Parse(lblStock.Text);
-                Label lblCodigo = (Label)gvProductos.Items[e.Item.ItemIndex].FindControl("lblCodigo");
-                string Codigo = lblCodigo.Text;
+    //protected void gvProductos_ItemCommand(object source, DataListCommandEventArgs e)
+    //{
+    //    if (Session["Detalle"] != null)
+    //    {
+    //        if (e.CommandName == "AgregarProducto")
+    //        {
+    //            string n_IdProducto = gvProductos.DataKeys[e.Item.ItemIndex].ToString();
+    //            Label lblDescripcion = (Label)gvProductos.Items[e.Item.ItemIndex].FindControl("lblDescripcion");
+    //            string Descripcion = lblDescripcion.Text;
+    //            Label lblPrecio = (Label)gvProductos.Items[e.Item.ItemIndex].FindControl("lblPrecio2");
+    //            double Precio = double.Parse(lblPrecio.Text);
+    //            Label lblStock = (Label)gvProductos.Items[e.Item.ItemIndex].FindControl("lblStock");
+    //            int Stock = int.Parse(lblStock.Text);
+    //            Label lblCodigo = (Label)gvProductos.Items[e.Item.ItemIndex].FindControl("lblCodigo");
+    //            string Codigo = lblCodigo.Text;
 
-                //Validar que el producto exista
-                DataTable dt = new DataTable();
-                dt = (DataTable)Session["Detalle"];
-                string n_IdProductoTabla = "";
-                bool encontrado = false;
-                int filaEncontrada = 0;
+    //            //Validar que el producto exista
+    //            DataTable dt = new DataTable();
+    //            dt = (DataTable)Session["Detalle"];
+    //            string n_IdProductoTabla = "";
+    //            bool encontrado = false;
+    //            int filaEncontrada = 0;
 
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    n_IdProductoTabla = dt.Rows[i]["n_IdProducto"].ToString();
-                    if (n_IdProducto.Trim() == n_IdProductoTabla.Trim())
-                    {
-                        encontrado = true;
-                        filaEncontrada = i;
-                        break;
-                    }
-                }
+    //            for (int i = 0; i < dt.Rows.Count; i++)
+    //            {
+    //                n_IdProductoTabla = dt.Rows[i]["n_IdProducto"].ToString();
+    //                if (n_IdProducto.Trim() == n_IdProductoTabla.Trim())
+    //                {
+    //                    encontrado = true;
+    //                    filaEncontrada = i;
+    //                    break;
+    //                }
+    //            }
 
-                if (encontrado == false)
-                {
+    //            if (encontrado == false)
+    //            {
 
-                    DataRow dr;
-                    dr = dt.NewRow();
+    //                DataRow dr;
+    //                dr = dt.NewRow();
 
-                    dr["i_Cantidad"] = "1";
-                    dr["Producto"] = Descripcion;
-                    dr["f_PrecioUnitario"] = Precio;
-                    dr["f_PrecioTotal"] = Precio;
-                    dr["n_IdProducto"] = n_IdProducto;
-                    dr["Codigo"] = Codigo;
-                    dr["Stock"] = Stock;
+    //                dr["i_Cantidad"] = "1";
+    //                dr["Producto"] = Descripcion;
+    //                dr["f_PrecioUnitario"] = Precio;
+    //                dr["f_PrecioTotal"] = Precio;
+    //                dr["n_IdProducto"] = n_IdProducto;
+    //                dr["Codigo"] = Codigo;
+    //                dr["Stock"] = Stock;
 
-                    dt.Rows.Add(dr);
+    //                dt.Rows.Add(dr);
 
-                }
-                else if (encontrado == true)
-                {
-                    int cantidad = int.Parse(dt.Rows[filaEncontrada]["i_Cantidad"].ToString());
-                    cantidad = cantidad + 1;
-                    dt.Rows[filaEncontrada]["i_Cantidad"] = cantidad;
-                }
+    //            }
+    //            else if (encontrado == true)
+    //            {
+    //                int cantidad = int.Parse(dt.Rows[filaEncontrada]["i_Cantidad"].ToString());
+    //                cantidad = cantidad + 1;
+    //                dt.Rows[filaEncontrada]["i_Cantidad"] = cantidad;
+    //            }
 
-                Session["Detalle"] = dt;
-                gv.DataSource = dt;
-                gv.DataBind();
-                CalcularGrilla();
-                panelProductos.Visible = false;
-                tblGeneral.Visible = true;
-                toolbar.Visible = true;
-            }
-        }
-        else 
-        {
-            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Su sesión ha caducado. Vuelva a ingresar al sistema.' });</script>", false);
-            BloquearTodo();
-        }
-    }
+    //            Session["Detalle"] = dt;
+    //            gv.DataSource = dt;
+    //            gv.DataBind();
+    //            CalcularGrilla();
+    //            panelProductos.Visible = false;
+    //            tblGeneral.Visible = true;
+    //            toolbar.Visible = true;
+    //        }
+    //    }
+    //    else 
+    //    {
+    //        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Su sesión ha caducado. Vuelva a ingresar al sistema.' });</script>", false);
+    //        BloquearTodo();
+    //    }
+    //}
 
     protected void ddlMoneda_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -974,7 +1143,7 @@ public partial class CrearPedido : System.Web.UI.Page
         double total = double.Parse(lblTotal.Text);
         double pago = double.Parse(txtPago.Text);
         double vuelto = 0;
-        if (pago < total) 
+        if (pago < total)
         {
             txtPago.Focus();
             ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.error({ message: 'El pago debe ser mayor o igual al total.' });</script>", false);
@@ -1009,11 +1178,11 @@ public partial class CrearPedido : System.Web.UI.Page
                 conn.Close();
                 //if (productos.Count == 0)
                 //{
-                    productos.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem("Crear '" + prefixText + "'", "*"));
-                    productos.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem("Crear y Editar ... '" + prefixText + "'", "%"));
+                productos.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem("Crear '" + prefixText + "'", "*"));
+                productos.Add(AjaxControlToolkit.AutoCompleteExtender.CreateAutoCompleteItem("Crear y Editar ... '" + prefixText + "'", "%"));
                 //}
 
-                
+
                 return productos;
             }
         }
@@ -1023,7 +1192,7 @@ public partial class CrearPedido : System.Web.UI.Page
     {
         string selectedWidgetID = ((HiddenField)sender).Value;
 
-        if (selectedWidgetID == "*") 
+        if (selectedWidgetID == "*")
         {
             string n_IdCliente = "";
             int longitud = (txtCliente.Text.Length - 8);
@@ -1071,7 +1240,7 @@ public partial class CrearPedido : System.Web.UI.Page
             txtCliente.Text = cliente;
             btnCliente.Visible = true;
         }
-        else 
+        else
         {
             //Cliente seleccionado ya existe
             btnCliente.Visible = true;
@@ -1088,7 +1257,7 @@ public partial class CrearPedido : System.Web.UI.Page
 
     protected void btnGuardarCliente_Click(object sender, ImageClickEventArgs e)
     {
-        if (txtNombre.Text.Trim() == "") 
+        if (txtNombre.Text.Trim() == "")
         {
             ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Debe ingresar el nombre del cliente.' });</script>", false);
             txtNombre.Focus();
@@ -1130,7 +1299,7 @@ public partial class CrearPedido : System.Web.UI.Page
                 toolbar.Visible = true;
                 ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Cliente registrado satisfactoriamente' });</script>", false);
             }
-            else 
+            else
             {
                 string n_IdCliente = hdnValue.Value;
 
@@ -1179,16 +1348,16 @@ public partial class CrearPedido : System.Web.UI.Page
         {
 
         }
-        else 
+        else
         {
             //Consultar datos del cliente y mostrarlos
             string n_IdCliente = hdnValue.Value;
             SqlDataAdapter da = new SqlDataAdapter("Play_Cliente2_Seleccionar " + n_IdCliente, conexion);
             DataTable dt = new DataTable();
             da.Fill(dt);
-            if (dt != null) 
+            if (dt != null)
             {
-                if (dt.Rows.Count > 0) 
+                if (dt.Rows.Count > 0)
                 {
                     txtNombre.Text = dt.Rows[0]["v_Nombre"].ToString();
                     txtNumeroDocumento.Text = dt.Rows[0]["v_DocumentoIdentidad"].ToString();
@@ -1239,142 +1408,142 @@ public partial class CrearPedido : System.Web.UI.Page
             //Validar que el documento no esté anulado
 
 
-                if (Session["dtUsuario"] != null)
+            if (Session["dtUsuario"] != null)
+            {
+                SqlTransaction tran;
+                SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
+                cn.Open();
+                tran = cn.BeginTransaction();
+
+                try
                 {
-                    SqlTransaction tran;
-                    SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
-                    cn.Open();
-                    tran = cn.BeginTransaction();
 
-                    try
+                    DataTable dtUsuario = new DataTable();
+                    dtUsuario = (DataTable)Session["dtUsuario"];
+                    string n_IdUsuario = dtUsuario.Rows[0]["n_IdUsuario"].ToString();
+
+                    //Restar Puntos del Cliente
+                    if (hdnValue.Value.Trim() != "")
                     {
+                        int Puntos = Convert.ToInt32(Math.Floor(Convert.ToDouble(lblTotal.Text)));
+                        SqlCommand cmd6 = new SqlCommand();
+                        cmd6.Connection = cn;
+                        cmd6.Transaction = tran;
+                        cmd6.CommandType = CommandType.StoredProcedure;
+                        cmd6.CommandText = "POI_Cliente_RestarPuntos";
+                        cmd6.Parameters.AddWithValue("@n_IdCliente", hdnValue.Value);
+                        cmd6.Parameters.AddWithValue("@Cantidad", Puntos);
+                        cmd6.ExecuteNonQuery();
+                        cmd6.Dispose();
+                    }
 
-                        DataTable dtUsuario = new DataTable();
-                        dtUsuario = (DataTable)Session["dtUsuario"];
-                        string n_IdUsuario = dtUsuario.Rows[0]["n_IdUsuario"].ToString();
+                    //Actualizar estado del comprobante y actualizar montos a cero
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = cn;
+                    cmd.Transaction = tran;
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = "Play_Comprobante_Anular";
+                    cmd.Parameters.AddWithValue("@n_IdPedido", lblIdPedido.Text);
+                    cmd.Parameters.AddWithValue("@n_IdUsuarioAnula", n_IdUsuario);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
 
-                        //Restar Puntos del Cliente
-                        if (hdnValue.Value.Trim() != "")
+                    DataTable dtDetalle = new DataTable();
+                    //Validar que exista productos en el detalle del pedido
+                    dtDetalle = (DataTable)Session["Detalle"];
+                    for (int i = 0; i < dtDetalle.Rows.Count; i++)
+                    {
+                        //Actualizar Stock
+                        SqlCommand cmdStock = new SqlCommand();
+                        cmdStock.Connection = cn;
+                        cmdStock.Transaction = tran;
+                        cmdStock.CommandType = CommandType.StoredProcedure;
+                        cmdStock.CommandText = "Play_Stock_Actualizar";
+                        cmdStock.Parameters.AddWithValue("@n_IdAlmacen", ddlTienda.SelectedValue);
+                        cmdStock.Parameters.AddWithValue("@n_IdProducto", dtDetalle.Rows[i]["n_IdProducto"].ToString());
+                        cmdStock.Parameters.AddWithValue("@f_Cantidad", dtDetalle.Rows[i]["i_Cantidad"].ToString());
+                        cmdStock.ExecuteNonQuery();
+                        cmdStock.Dispose();
+
+                        //Registrar Kardex
+                        SqlCommand cmdKardex = new SqlCommand();
+                        cmdKardex.Connection = cn;
+                        cmdKardex.Transaction = tran;
+                        cmdKardex.CommandType = CommandType.StoredProcedure;
+                        cmdKardex.CommandText = "Play_Kardex_Insertar";
+                        cmdKardex.Parameters.AddWithValue("@d_FechaMovimiento", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
+                        cmdKardex.Parameters.AddWithValue("@c_TipoMovimiento", "I");
+                        cmdKardex.Parameters.AddWithValue("@i_IdMotivoTraslado", 22);//Venta Anulada
+                        cmdKardex.Parameters.AddWithValue("@n_IdProducto", dtDetalle.Rows[i]["n_IdProducto"].ToString());
+                        cmdKardex.Parameters.AddWithValue("@n_IdAlmacen", ddlTienda.SelectedValue);
+                        cmdKardex.Parameters.AddWithValue("@f_Cantidad", dtDetalle.Rows[i]["i_Cantidad"].ToString());
+                        cmdKardex.Parameters.AddWithValue("@n_IdTipoDocumento", 1);
+                        cmdKardex.Parameters.AddWithValue("@v_NumeroDocumento", lblNumeroPedido.Text.Trim());
+                        if (hdnValue.Value.Trim() == "")
                         {
-                            int Puntos = Convert.ToInt32(Math.Floor(Convert.ToDouble(lblTotal.Text)));
-                            SqlCommand cmd6 = new SqlCommand();
-                            cmd6.Connection = cn;
-                            cmd6.Transaction = tran;
-                            cmd6.CommandType = CommandType.StoredProcedure;
-                            cmd6.CommandText = "POI_Cliente_RestarPuntos";
-                            cmd6.Parameters.AddWithValue("@n_IdCliente", hdnValue.Value);
-                            cmd6.Parameters.AddWithValue("@Cantidad", Puntos);
-                            cmd6.ExecuteNonQuery();
-                            cmd6.Dispose();
+                            cmdKardex.Parameters.AddWithValue("@n_IdCliente", DBNull.Value);
                         }
-
-                        //Actualizar estado del comprobante y actualizar montos a cero
-                        SqlCommand cmd = new SqlCommand();
-                        cmd.Connection = cn;
-                        cmd.Transaction = tran;
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.CommandText = "Play_Comprobante_Anular";
-                        cmd.Parameters.AddWithValue("@n_IdPedido", lblIdPedido.Text);
-                        cmd.Parameters.AddWithValue("@n_IdUsuarioAnula", n_IdUsuario);
-                        cmd.ExecuteNonQuery();
-                        cmd.Dispose();
-
-                        DataTable dtDetalle = new DataTable();
-                       //Validar que exista productos en el detalle del pedido
-                        dtDetalle = (DataTable)Session["Detalle"];
-                        for (int i = 0; i < dtDetalle.Rows.Count; i++)
+                        else
                         {
-                            //Actualizar Stock
-                            SqlCommand cmdStock = new SqlCommand();
-                            cmdStock.Connection = cn;
-                            cmdStock.Transaction = tran;
-                            cmdStock.CommandType = CommandType.StoredProcedure;
-                            cmdStock.CommandText = "Play_Stock_Actualizar";
-                            cmdStock.Parameters.AddWithValue("@n_IdAlmacen", ddlTienda.SelectedValue);
-                            cmdStock.Parameters.AddWithValue("@n_IdProducto", dtDetalle.Rows[i]["n_IdProducto"].ToString());
-                            cmdStock.Parameters.AddWithValue("@f_Cantidad", dtDetalle.Rows[i]["i_Cantidad"].ToString());
-                            cmdStock.ExecuteNonQuery();
-                            cmdStock.Dispose();
-
-                            //Registrar Kardex
-                            SqlCommand cmdKardex = new SqlCommand();
-                            cmdKardex.Connection = cn;
-                            cmdKardex.Transaction = tran;
-                            cmdKardex.CommandType = CommandType.StoredProcedure;
-                            cmdKardex.CommandText = "Play_Kardex_Insertar";
-                            cmdKardex.Parameters.AddWithValue("@d_FechaMovimiento", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
-                            cmdKardex.Parameters.AddWithValue("@c_TipoMovimiento", "I");
-                            cmdKardex.Parameters.AddWithValue("@i_IdMotivoTraslado", 22);//Venta Anulada
-                            cmdKardex.Parameters.AddWithValue("@n_IdProducto", dtDetalle.Rows[i]["n_IdProducto"].ToString());
-                            cmdKardex.Parameters.AddWithValue("@n_IdAlmacen", ddlTienda.SelectedValue);
-                            cmdKardex.Parameters.AddWithValue("@f_Cantidad", dtDetalle.Rows[i]["i_Cantidad"].ToString());
-                            cmdKardex.Parameters.AddWithValue("@n_IdTipoDocumento", 1);
-                            cmdKardex.Parameters.AddWithValue("@v_NumeroDocumento", lblNumeroPedido.Text.Trim());
-                            if (hdnValue.Value.Trim() == "")
-                            {
-                                cmdKardex.Parameters.AddWithValue("@n_IdCliente", DBNull.Value);
-                            }
-                            else
-                            {
-                                cmdKardex.Parameters.AddWithValue("@n_IdCliente", hdnValue.Value);
-                            }
-                            cmdKardex.Parameters.AddWithValue("@n_IdProveedor", DBNull.Value);
-                            cmdKardex.ExecuteNonQuery();
-                            cmdKardex.Dispose();
+                            cmdKardex.Parameters.AddWithValue("@n_IdCliente", hdnValue.Value);
                         }
-
-                        SqlCommand cmdp = new SqlCommand();
-                        cmdp.Connection = cn;
-                        cmdp.Transaction = tran;
-                        cmdp.CommandType = CommandType.StoredProcedure;
-                        cmdp.CommandText = "Play_Pedido_Anular";
-                        cmdp.Parameters.AddWithValue("@n_IdPedido", lblIdPedido.Text);
-                        cmdp.ExecuteNonQuery();
-                        cmdp.Dispose();
-
-                        decimal importeNegativo = decimal.Parse(lblTotal.Text) * -1;
-
-                        //Registra Movimiento de Caja Chica
-                        SqlCommand cmdCaja = new SqlCommand();
-                        cmdCaja.Connection = cn;
-                        cmdCaja.Transaction = tran;
-                        cmdCaja.CommandType = CommandType.StoredProcedure;
-                        cmdCaja.CommandText = "Play_Pedido_CajaMovimiento";
-                        cmdCaja.Parameters.AddWithValue("@n_IdAlmacen", ddlTienda.SelectedValue);
-                        cmdCaja.Parameters.AddWithValue("@i_IdConceptoCaja", "2");//Venta Anulada
-                        cmdCaja.Parameters.AddWithValue("@c_TipoMovimiento", "S");
-                        cmdCaja.Parameters.AddWithValue("@f_Importe", importeNegativo);
-                        cmdCaja.Parameters.AddWithValue("@v_NroDocumento", lblNumeroPedido.Text);
-                        cmdCaja.Parameters.AddWithValue("@n_IdUsuario", n_IdUsuario);
-                        cmdCaja.ExecuteNonQuery();
-                        cmdCaja.Dispose();
-
-                        tran.Commit(); 
-                        BloquearTodo();
-                        btnGuardar.Enabled = false;
-                        btnAnular.Enabled = false;
-                        Label1.ForeColor = System.Drawing.Color.Red;
-                        lblNumeroPedido.ForeColor = System.Drawing.Color.Red;
-                        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Pedido Anulado Satisfactoriamente' });</script>", false);
-                    }
-                    catch (Exception ex)
-                    {
-                        tran.Rollback();
-                        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.error({ message: '" + ex.Message + "' });</script>", false);
-                    }
-                    finally
-                    {
-                        cn.Close();
+                        cmdKardex.Parameters.AddWithValue("@n_IdProveedor", DBNull.Value);
+                        cmdKardex.ExecuteNonQuery();
+                        cmdKardex.Dispose();
                     }
 
-                }
-                else
-                {
-                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Su sesión ha caducado. Vuelva a ingresar al sistema.' });</script>", false);
+                    SqlCommand cmdp = new SqlCommand();
+                    cmdp.Connection = cn;
+                    cmdp.Transaction = tran;
+                    cmdp.CommandType = CommandType.StoredProcedure;
+                    cmdp.CommandText = "Play_Pedido_Anular";
+                    cmdp.Parameters.AddWithValue("@n_IdPedido", lblIdPedido.Text);
+                    cmdp.ExecuteNonQuery();
+                    cmdp.Dispose();
+
+                    decimal importeNegativo = decimal.Parse(lblTotal.Text) * -1;
+
+                    //Registra Movimiento de Caja Chica
+                    SqlCommand cmdCaja = new SqlCommand();
+                    cmdCaja.Connection = cn;
+                    cmdCaja.Transaction = tran;
+                    cmdCaja.CommandType = CommandType.StoredProcedure;
+                    cmdCaja.CommandText = "Play_Pedido_CajaMovimiento";
+                    cmdCaja.Parameters.AddWithValue("@n_IdAlmacen", ddlTienda.SelectedValue);
+                    cmdCaja.Parameters.AddWithValue("@i_IdConceptoCaja", "2");//Venta Anulada
+                    cmdCaja.Parameters.AddWithValue("@c_TipoMovimiento", "S");
+                    cmdCaja.Parameters.AddWithValue("@f_Importe", importeNegativo);
+                    cmdCaja.Parameters.AddWithValue("@v_NroDocumento", lblNumeroPedido.Text);
+                    cmdCaja.Parameters.AddWithValue("@n_IdUsuario", n_IdUsuario);
+                    cmdCaja.ExecuteNonQuery();
+                    cmdCaja.Dispose();
+
+                    tran.Commit();
                     BloquearTodo();
+                    btnGuardar.Enabled = false;
+                    btnAnular.Enabled = false;
+                    Label1.ForeColor = System.Drawing.Color.Red;
+                    lblNumeroPedido.ForeColor = System.Drawing.Color.Red;
+                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Pedido Anulado Satisfactoriamente' });</script>", false);
+                }
+                catch (Exception ex)
+                {
+                    tran.Rollback();
+                    ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.error({ message: '" + ex.Message + "' });</script>", false);
+                }
+                finally
+                {
+                    cn.Close();
                 }
 
-            
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Su sesión ha caducado. Vuelva a ingresar al sistema.' });</script>", false);
+                BloquearTodo();
+            }
+
+
 
         }
         catch (Exception ex)
@@ -1398,14 +1567,14 @@ public partial class CrearPedido : System.Web.UI.Page
             lnkAgregarProducto.Enabled = true;
             ibEstablecerSucursal.Visible = false;
         }
-        else 
+        else
         {
             ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'No se encontró la caja aperturada para el día de hoy' });</script>", false);
             BloquearTodo();
         }
     }
 
-    bool ValidarCaja() 
+    bool ValidarCaja()
     {
         //Validar que la caja esté abierta
         string Almacen = ddlTienda.SelectedValue;
@@ -1435,5 +1604,449 @@ public partial class CrearPedido : System.Web.UI.Page
     protected void txtDescuento_TextChanged(object sender, EventArgs e)
     {
         CalcularGrilla();
+    }
+    //protected void gvProductos_RowDataBound(object sender, GridViewRowEventArgs e)
+    //{
+    //    if (e.Row.RowType == DataControlRowType.DataRow)
+    //    {
+    //        RangeValidator rvStockSotano = (RangeValidator)e.Row.Cells[4].FindControl("rvStockSotano");
+    //        RangeValidator rvStockSemiSotano = (RangeValidator)e.Row.Cells[5].FindControl("rvStockSemiSotano");
+    //        RangeValidator rvStockTercerPiso = (RangeValidator)e.Row.Cells[5].FindControl("rvStockTercerPiso");
+    //        RangeValidator rvStockFullTienda = (RangeValidator)e.Row.Cells[5].FindControl("rvStockFullTienda");
+    //        rvStockSotano.MaximumValue = DataBinder.Eval(e.Row.DataItem, "Sotano").ToString();
+    //        rvStockSemiSotano.MaximumValue = DataBinder.Eval(e.Row.DataItem, "SemiSotano").ToString();
+    //        rvStockTercerPiso.MaximumValue = DataBinder.Eval(e.Row.DataItem, "TercerPiso").ToString();
+    //        rvStockFullTienda.MaximumValue = DataBinder.Eval(e.Row.DataItem, "FullTienda").ToString();
+
+    //    }
+    //}
+
+    protected void ibtnAgregar_Click(object sender, ImageClickEventArgs e)
+    {
+        if (Session["Detalle"] != null)
+        {
+
+            var row = ((sender as ImageButton).NamingContainer as GridViewRow);
+            int rowIndex = row.RowIndex;
+            string n_IdProducto = gvProductos.DataKeys[rowIndex].Value.ToString();
+
+
+            string Descripcion = row.Cells[1].Text;
+            double Precio = double.Parse(row.Cells[2].Text);
+            int StockSotano = int.Parse(row.Cells[4].Text);
+            int StockSemiSotano = int.Parse(row.Cells[5].Text);
+            int StockTercerPiso = int.Parse(row.Cells[6].Text);
+            int StockFullTienda = int.Parse(row.Cells[7].Text);
+            string Codigo = row.Cells[0].Text;
+
+            int stockTotal = StockSotano + StockSemiSotano + StockTercerPiso + StockFullTienda;
+
+            //Validar que el producto exista
+            DataTable dt = new DataTable();
+            dt = (DataTable)Session["Detalle"];
+            string n_IdProductoTabla = "";
+            bool encontrado = false;
+            int filaEncontrada = 0;
+
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                n_IdProductoTabla = dt.Rows[i]["n_IdProducto"].ToString();
+                if (n_IdProducto.Trim() == n_IdProductoTabla.Trim())
+                {
+                    encontrado = true;
+                    filaEncontrada = i;
+                    break;
+                }
+            }
+
+            if (encontrado == false)
+            {
+
+                DataRow dr;
+                dr = dt.NewRow();
+
+
+                dr["i_CantidadSotano"] = "0";
+                dr["i_CantidadSemiSotano"] = "0";
+                dr["i_CantidadTercerPiso"] = "0";
+                dr["i_CantidadFullTienda"] = "0";
+
+                dr["Producto"] = Descripcion;
+                dr["f_PrecioUnitario"] = Precio;
+                dr["f_PrecioTotal"] = 0;
+                dr["n_IdProducto"] = n_IdProducto;
+                dr["Codigo"] = Codigo;
+                dr["StockSotano"] = StockSotano;
+                dr["StockSemiSotano"] = StockSemiSotano;
+                dr["StockTercerPiso"] = StockTercerPiso;
+                dr["StockFullTienda"] = StockFullTienda;
+                dr["StockTotal"] = stockTotal;
+                dt.Rows.Add(dr);
+
+            }
+            else if (encontrado == true)
+            {
+                //int cantidad = int.Parse(dt.Rows[filaEncontrada]["i_Cantidad"].ToString());
+                //cantidad = cantidad + 1;
+                //dt.Rows[filaEncontrada]["i_Cantidad"] = cantidad;
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Producto ya ha sido agregado' });</script>", false);
+
+                return;
+            }
+
+            Session["Detalle"] = dt;
+            gv.DataSource = dt;
+            gv.DataBind();
+            //CalcularGrilla();
+            panelProductos.Visible = false;
+            tblGeneral.Visible = true;
+            toolbar.Visible = true;
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'Su sesión ha caducado. Vuelva a ingresar al sistema.' });</script>", false);
+            BloquearTodo();
+        }
+    }
+
+    protected void txtCantidadSotano_TextChanged(object sender, EventArgs e)
+    {
+        CalcularGrilla();
+    }
+    protected void txtCantidadSemiSotano_TextChanged(object sender, EventArgs e)
+    {
+        CalcularGrilla();
+    }
+    protected void txtCantidadTercerPiso_TextChanged(object sender, EventArgs e)
+    {
+        CalcularGrilla();
+    }
+    protected void txtCantidadFullTienda_TextChanged(object sender, EventArgs e)
+    {
+        CalcularGrilla();
+    }
+    protected void gv_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            RangeValidator rvtxtCantidadSotano = (RangeValidator)e.Row.Cells[2].FindControl("rvtxtCantidadSotano");
+            RangeValidator rvtxtCantidadSemiSotano = (RangeValidator)e.Row.Cells[3].FindControl("rvtxtCantidadSemiSotano");
+            RangeValidator rvtxtCantidadTercerPiso = (RangeValidator)e.Row.Cells[4].FindControl("rvtxtCantidadTercerPiso");
+            RangeValidator rvtxtCantidadFullTienda = (RangeValidator)e.Row.Cells[5].FindControl("rvtxtCantidadFullTienda");
+
+            rvtxtCantidadSotano.MaximumValue = DataBinder.Eval(e.Row.DataItem, "StockSotano").ToString();
+            rvtxtCantidadSemiSotano.MaximumValue = DataBinder.Eval(e.Row.DataItem, "StockSemiSotano").ToString();
+            rvtxtCantidadTercerPiso.MaximumValue = DataBinder.Eval(e.Row.DataItem, "StockTercerPiso").ToString();
+            rvtxtCantidadFullTienda.MaximumValue = DataBinder.Eval(e.Row.DataItem, "StockFullTienda").ToString();
+
+        }
+    }
+
+    private void ActualizarEstadoPedido(ref SqlConnection cn, ref SqlTransaction tran, ref int n_IdPedido)
+    {
+        //Establecemos Estado del pedido a Despacho Parcial
+        SqlCommand cmdEstadoPedido = new SqlCommand();
+        cmdEstadoPedido.Connection = cn;
+        cmdEstadoPedido.Transaction = tran;
+        cmdEstadoPedido.CommandType = CommandType.StoredProcedure;
+        cmdEstadoPedido.CommandText = "dbo.Play_Pedido_Actualizar_Estado";
+        cmdEstadoPedido.Parameters.AddWithValue("@n_IdPedido", n_IdPedido);
+        cmdEstadoPedido.Parameters.AddWithValue("@n_IdPedidoEstado", 3);
+        cmdEstadoPedido.ExecuteNonQuery();
+        cmdEstadoPedido.Dispose();
+    }
+
+    protected void ibtnDespachar_Click(object sender, ImageClickEventArgs e)
+    {
+        if (hddfPedido.Value == "0")
+        {
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'El pedido no existe' });</script>", false);
+        }
+
+
+        var n_IdPedido = int.Parse(hddfPedido.Value);
+        var NumeroPedido = lblNumeroPedido.Text;
+
+        int stockContable = 0;
+
+        var dt = (DataTable)Session["Detalle"];
+
+        if (Session["dtUsuario"] != null)
+        {
+            DataTable dtUsuario = new DataTable();
+            dtUsuario = (DataTable)Session["dtUsuario"];
+            string n_IdUsuario = dtUsuario.Rows[0]["n_IdUsuario"].ToString();
+
+            SqlTransaction tran;
+            SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["conexion"].ConnectionString);
+            cn.Open();
+            tran = cn.BeginTransaction();
+            try
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    //validar el stock antes de guardar 
+                    SqlCommand cmdStockContable = new SqlCommand();
+                    cmdStockContable.Connection = cn;
+                    cmdStockContable.Transaction = tran;
+                    cmdStockContable.CommandType = CommandType.Text;
+                    cmdStockContable.CommandText = "select SUM(f_StockContable)f_StockContable from stock where n_IdProducto = " + dt.Rows[i]["n_IdProducto"].ToString() + " and n_IdAlmacen IN ( 1,2,3,4 )";
+                    stockContable = int.Parse(cmdStockContable.ExecuteScalar().ToString());
+
+                    int cantidadSotano = int.Parse(dt.Rows[i]["i_CantidadSotano"].ToString());
+                    int cantidadSemiSotano = int.Parse(dt.Rows[i]["i_CantidadSemiSotano"].ToString());
+                    int cantidadTercerPiso = int.Parse(dt.Rows[i]["i_CantidadTercerPiso"].ToString());
+                    int cantidadFullTienda = int.Parse(dt.Rows[i]["i_CantidadFullTienda"].ToString());
+                    int cantidadTotal = cantidadSotano + cantidadSemiSotano + cantidadTercerPiso + cantidadFullTienda;
+
+                    if (stockContable < cantidadTotal)
+                    {
+                        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.warning({ message: 'No hay stock suficiente' });</script>", false);
+                        tran.Rollback();
+                        cn.Close();
+                        return;
+                    }
+
+                    SqlCommand cmdDetalle = new SqlCommand();
+                    SqlCommand cmdStock = new SqlCommand();
+                    SqlCommand cmdKardex = new SqlCommand();
+
+                    if (cantidadSotano > 0 && ddlTienda.SelectedValue == "1")
+                    {
+
+                        //Actualizar el Stock Restar Almacen 1
+                        cmdStock = new SqlCommand();
+                        cmdStock.Connection = cn;
+                        cmdStock.Transaction = tran;
+                        cmdStock.CommandType = CommandType.StoredProcedure;
+                        cmdStock.CommandText = "Play_Stock_Restar_Actualizar";
+                        cmdStock.Parameters.AddWithValue("@n_IdAlmacen", 1);
+                        cmdStock.Parameters.AddWithValue("@n_IdProducto", dt.Rows[i]["n_IdProducto"].ToString());
+                        cmdStock.Parameters.AddWithValue("@f_Cantidad", cantidadSotano);
+                        cmdStock.ExecuteNonQuery();
+                        cmdStock.Dispose();
+
+                        //Registrar Kardex Almacen 1 
+                        cmdKardex = new SqlCommand();
+                        cmdKardex.Connection = cn;
+                        cmdKardex.Transaction = tran;
+                        cmdKardex.CommandType = CommandType.StoredProcedure;
+                        cmdKardex.CommandText = "Play_Kardex_Insertar";
+                        cmdKardex.Parameters.AddWithValue("@d_FechaMovimiento", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
+                        cmdKardex.Parameters.AddWithValue("@c_TipoMovimiento", "S");
+                        cmdKardex.Parameters.AddWithValue("@i_IdMotivoTraslado", 1);
+                        cmdKardex.Parameters.AddWithValue("@n_IdProducto", dt.Rows[i]["n_IdProducto"].ToString());
+                        cmdKardex.Parameters.AddWithValue("@n_IdAlmacen", 1);
+                        cmdKardex.Parameters.AddWithValue("@f_Cantidad", cantidadSotano);
+                        cmdKardex.Parameters.AddWithValue("@n_IdTipoDocumento", 1);//Pedido
+                        cmdKardex.Parameters.AddWithValue("@v_NumeroDocumento", NumeroPedido);
+                        if (hdnValue.Value.Trim() == "")
+                        {
+                            cmdKardex.Parameters.AddWithValue("@n_IdCliente", DBNull.Value);
+                        }
+                        else
+                        {
+                            cmdKardex.Parameters.AddWithValue("@n_IdCliente", hdnValue.Value);
+                        }
+                        cmdKardex.Parameters.AddWithValue("@n_IdProveedor", DBNull.Value);
+                        cmdKardex.ExecuteNonQuery();
+                        cmdKardex.Dispose();
+
+                        //Fredddddy
+                        ActualizarEstadoPedido(ref cn, ref tran, ref n_IdPedido);
+
+                    }
+
+                    if (cantidadSemiSotano > 0 && ddlTienda.SelectedValue == "2")
+                    {
+                        //Actualizar el Stock Restar Almacen 2
+                        cmdStock = new SqlCommand();
+                        cmdStock.Connection = cn;
+                        cmdStock.Transaction = tran;
+                        cmdStock.CommandType = CommandType.StoredProcedure;
+                        cmdStock.CommandText = "Play_Stock_Restar_Actualizar";
+                        cmdStock.Parameters.AddWithValue("@n_IdAlmacen", 2);
+                        cmdStock.Parameters.AddWithValue("@n_IdProducto", dt.Rows[i]["n_IdProducto"].ToString());
+                        cmdStock.Parameters.AddWithValue("@f_Cantidad", cantidadSemiSotano);
+                        cmdStock.ExecuteNonQuery();
+                        cmdStock.Dispose();
+
+                        //Registrar Kardex Almacen 2
+                        cmdKardex = new SqlCommand();
+                        cmdKardex.Connection = cn;
+                        cmdKardex.Transaction = tran;
+                        cmdKardex.CommandType = CommandType.StoredProcedure;
+                        cmdKardex.CommandText = "Play_Kardex_Insertar";
+                        cmdKardex.Parameters.AddWithValue("@d_FechaMovimiento", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
+                        cmdKardex.Parameters.AddWithValue("@c_TipoMovimiento", "S");
+                        cmdKardex.Parameters.AddWithValue("@i_IdMotivoTraslado", 1);
+                        cmdKardex.Parameters.AddWithValue("@n_IdProducto", dt.Rows[i]["n_IdProducto"].ToString());
+                        cmdKardex.Parameters.AddWithValue("@n_IdAlmacen", 2);
+                        cmdKardex.Parameters.AddWithValue("@f_Cantidad", cantidadSemiSotano);
+                        cmdKardex.Parameters.AddWithValue("@n_IdTipoDocumento", 1);//Pedido
+                        cmdKardex.Parameters.AddWithValue("@v_NumeroDocumento", NumeroPedido);
+                        if (hdnValue.Value.Trim() == "")
+                        {
+                            cmdKardex.Parameters.AddWithValue("@n_IdCliente", DBNull.Value);
+                        }
+                        else
+                        {
+                            cmdKardex.Parameters.AddWithValue("@n_IdCliente", hdnValue.Value);
+                        }
+                        cmdKardex.Parameters.AddWithValue("@n_IdProveedor", DBNull.Value);
+                        cmdKardex.ExecuteNonQuery();
+                        cmdKardex.Dispose();
+
+                        ActualizarEstadoPedido(ref cn, ref tran, ref n_IdPedido);
+                    }
+
+
+                    if (cantidadTercerPiso > 0 && ddlTienda.SelectedValue == "3")
+                    {
+
+                        //Actualizar el Stock Restar Almacen 3
+                        cmdStock = new SqlCommand();
+                        cmdStock.Connection = cn;
+                        cmdStock.Transaction = tran;
+                        cmdStock.CommandType = CommandType.StoredProcedure;
+                        cmdStock.CommandText = "Play_Stock_Restar_Actualizar";
+                        cmdStock.Parameters.AddWithValue("@n_IdAlmacen", 3);
+                        cmdStock.Parameters.AddWithValue("@n_IdProducto", dt.Rows[i]["n_IdProducto"].ToString());
+                        cmdStock.Parameters.AddWithValue("@f_Cantidad", cantidadTercerPiso);
+                        cmdStock.ExecuteNonQuery();
+                        cmdStock.Dispose();
+
+                        //Registrar Kardex Almacen 3
+                        cmdKardex = new SqlCommand();
+                        cmdKardex.Connection = cn;
+                        cmdKardex.Transaction = tran;
+                        cmdKardex.CommandType = CommandType.StoredProcedure;
+                        cmdKardex.CommandText = "Play_Kardex_Insertar";
+                        cmdKardex.Parameters.AddWithValue("@d_FechaMovimiento", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
+                        cmdKardex.Parameters.AddWithValue("@c_TipoMovimiento", "S");
+                        cmdKardex.Parameters.AddWithValue("@i_IdMotivoTraslado", 1);
+                        cmdKardex.Parameters.AddWithValue("@n_IdProducto", dt.Rows[i]["n_IdProducto"].ToString());
+                        cmdKardex.Parameters.AddWithValue("@n_IdAlmacen", 3);
+                        cmdKardex.Parameters.AddWithValue("@f_Cantidad", cantidadTercerPiso);
+                        cmdKardex.Parameters.AddWithValue("@n_IdTipoDocumento", 1);//Pedido
+                        cmdKardex.Parameters.AddWithValue("@v_NumeroDocumento", NumeroPedido);
+                        if (hdnValue.Value.Trim() == "")
+                        {
+                            cmdKardex.Parameters.AddWithValue("@n_IdCliente", DBNull.Value);
+                        }
+                        else
+                        {
+                            cmdKardex.Parameters.AddWithValue("@n_IdCliente", hdnValue.Value);
+                        }
+                        cmdKardex.Parameters.AddWithValue("@n_IdProveedor", DBNull.Value);
+                        cmdKardex.ExecuteNonQuery();
+                        cmdKardex.Dispose();
+
+                        ActualizarEstadoPedido(ref cn, ref tran, ref n_IdPedido);
+                    }
+
+
+                    if (cantidadFullTienda > 0 && ddlTienda.SelectedValue == "4")
+                    {
+                        //Actualizar el Stock Restar Almacen 4
+                        cmdStock = new SqlCommand();
+                        cmdStock.Connection = cn;
+                        cmdStock.Transaction = tran;
+                        cmdStock.CommandType = CommandType.StoredProcedure;
+                        cmdStock.CommandText = "Play_Stock_Restar_Actualizar";
+                        cmdStock.Parameters.AddWithValue("@n_IdAlmacen", 4);
+                        cmdStock.Parameters.AddWithValue("@n_IdProducto", dt.Rows[i]["n_IdProducto"].ToString());
+                        cmdStock.Parameters.AddWithValue("@f_Cantidad", cantidadFullTienda);
+                        cmdStock.ExecuteNonQuery();
+                        cmdStock.Dispose();
+
+                        //Registrar Kardex Almacen 4
+                        cmdKardex = new SqlCommand();
+                        cmdKardex.Connection = cn;
+                        cmdKardex.Transaction = tran;
+                        cmdKardex.CommandType = CommandType.StoredProcedure;
+                        cmdKardex.CommandText = "Play_Kardex_Insertar";
+                        cmdKardex.Parameters.AddWithValue("@d_FechaMovimiento", DateTime.Parse(txtFechaInicial.Text + " " + DateTime.Now.Hour.ToString("00") + ":" + DateTime.Now.Minute.ToString("00") + ":" + DateTime.Now.Second.ToString("00")));
+                        cmdKardex.Parameters.AddWithValue("@c_TipoMovimiento", "S");
+                        cmdKardex.Parameters.AddWithValue("@i_IdMotivoTraslado", 1);
+                        cmdKardex.Parameters.AddWithValue("@n_IdProducto", dt.Rows[i]["n_IdProducto"].ToString());
+                        cmdKardex.Parameters.AddWithValue("@n_IdAlmacen", 4);
+                        cmdKardex.Parameters.AddWithValue("@f_Cantidad", cantidadFullTienda);
+                        cmdKardex.Parameters.AddWithValue("@n_IdTipoDocumento", 1);//Pedido
+                        cmdKardex.Parameters.AddWithValue("@v_NumeroDocumento", NumeroPedido);
+                        if (hdnValue.Value.Trim() == "")
+                        {
+                            cmdKardex.Parameters.AddWithValue("@n_IdCliente", DBNull.Value);
+                        }
+                        else
+                        {
+                            cmdKardex.Parameters.AddWithValue("@n_IdCliente", hdnValue.Value);
+                        }
+                        cmdKardex.Parameters.AddWithValue("@n_IdProveedor", DBNull.Value);
+                        cmdKardex.ExecuteNonQuery();
+                        cmdKardex.Dispose();
+
+                        ActualizarEstadoPedido(ref cn, ref tran, ref n_IdPedido);
+                    }
+                }
+
+                //Registramos Notas de Salida
+
+                SqlCommand cmdNotaSalida = new SqlCommand();
+                cmdNotaSalida.Connection = cn;
+                cmdNotaSalida.Transaction = tran;
+                cmdNotaSalida.CommandType = CommandType.StoredProcedure;
+                cmdNotaSalida.CommandText = "Play_Pedido_GenerarNotasSalida";
+                cmdNotaSalida.Parameters.AddWithValue("@n_IdPedido", n_IdPedido);
+                cmdNotaSalida.Parameters.AddWithValue("@n_IdUsuarioDespacho", n_IdUsuario);
+                cmdNotaSalida.ExecuteNonQuery();
+                cmdNotaSalida.Dispose();
+
+                //Registra Movimiento de Caja Chica
+                SqlCommand cmdCaja = new SqlCommand();
+                cmdCaja.Connection = cn;
+                cmdCaja.Transaction = tran;
+                cmdCaja.CommandType = CommandType.StoredProcedure;
+                cmdCaja.CommandText = "Play_Pedido_CajaMovimiento";
+                cmdCaja.Parameters.AddWithValue("@n_IdAlmacen", ddlTienda.SelectedValue);
+                cmdCaja.Parameters.AddWithValue("@i_IdConceptoCaja", "1");//Venta
+                cmdCaja.Parameters.AddWithValue("@c_TipoMovimiento", "E");
+                cmdCaja.Parameters.AddWithValue("@f_Importe", lblTotal.Text.Replace(",", ""));
+                cmdCaja.Parameters.AddWithValue("@v_NroDocumento", NumeroPedido);
+                cmdCaja.Parameters.AddWithValue("@n_IdUsuario", n_IdUsuario);
+                cmdCaja.ExecuteNonQuery();
+                cmdCaja.Dispose();
+
+                //Aumentar Puntos del Cliente
+                if (hdnValue.Value.Trim() != "")
+                {
+                    int Puntos = Convert.ToInt32(Math.Floor(Convert.ToDouble(lblTotal.Text.Replace(",", ""))));
+                    SqlCommand cmd6 = new SqlCommand();
+                    cmd6.Connection = cn;
+                    cmd6.Transaction = tran;
+                    cmd6.CommandType = CommandType.StoredProcedure;
+                    cmd6.CommandText = "POI_Cliente_AumentarPuntos";
+                    cmd6.Parameters.AddWithValue("@n_IdCliente", hdnValue.Value);
+                    cmd6.Parameters.AddWithValue("@Cantidad", Puntos);
+                    cmd6.ExecuteNonQuery();
+                    cmd6.Dispose();
+                }
+
+                tran.Commit();
+
+                LoadDatosPedido();
+
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Pedido despachado satisfactoriamente' });</script>", false);
+            }
+            catch (Exception ex)
+            {
+                tran.Rollback();
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.error({ message: '" + ex.Message + "' });</script>", false);
+            }
+            finally
+            {
+                cn.Close();
+            }
+        }
     }
 }

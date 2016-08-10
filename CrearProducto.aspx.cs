@@ -70,6 +70,30 @@ public partial class CrearProducto : System.Web.UI.Page
                 txtStockMinimo.Text = "0";
             }
         }
+
+        string eventTarget = Convert.ToString(Request.Params.Get("__EVENTTARGET"));
+        string eventArgument = Convert.ToString(Request.Params.Get("__EVENTARGUMENT"));
+
+        if (eventTarget == "baterias")
+        {
+            ListarBaterias();
+            ddlBateria.SelectedValue = eventArgument;
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Batería registrada.' });</script>", false);
+        }
+        else if (eventTarget == "familias")
+        {
+            ListarCategoria();
+            ddlCategoria.SelectedValue = eventArgument;
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Familia registrada.' });</script>", false);
+        }
+        else if (eventTarget == "proveedores")
+        {
+            ListarProveedor();
+            ddlProveedor.SelectedValue = eventArgument;
+            ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Proveedor registrado.' });</script>", false);
+        }
+
+
     }
 
     void ListarProveedor() 

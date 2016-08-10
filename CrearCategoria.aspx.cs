@@ -86,7 +86,8 @@ public partial class CrearCategoria : System.Web.UI.Page
                 n_IdCategoria = cmd.ExecuteScalar().ToString();
                 conexion.Close();
                 lblCodigo.Text = n_IdCategoria;
-                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Familia registrada.' });</script>", false);
+                //ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Familia registrada.' });</script>", false);
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>window.parent.CerrarDialog('familias'," + n_IdCategoria.ToString() + ");</script>", false);
             }
         }
         catch (Exception)

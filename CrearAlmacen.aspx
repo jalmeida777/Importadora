@@ -164,6 +164,25 @@
             <td height="10" width="20">
                 &nbsp;</td>
             <td>
+                <asp:Label ID="Label26" runat="server" Text="Caja:"></asp:Label>
+            </td>
+            <td>
+                <asp:CheckBox ID="chkManejaCaja" runat="server" Checked="True" 
+                    Text="Habilitado" />
+            </td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td width="20">
+                &nbsp;</td>
+        </tr>
+        <tr>
+            <td height="10" width="20">
+                &nbsp;</td>
+            <td>
                 <asp:Label ID="Label22" runat="server" Text="Estado:"></asp:Label>
             </td>
             <td>

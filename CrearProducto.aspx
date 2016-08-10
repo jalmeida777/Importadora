@@ -24,7 +24,7 @@
 }
 
 </style>
-    <style type="text/css">
+<style type="text/css">
         .AutoExtender
         {
             font-family: Verdana, Helvetica, sans-serif;
@@ -96,10 +96,58 @@
         }
     </script>
 
+<script type="text/javascript">
+
+    function LlamarDialogCrear(origen) {
+
+        var titulo = "";
+
+        if(origen == "baterias")
+            titulo =""
+        else if(origen == "familias")
+            titulo =""
+        else if (origen == "proveedores") 
+            titulo =""
+
+        var dialogo = $("#dialogCreacion").dialog({  //create dialog, but keep it closed
+            autoOpen: false,
+            height: 300,
+            width: 490,
+            modal: true,
+            title: "",
+            open: function (ev, ui) {
+
+                if (origen == "baterias")
+                    $('#iframePagina').attr('src', 'CrearBateria2.aspx');
+                else if(origen == "familias")
+                    $('#iframePagina').attr('src', 'CrearCategoria.aspx');
+                else if (origen == "proveedores")
+                    $('#iframePagina').attr('src', 'CrearProveedor.aspx');
+                    
+            }
+        });
+
+        dialogo.dialog("open");
+
+        return false;
+    }
+
+    function CerrarDialog(origen, IdSeleccion) {
+
+        $("#dialogCreacion").dialog("close");
+
+        __doPostBack(origen, IdSeleccion);
+
+        return false;
+    }
+
+</script>
+
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
-    
-
+    <div id="dialogCreacion" title="" style="display: none">
+    <iframe id="iframePagina" src="" width="100%" height="100%"  scrolling="no" frameborder="0" marginwidth="0" marginheight="0"  hspace="0" vspace="0"></iframe>
+    </div>
             <div class="divBusqueda">
             <table width="100%">
                 <tr>
@@ -296,6 +344,7 @@
                                     CssClass="combo" 
                                     Width="150px">
                                 </asp:DropDownList>
+                                <asp:Image ID="Image1" runat="server" ImageUrl="~/images/add.png"  onclick="LlamarDialogCrear('baterias');return false;"/>
                             </td>
             <td>
                                 &nbsp;</td>
@@ -372,6 +421,7 @@
                     <asp:DropDownList ID="ddlCategoria" runat="server" Width="150px" 
                         CssClass="combo">
                     </asp:DropDownList>
+                    <asp:ImageButton ID="ibtnCrearFamilia" runat="server"  ImageUrl="~/images/add.png" OnClientClick="javascript:LlamarDialogCrear('familias');return false;"/>
                 </td>
             <td>
                     &nbsp;</td>
@@ -390,6 +440,7 @@
                     <asp:DropDownList ID="ddlProveedor" runat="server" Width="150px" 
                         CssClass="combo">
                     </asp:DropDownList>
+                    <asp:ImageButton ID="ibtnCrearProveedor" runat="server"  ImageUrl="~/images/add.png" OnClientClick="javascript:LlamarDialogCrear('proveedores');return false;"/>
                 </td>
             <td>
                     &nbsp;</td>

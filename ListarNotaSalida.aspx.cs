@@ -19,6 +19,7 @@ public partial class ListarNotaSalida : System.Web.UI.Page
             txtFechaInicial.Text = DateTime.Now.ToShortDateString();
             txtFechaFinal.Text = DateTime.Now.ToShortDateString();
             ListarAlmacen();
+            ListarEstados();
             Listar();
         }
     }
@@ -50,12 +51,22 @@ public partial class ListarNotaSalida : System.Web.UI.Page
         }
     }
 
+    public void ListarEstados() 
+    {
+        DataTable dt = new DataTable();
+        SqlDataAdapter da = new SqlDataAdapter("Importadora_NotaSalidaEstado_Combo", conexion);
+        da.Fill(dt);
+        ddlEstado.DataSource = dt;
+        ddlEstado.DataTextField = "v_NotaSalidaEstado";
+        ddlEstado.DataValueField = "n_IdNotaSalidaEstado";
+        ddlEstado.DataBind();
+    }
+
     void BloquearTodo()
     {
         txtFechaInicial.Enabled = false;
         txtFechaFinal.Enabled = false;
         ddlAlmacen.Enabled = false;
-        chkHabilitado.Enabled = false;
         btnConsultar.Enabled = false;
         btnNuevo.Enabled = false;
         btnSalir.Enabled = false;
@@ -68,9 +79,8 @@ public partial class ListarNotaSalida : System.Web.UI.Page
         {
             string FechaInicial = DateTime.Parse(txtFechaInicial.Text).Year.ToString("0000") + DateTime.Parse(txtFechaInicial.Text).Month.ToString("00") + DateTime.Parse(txtFechaInicial.Text).Day.ToString("00");
             string FechaFinal = DateTime.Parse(txtFechaFinal.Text).Year.ToString("0000") + DateTime.Parse(txtFechaFinal.Text).Month.ToString("00") + DateTime.Parse(txtFechaFinal.Text).Day.ToString("00");
-            string Estado = "1";
-            if (chkHabilitado.Checked) { Estado = "1"; } else { Estado = "0"; }
             string Almacen = ddlAlmacen.SelectedItem.Text;
+            string Estado = ddlEstado.SelectedValue;
 
             SqlDataAdapter da = new SqlDataAdapter("Play_NotaSalida_Listar '" + FechaInicial + "','" + FechaFinal + "','" + Almacen + "'," + Estado, conexion);
             DataTable dt = new DataTable();

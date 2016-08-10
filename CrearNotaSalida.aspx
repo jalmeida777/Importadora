@@ -88,6 +88,12 @@
                 </td>
                 <td width="95">
                   
+                    <asp:ImageButton ID="ibtnDespachar" runat="server" Visible="false"
+                        ImageUrl="~/images/btnDespachar_New.png" onclick="ibtnDespachar_Click"
+                        OnClientClick="if (confirm('Seguro de Despachar?')) { ibtnDespachar.disabled = false; return true; } else { return false; }" />
+                </td>
+                <td width="95">
+                  
                     <asp:ImageButton ID="ibAnular" runat="server" ImageUrl="~/images/btnAnular_New.png" 
                         onclick="ibAnular_Click" Visible="False" 
                         OnClientClick="if (confirm('Seguro de anular?')) { ibAnular.disabled = false; return true; } else { return false; }" />
@@ -108,7 +114,8 @@
             <td width="15%">
                 &nbsp;</td>
             <td>
-                &nbsp;</td>
+                <asp:HiddenField ID="hddfNotaSalida" runat="server" Value="0"/>
+            </td>
             <td width="15%">
                 &nbsp;</td>
         </tr>

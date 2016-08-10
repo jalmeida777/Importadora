@@ -72,7 +72,8 @@ public partial class CrearBateria : System.Web.UI.Page
                 n_IdPilas = cmd.ExecuteScalar().ToString();
                 conexion.Close();
                 lblCodigo.Text = n_IdPilas;
-                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>$.growl.notice({ message: 'Batería registrada.' });</script>", false);
+                ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "tmp", "<script type='text/javascript'>window.parent.CerrarDialog('baterias'," + n_IdPilas.ToString() + ");</script>", false);
+                
             }
         }
         catch (Exception)

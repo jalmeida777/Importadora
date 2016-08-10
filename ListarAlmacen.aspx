@@ -10,7 +10,7 @@
             <table width="100%" cellpadding="3" cellspacing="3">
                 <tr>
                     <td colspan="2">
-                        <h1 class="label">
+                        <h1>
                             Administración de Sucursales</h1>
                     </td>
                 </tr>

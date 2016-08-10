@@ -29,6 +29,7 @@ public partial class CrearAlmacen : System.Web.UI.Page
                 chkEstado.Checked = bool.Parse(dt.Rows[0]["b_Estado"].ToString());
                 txtDireccion.Text = dt.Rows[0]["v_Direccion"].ToString();
                 txtTelefono.Text = dt.Rows[0]["v_Telefono"].ToString();
+                chkManejaCaja.Checked = bool.Parse(dt.Rows[0]["b_TieneCaja"].ToString());
             }
 
             txtDescripcion.Focus();
@@ -68,6 +69,7 @@ public partial class CrearAlmacen : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@b_Estado", chkEstado.Checked);
                 cmd.Parameters.AddWithValue("@v_Direccion", txtDireccion.Text.Trim().ToUpper());
                 cmd.Parameters.AddWithValue("@v_Telefono", txtTelefono.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@b_TieneCaja", chkManejaCaja.Checked);
                 conexion.Open();
                 cmd.ExecuteNonQuery();
                 conexion.Close();
@@ -84,6 +86,7 @@ public partial class CrearAlmacen : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@v_Descripcion", txtDescripcion.Text.Trim().ToUpper());
                 cmd.Parameters.AddWithValue("@v_Direccion", txtDireccion.Text.Trim().ToUpper());
                 cmd.Parameters.AddWithValue("@v_Telefono", txtTelefono.Text.Trim().ToUpper());
+                cmd.Parameters.AddWithValue("@b_TieneCaja", chkManejaCaja.Checked);
                 conexion.Open();
                 cmd.ExecuteNonQuery();
                 conexion.Close();
